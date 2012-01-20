@@ -1,0 +1,52 @@
+﻿<UserControl x:Class="BrainLab.Studio.GroupComparisonOverview"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="600">
+    <Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+
+		<StackPanel Orientation="Horizontal"  Background="LightGray" Margin="5" Grid.Row="0">
+			<Label Content="Group Comparisons" FontWeight="Bold" />
+			<Label Name="lblPVal" />
+		</StackPanel>
+
+		<Grid Grid.Row="1">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="1*" MinHeight="250px" />
+				<RowDefinition Height="100" />
+			</Grid.RowDefinitions>
+			
+			<WindowsFormsHost Name="chartHost" Margin="5" />
+			<Grid Grid.Row="1">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition />
+				</Grid.RowDefinitions>
+				<StackPanel Orientation="Horizontal">
+					<Label Content="Trend ROIs" />
+					<Label Content="{Binding ElementName=trendROIs, Path=Items.Count}" />
+				</StackPanel>
+				<StackPanel Orientation="Horizontal" Grid.Column="1">
+					<Label Content="Signif ROIs" />
+					<Label Content="{Binding ElementName=sigROIs, Path=Items.Count}" />
+				</StackPanel>
+				<Border Grid.Row="1" Margin="5">
+					<ListBox Name="trendROIs" />
+				</Border>
+				<Border Grid.Row="1" Grid.Column="1" Margin="5">
+					<ListBox Name="sigROIs" />
+				</Border>
+			</Grid>
+		</Grid>
+	</Grid>
+</UserControl>

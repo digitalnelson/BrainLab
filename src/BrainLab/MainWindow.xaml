@@ -1,0 +1,86 @@
+﻿<Window x:Class="BrainLab.Studio.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="550" Width="1200" xmlns:my="clr-namespace:BrainLab.Studio">
+    <Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="40" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="150" />
+		</Grid.ColumnDefinitions>
+		
+		<StackPanel Grid.Column="1" Orientation="Vertical" Grid.RowSpan="2" Margin="5">
+            <Label Content="Region File" />
+            <TextBox x:Name="_txtRegionFile" Text="..\..\..\..\..\data\169_sz_2929\AAL.txt" />
+            <Label Content="Subject File" />
+            <TextBox x:Name="_txtSubjectFile" Text="..\..\..\..\..\data\169_sz_2929\subs.txt" />
+            <Label Content="Data Folder" />
+            <TextBox x:Name="_txtDataFolder"  Text="..\..\..\..\..\data\169_sz_2929\adj" />
+            <Label Content="Vertex Count" />
+            <TextBox x:Name="_txtVertexCount"  Text="90" />
+            <Label Content="Threshold" />
+            <TextBox x:Name="_txtThreshold"  Text="2.15" />
+            <Button x:Name="_btnData"  Click="Load" Content="Data"  Width="75" Height="30" HorizontalAlignment="Center" Margin="0,10,0,0" />
+            <Label Content="Permutations" />
+            <TextBox x:Name="_txtPermutations" Text="1000" />
+            <Button x:Name="_btnPermute" IsEnabled="False"  Click="Permute" Content="Permute" Width="75" Height="30" HorizontalAlignment="Center" Margin="0,10,0,0"  />
+            <Button x:Name="_btnDisplay" IsEnabled="False" Click="Display" Content="Stats" Width="75" Height="30" HorizontalAlignment="Center" Margin="0,10,0,0"  />
+		</StackPanel>
+
+        <Grid x:Name="charts" Grid.Column="0" Grid.RowSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.4*" />
+                <ColumnDefinition Width="0.4*"/>
+                <ColumnDefinition Width="0.2*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+
+            <my:GraphView x:Name="dComponents" Grid.Row="0" Grid.Column="0" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            <my:GraphView x:Name="fComponents" Grid.Row="0" Grid.Column="1" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+
+        </Grid>
+
+        <!--<ScrollViewer Grid.Column="0" Grid.RowSpan="2">
+			<Grid Name="charts">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="50*" />
+					<ColumnDefinition Width="50*" />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition />
+					<RowDefinition />
+					<RowDefinition />
+					<RowDefinition />
+				</Grid.RowDefinitions>
+
+				<Grid Grid.ColumnSpan="2">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
+
+					<my:DistroChart Height="250"  x:Name="gfStrength" Grid.Row="0" Grid.Column="0" />
+					<my:DistroChart Height="250" x:Name="gdStrength" Grid.Row="0" Grid.Column="1" />
+                    <my:GraphView x:Name="dComponents" Grid.Row="0" Grid.Column="2" Height="250" Margin="5" />
+					
+				</Grid>
+
+				<my:GroupComparisonOverview Height="400" x:Name="fStrengthO" Width="500" Grid.Row="1" Grid.Column="0" />
+				<my:GroupComparisonOverview Height="400" x:Name="dStrengthO" Width="500" Grid.Row="1" Grid.Column="1" />
+				
+				<my:GroupComparisonDetails Height="250" x:Name="fStrengthD" Width="500" Grid.Row="2" Grid.Column="0" />
+				<my:GroupComparisonDetails Height="250" x:Name="dStrengthD" Width="500" Grid.Row="2" Grid.Column="1" />
+				
+				<my:GroupEdgeOverview Height="500" x:Name="fEdgeOverview" Width="500" Grid.Row="3" Grid.Column="0" />
+				<my:GroupEdgeOverview Height="500" x:Name="dEdgeOverview" Width="500" Grid.Row="3" Grid.Column="1" />
+			</Grid>
+		</ScrollViewer>-->
+        
+	</Grid>
+</Window>
