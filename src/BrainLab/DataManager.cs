@@ -98,6 +98,11 @@ namespace BrainLab.Studio
 		public void CalculateGroupDifferences(string group1Id, string group2Id, Dictionary<string, double> thresholds)
 		{
 			_compare.CompareGroups(group1Id, group2Id, thresholds);
+		}
+
+		public void PermuteComparisons(int permutations, int group1Size, Dictionary<string, double> thresholds)
+		{
+			_compare.Permute(permutations, group1Size, thresholds);
 
 			_overlap = _compare.GetResult();
 			foreach (var v in _overlap.Vertices)
@@ -105,11 +110,6 @@ namespace BrainLab.Studio
 				var r = _regionsOfInterestByIndex[v];
 				r.Special = true;
 			}
-		}
-
-		public void PermuteComparisons(int permutations, int group1Size, Dictionary<string, double> thresholds)
-		{
-			_compare.Permute(permutations, group1Size, thresholds);
 		}
 
 		public Dictionary<string, List<GraphComponent>> GetGraphComponents()

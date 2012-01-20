@@ -14,13 +14,16 @@ using namespace std;
 namespace BrainLabNative
 {
 	GraphComparison::GraphComparison(int subjectCount, int verts, int edges) 
-		: _subjectEdges(boost::extents[edges][subjectCount]), _lu(verts), _grpStats(edges)
+		: _subjectEdges(boost::extents[edges][subjectCount]), _lu(verts), _grpStats(edges), _grpEdgeCounts(edges)
 	{
 		_subjectCount = subjectCount;
 		_vertCount = verts;
 		_edgeCount = edges;
 		_currentSubjectIdx = 0;
+
 		_permutations = 0;
+		_largestComponentSize = 0;
+		_rightTailComponentSizeCount = 0;
 	}
 
 	GraphComparison::~GraphComparison(void)

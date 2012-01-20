@@ -87,50 +87,55 @@ namespace BrainLab.Studio
 				_mapVtx[i] = new ROIVertex() { Vertex = v, Roi = roi };
 			}
 
-			foreach (var cmp in components)
+			int cmpSize = 0;
+			GraphComponent cmp = null;
+			for (var i = 0; i < components.Count; i++ )
 			{
-				if (cmp.PValue < 0.05)
+				if ((components[i].PValue < 0.05) && (components[i].Edges.Count > cmpSize))
 				{
-					foreach (var edge in cmp.Edges)
+					cmp = components[i];
+					cmpSize = cmp.Edges.Count;
+				}
+			}
+
+			foreach (var edge in cmp.Edges)
+			{
+				ROIVertex v1 = _mapVtx[edge.V1];
+				ROIVertex v2 = _mapVtx[edge.V2];
+
+				IEdge e = ec.Add(v1.Vertex, v2.Vertex);
+
+				double diff = edge.M2 - edge.M1;
+				string lbl = string.Format("{0} ({1})", diff.ToString("0.000"), edge.PValue.ToString("0.0000"));
+
+				if (v1.Roi.Special && v2.Roi.Special)
+				{
+					edgeCount++;
+
+					e.SetValue(ReservedMetadataKeys.PerEdgeLabel, lbl);
+					e.SetValue(ReservedMetadataKeys.PerEdgeLabelFontSize, 16.0f);
+					e.SetValue(ReservedMetadataKeys.PerEdgeWidth, 4.0f);
+					e.SetValue(ReservedMetadataKeys.PerColor, Color.FromArgb(255, 0, 0, 0));
+
+					if (edge.PValue >= 0.05)
 					{
-						ROIVertex v1 = _mapVtx[edge.V1];
-						ROIVertex v2 = _mapVtx[edge.V2];
+						e.SetValue(ReservedMetadataKeys.PerAlpha, 40.0f);
+						e.SetValue(ReservedMetadataKeys.PerColor, Color.FromArgb(255, 0, 255, 0));
+					}
+				}
+				else
+				{
+					e.SetValue(ReservedMetadataKeys.PerEdgeLabel, lbl);
 
-						IEdge e = ec.Add(v1.Vertex, v2.Vertex);
-
-						double diff = edge.M2 - edge.M1;
-						string lbl = string.Format("{0} ({1})", diff.ToString("0.000"), edge.PValue.ToString("0.0000"));
-
-						if (v1.Roi.Special && v2.Roi.Special)
-						{
-							edgeCount++;
-
-							e.SetValue(ReservedMetadataKeys.PerEdgeLabel, lbl);
-							e.SetValue(ReservedMetadataKeys.PerEdgeLabelFontSize, 16.0f);
-							e.SetValue(ReservedMetadataKeys.PerEdgeWidth, 4.0f);
-							e.SetValue(ReservedMetadataKeys.PerColor, Color.FromArgb(255, 0, 0, 0));
-
-							if (edge.PValue >= 0.05)
-							{
-								e.SetValue(ReservedMetadataKeys.PerAlpha, 40.0f);
-								e.SetValue(ReservedMetadataKeys.PerColor, Color.FromArgb(255, 0, 255, 0));
-							}
-						}
-						else
-						{
-							e.SetValue(ReservedMetadataKeys.PerEdgeLabel, lbl);
-
-							if (edge.PValue < 0.05)
-							{
-								e.SetValue(ReservedMetadataKeys.PerAlpha, 70.0f);
-								e.SetValue(ReservedMetadataKeys.PerColor, Color.FromArgb(255, 255, 0, 0));
-							}
-							else
-							{
-								e.SetValue(ReservedMetadataKeys.PerAlpha, 40.0f);
-								e.SetValue(ReservedMetadataKeys.PerColor, Color.FromArgb(255, 0, 0, 0));
-							}
-						}
+					if (edge.PValue < 0.05)
+					{
+						e.SetValue(ReservedMetadataKeys.PerAlpha, 70.0f);
+						e.SetValue(ReservedMetadataKeys.PerColor, Color.FromArgb(255, 255, 0, 0));
+					}
+					else
+					{
+						e.SetValue(ReservedMetadataKeys.PerAlpha, 40.0f);
+						e.SetValue(ReservedMetadataKeys.PerColor, Color.FromArgb(255, 0, 0, 0));
 					}
 				}
 			}

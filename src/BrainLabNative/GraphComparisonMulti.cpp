@@ -11,7 +11,10 @@ namespace BrainLabNative
 		_edges = edges;
 		_dataTypes = dataTypes;
 		_subCounter = 0;
+
 		_permutations = 0;
+		_realOverlap = 0;
+		_rightTailOverlapCount = 0;
 
 		for(auto it=_dataTypes.begin(); it<_dataTypes.end(); ++it)
 			_dataByType[*it] = new GraphComparison(subjectCount, vertices, edges);
