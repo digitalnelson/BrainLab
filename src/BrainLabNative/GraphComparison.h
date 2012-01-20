@@ -16,26 +16,24 @@ namespace BrainLabNative
 
 		void AddGraph(Graph* graph);
 		
-		void GetEdgeTStats(std::vector<int>& idxs, int szGrp1, std::vector<EdgeValue>& edgeStats);
+		void CalcEdgeTStats(std::vector<int>& idxs, int szGrp1, std::vector<EdgeValue>& edgeStats);
 		
+		void CompareGroups(std::vector<int>& idxs, int szGrp1, double tStatThreshold, Graph& graph);
 		void Permute(std::vector<int>& idxs, int szGrp1, double tStatThreshold, Graph &graph);
-		void CompareGroups(std::vector<int>& idxs, int szGrp1, Graph& graph, double tStatThreshold);
 		
-		double GetComponentSizePVal(int cmpSize);
-		double GetEdgePVal(int edgeIdx, int tstat);
+		double GetComponentSizePVal();
+		double GetEdgePVal(int edgeIdx);
 	
 	private:
 		typedef boost::multi_array<double, 2> EdgesBySubject;
 		typedef boost::multi_array<double, 2>::array_view<1>::type SingleEdgeBySubject;
 		typedef boost::multi_array_types::index_range range;
-		typedef std::vector<int> PermCollection;
-		typedef std::vector<std::vector<double> > PermEdgeCollection;
-		typedef std::vector<int> CmpEdgeCollection;
 
 		int _subjectCount;
 		int _currentSubjectIdx;
 		int _vertCount;
 		int _edgeCount;
+		int _permutations;
 
 		GraphLookup _lu;
 		EdgesBySubject _subjectEdges;  // Mtx of edge vs subject  e.g. 4005x58
@@ -43,9 +41,8 @@ namespace BrainLabNative
 		std::vector<EdgeValue> _grpStats;
 		std::vector<int> _grpEdgeCounts;
 
-		PermCollection _componentSizes;
-		PermEdgeCollection _edgeTStats;
+		int _largestComponentSize;
+		int _rightTailComponentSizeCount;
 	};
-
 }
 

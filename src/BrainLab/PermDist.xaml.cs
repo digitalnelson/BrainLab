@@ -12,7 +12,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Forms.DataVisualization.Charting;
-using ShoNS.Array;
 using System.Threading.Tasks;
 using System.Xml;
 using System.IO;

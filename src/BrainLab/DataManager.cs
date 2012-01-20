@@ -99,8 +99,8 @@ namespace BrainLab.Studio
 		{
 			_compare.CompareGroups(group1Id, group2Id, thresholds);
 
-			Overlap ol = _compare.GetOverlapResult();
-			foreach (var v in ol.Vertices)
+			_overlap = _compare.GetResult();
+			foreach (var v in _overlap.Vertices)
 			{
 				var r = _regionsOfInterestByIndex[v];
 				r.Special = true;
@@ -114,7 +114,7 @@ namespace BrainLab.Studio
 
 		public Dictionary<string, List<GraphComponent>> GetGraphComponents()
 		{
-			return _compare.GetGraphComponents();
+			return _overlap.Components;
 		}
 
 		public double XMin;
@@ -136,5 +136,6 @@ namespace BrainLab.Studio
 		private Dictionary<string, GroupCompare> _analysisBySource;
 
 		private MultiModalCompare _compare;
+		private Overlap _overlap;
 	}
 }

@@ -1,5 +1,4 @@
 #pragma once
-
 #include <msclr\marshal.h>
 #include <msclr\marshal_cppstd.h>
 #include <map>
@@ -20,13 +19,11 @@ namespace BrainLabLibrary
 		void LoadSubjects(List<SubjectData^>^ itms);
 		void Permute(int permutations, int group1Size, Dictionary<String^, double>^ thresholds);
 		void CompareGroups(String^ group1, String^ group2, Dictionary<String^, double>^ thresholds);
-		Dictionary<String^, List<GraphComponent^>^>^ GetGraphComponents();
-		BrainLabStorage::Overlap^ GetOverlapResult();
+		
+		BrainLabStorage::Overlap^ GetResult();
 
 	private:
 		GraphComparisonMulti *_cmpMulti;
-		Dictionary<String^, List<GraphComponent^>^>^ _components;
-		BrainLabStorage::Overlap^ _overlapResult;
 	};
 }
 

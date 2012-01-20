@@ -61,7 +61,7 @@ namespace BrainLabLibrary
 			threshes[thresh.DataType] = thresh;
 		}
 
-		_cmpMulti->CompareGroupsEx(strGroup1, strGroup2, threshes);
+		_cmpMulti->Compare(strGroup1, strGroup2, threshes);
 	}
 
 	void MultiModalCompare::Permute(int permutations, int group1Size, Dictionary<String^, double>^ thresholds)
@@ -80,18 +80,15 @@ namespace BrainLabLibrary
 		_cmpMulti->Permute(permutations, group1Size, threshes);
 	}
 
-	Dictionary<String^, List<GraphComponent^>^>^ MultiModalCompare::GetGraphComponents()
+	BrainLabStorage::Overlap^ MultiModalCompare::GetResult()
 	{
-		return _overlapResult->Components;
-	}
-
-	BrainLabStorage::Overlap^ MultiModalCompare::GetOverlapResult()
-	{
-		// Compare the groups
-		BrainLabNative::Overlap overlapResult = nullptr;
+		// Pull the results of the comparison
+		BrainLabNative::Overlap overlapResult = _cmpMulti->GetOverlapResult();
 		
 		// Convert the NBS computation result back to managed C++
-		_components = gcnew Dictionary<String^, List<GraphComponent^>^>();
+		BrainLabStorage::Overlap^ blsor = gcnew BrainLabStorage::Overlap();
+		blsor->Components = gcnew Dictionary<String^, List<GraphComponent^>^>();
+		
 		for(auto cit=overlapResult.Components.begin(); cit!=overlapResult.Components.end();++cit)
 		{
 			String^ dataType = msclr::interop::marshal_as<String^>(cit->first);
@@ -121,21 +118,18 @@ namespace BrainLabLibrary
 
 				int edgeCount = gc->Edges->Count;
 				gc->VertexCount = vi->Vertices.size();
-				gc->PValue = _cmpMulti->GetComponentSizePVal(cit->first, edgeCount);
+				gc->PValue = _cmpMulti->GetComponentSizePVal(cit->first);
 
 				components->Add(gc);
 			}
 
-			_components[dataType] = components;
+			blsor->Components[dataType] = components;
 		}
 
-		_overlapResult = gcnew BrainLabStorage::Overlap();
-		_overlapResult->Components = _components;
-		_overlapResult->PValue = overlapResult.PValue;
-		_overlapResult->Vertices = gcnew List<int>();
+		blsor->Vertices = gcnew List<int>();
 		for(auto vit=overlapResult.Vertices.begin();vit<overlapResult.Vertices.end();++vit)
-			_overlapResult->Vertices->Add(*vit);
+			blsor->Vertices->Add(*vit);
 
-		return _overlapResult;
+		return blsor;
 	}
 }

@@ -14,12 +14,13 @@ using namespace std;
 namespace BrainLabNative
 {
 	GraphComparison::GraphComparison(int subjectCount, int verts, int edges) 
-		: _subjectEdges(boost::extents[edges][subjectCount]), _lu(verts), _edgeTStats(edges), _grpStats(edges)
+		: _subjectEdges(boost::extents[edges][subjectCount]), _lu(verts), _grpStats(edges)
 	{
 		_subjectCount = subjectCount;
 		_vertCount = verts;
 		_edgeCount = edges;
 		_currentSubjectIdx = 0;
+		_permutations = 0;
 	}
 
 	GraphComparison::~GraphComparison(void)
@@ -36,7 +37,7 @@ namespace BrainLabNative
 		++_currentSubjectIdx;
 	}
 
-	void GraphComparison::GetEdgeTStats(vector<int>& idxs, int szGrp1, vector<EdgeValue>& edgeStats)
+	void GraphComparison::CalcEdgeTStats(vector<int>& idxs, int szGrp1, vector<EdgeValue>& edgeStats)
 	{
 		//for(int i=0; i<_edgeCount; i++)
 		parallel_for(0, _edgeCount, [=, &idxs, &edgeStats] (int i)
@@ -50,10 +51,10 @@ namespace BrainLabNative
 		});
 	}
 
-	void GraphComparison::CompareGroups(vector<int>& idxs, int szGrp1, Graph& graph, double tStatThreshold)
+	void GraphComparison::CompareGroups(vector<int>& idxs, int szGrp1, double tStatThreshold, Graph& graph)
 	{				
 		// Calculate t stats for this subject labeling
-		GetEdgeTStats(idxs, szGrp1, _grpStats);
+		CalcEdgeTStats(idxs, szGrp1, _grpStats);
 
 		// Load graph with thresholded t stats
 		for(auto idx=0; idx<_grpStats.size(); ++idx)
@@ -63,35 +64,42 @@ namespace BrainLabNative
 			if(abs(_grpStats[idx].TStat) > tStatThreshold)
 				graph.AddEdge(edge.first, edge.second, _grpStats[idx]);
 		}
+
+		// Calculate component count and max topological extent
+		graph.ComputeComponents();
+
+		// Get the index of the largest cmp
+		int id = graph.GetLargestComponentId();
+
+		// Keep this
+		_largestComponentSize = graph.GetComponentExtent(id);
 	}
 
 	void GraphComparison::Permute(vector<int>& idxs, int szGrp1, double tStatThreshold, Graph &graph)
 	{
 		// Create somewhere to store our t stats
-		vector<EdgeValue> edgeStats(_edgeCount);
+		vector<EdgeValue> permEdgeStats(_edgeCount);
 
 		// Calculate t stats for this random subject labeling
-		GetEdgeTStats(idxs, szGrp1, edgeStats);
-
-		int size = (int)edgeStats.size();
+		CalcEdgeTStats(idxs, szGrp1, permEdgeStats);
 
 		// Loop through edge stats and calc	our measures
-		for(auto idx=0; idx<edgeStats.size(); ++idx)
-		//parallel_for(0, size, [=, &idxs, &edgeStats, &graph] (int idx)
+		for(auto idx=0; idx<permEdgeStats.size(); ++idx)
 		{
-			std::pair<int, int> edge = _lu.GetEdge(idx);
-
 			// Edge level testing - If this tstat is bigger than our grp tstat, increment the count
-			if(abs(edgeStats[idx].TStat) >= _grpStats[idx].TStat)
+			if(abs(permEdgeStats[idx].TStat) >= abs(_grpStats[idx].TStat))
 				_grpEdgeCounts[idx]++;
 
-			// Save this t stat in the distro store
-			//_edgeTStats[idx].push_back(edgeStats[idx].TStat);
-
+			// TODO: Eventually store this as a graph tag so we can have multiple pieces of info stored with our edges
 			// NBS level testing - Add this to the NBS graph if above our threshold, we will calc the size of the cmp soon
-			if(abs(edgeStats[idx].TStat) > tStatThreshold)
-				graph.AddEdge(edge.first, edge.second, edgeStats[idx]);
-		}//);
+			if(abs(permEdgeStats[idx].TStat) > tStatThreshold)
+			{
+				// Lookup our edge
+				std::pair<int, int> edge = _lu.GetEdge(idx);
+				// Store the edge in our graph
+				graph.AddEdge(edge.first, edge.second, permEdgeStats[idx]);
+			}
+		}
 			
 		// Calculate component count and max topological extent
 		graph.ComputeComponents();
@@ -100,30 +108,28 @@ namespace BrainLabNative
 		int id = graph.GetLargestComponentId();
 
 		// Keep this max for the NBS distribution
-		_componentSizes.push_back(graph.GetComponentExtent(id));
+		int cmpSize = graph.GetComponentExtent(id);
+
+		// Increment rt tail if this is larger than the actual component
+		if(cmpSize >= _largestComponentSize)
+			++_rightTailComponentSizeCount;
+
+		++_permutations;
 	}
 
-	double GraphComparison::GetComponentSizePVal(int cmpSize)
+	double GraphComparison::GetComponentSizePVal()
 	{
-		int count = 0;
-		for(auto it=_componentSizes.begin(); it<_componentSizes.end(); ++it)
-		{
-			if(*it > cmpSize)
-				++count;
-		}
-
-		return ((double)count) / ((double)_componentSizes.size());
+		if(_permutations > 0)
+			return ((double)_rightTailComponentSizeCount) / ((double)_permutations);
+		else
+			return 1.0;
 	}
 
-	double GraphComparison::GetEdgePVal(int edgeIdx, int tstat)
+	double GraphComparison::GetEdgePVal(int edgeIdx)
 	{
-		int count = 0;
-		for(auto it=_edgeTStats[edgeIdx].begin(); it<_edgeTStats[edgeIdx].end(); ++it)
-		{
-			if(*it > tstat)
-				++count;
-		}
-
-		return ((double)count) / ((double)_edgeTStats[edgeIdx].size());
+		if(_permutations > 0)
+			return ((double)_grpEdgeCounts[edgeIdx]) / ((double)_permutations);
+		else
+			return 1.0;
 	}
 }
