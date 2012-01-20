@@ -31,3 +31,5 @@ _ReSharper*/
 data/
 out/
 src/BrainLab.sdf
+src/ipch/
+src/BrainLab.opensdf

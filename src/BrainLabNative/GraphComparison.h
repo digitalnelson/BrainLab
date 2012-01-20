@@ -39,11 +39,12 @@ namespace BrainLabNative
 
 		GraphLookup _lu;
 		EdgesBySubject _subjectEdges;  // Mtx of edge vs subject  e.g. 4005x58
+
+		std::vector<EdgeValue> _grpStats;
+		std::vector<int> _grpEdgeCounts;
+
 		PermCollection _componentSizes;
 		PermEdgeCollection _edgeTStats;
-
-		CmpEdgeCollection _grpEdgeCounts;
-		vector<EdgeValue> _grpStats;
 	};
 
 }

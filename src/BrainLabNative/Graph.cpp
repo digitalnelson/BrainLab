@@ -39,16 +39,12 @@ namespace BrainLabNative
 
 		//// Loop through and gather all of the vertex ids for each component
 		for(int i=0; i<cmpRawListingByVertex.size(); ++i)
-		{
-			//componentVertexLookup[i] = cmpRawListingByVertex[i];
 			ComponentVertices[cmpRawListingByVertex[i]].push_back(i);
-		}
 
 		// Store the edges by component
 		for(int i=0; i<Edges.size(); ++i)
 		{
 			ComponentEdge ce;
-
 			ce.Edge = Edges[i];
 			ce.EdgeValue = EdgeValues[i];
 

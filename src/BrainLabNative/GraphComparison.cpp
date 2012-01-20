@@ -50,6 +50,21 @@ namespace BrainLabNative
 		});
 	}
 
+	void GraphComparison::CompareGroups(vector<int>& idxs, int szGrp1, Graph& graph, double tStatThreshold)
+	{				
+		// Calculate t stats for this subject labeling
+		GetEdgeTStats(idxs, szGrp1, _grpStats);
+
+		// Load graph with thresholded t stats
+		for(auto idx=0; idx<_grpStats.size(); ++idx)
+		{
+			std::pair<int, int> edge = _lu.GetEdge(idx);
+
+			if(abs(_grpStats[idx].TStat) > tStatThreshold)
+				graph.AddEdge(edge.first, edge.second, _grpStats[idx]);
+		}
+	}
+
 	void GraphComparison::Permute(vector<int>& idxs, int szGrp1, double tStatThreshold, Graph &graph)
 	{
 		// Create somewhere to store our t stats
@@ -86,26 +101,6 @@ namespace BrainLabNative
 
 		// Keep this max for the NBS distribution
 		_componentSizes.push_back(graph.GetComponentExtent(id));
-	}
-
-	void GraphComparison::CompareGroups(vector<int>& idxs, int szGrp1, Graph& graph, double tStatThreshold)
-	{				
-		// Create somewhere to store our t stats
-		//vector<EdgeValue> edgeStats(_edgeCount);
-
-		// Calculate t stats for this subject labeling
-		GetEdgeTStats(idxs, szGrp1, _grpStats);
-
-		// Load graph with thresholded t stats
-		for(auto idx=0; idx<_grpStats.size(); ++idx)
-		{
-			std::pair<int, int> edge = _lu.GetEdge(idx);
-
-			//_grpStats[idx].PValue = GetEdgePVal(idx, _grpStats[idx].TStat);
-
-			if(abs(_grpStats[idx].TStat) > tStatThreshold)
-				graph.AddEdge(edge.first, edge.second, _grpStats[idx]);
-		}
 	}
 
 	double GraphComparison::GetComponentSizePVal(int cmpSize)
