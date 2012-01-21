@@ -70,15 +70,6 @@ namespace BrainLabNative
 				components[idx].Edges.push_back(*ei);
 			}
 		}
-
-		//idx = 0;
-		//for(auto it=ComponentVertices.begin(); it != ComponentVertices.end(); ++it, ++idx)
-		//{
-		//	for(auto ei=it->second.begin(); ei < it->second.end(); ++ei)
-		//	{
-		//		components[idx].Vertices.push_back(*ei);
-		//	}
-		//}
 	}
 
 	int Graph::GetLargestComponentId()

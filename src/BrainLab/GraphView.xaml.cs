@@ -91,7 +91,7 @@ namespace BrainLab.Studio
 			GraphComponent cmp = null;
 			for (var i = 0; i < components.Count; i++ )
 			{
-				if ((components[i].PValue < 0.05) && (components[i].Edges.Count > cmpSize))
+				if ((components[i].PValue < 0.10) && (components[i].Edges.Count > cmpSize))
 				{
 					cmp = components[i];
 					cmpSize = cmp.Edges.Count;

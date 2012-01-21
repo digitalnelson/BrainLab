@@ -14,7 +14,7 @@ using namespace std;
 namespace BrainLabNative
 {
 	GraphComparison::GraphComparison(int subjectCount, int verts, int edges) 
-		: _subjectEdges(boost::extents[edges][subjectCount]), _lu(verts), _grpStats(edges), _grpEdgeCounts(edges)
+		: _subjectEdges(boost::extents[edges][subjectCount]), _lu(verts), _grpStats(edges), _grpEdgeCounts(edges, 0)
 	{
 		_subjectCount = subjectCount;
 		_vertCount = verts;
@@ -24,6 +24,8 @@ namespace BrainLabNative
 		_permutations = 0;
 		_largestComponentSize = 0;
 		_rightTailComponentSizeCount = 0;
+
+		
 	}
 
 	GraphComparison::~GraphComparison(void)
@@ -71,6 +73,7 @@ namespace BrainLabNative
 		// Calculate component count and max topological extent
 		graph.ComputeComponents();
 
+		// TODO: Pull out and store all of the components so we can pval all of them
 		// Get the index of the largest cmp
 		int id = graph.GetLargestComponentId();
 
@@ -113,6 +116,7 @@ namespace BrainLabNative
 		// Keep this max for the NBS distribution
 		int cmpSize = graph.GetComponentExtent(id);
 
+		// TODO: Loop through all actual components and update rightTailCounts for each
 		// Increment rt tail if this is larger than the actual component
 		if(cmpSize >= _largestComponentSize)
 			++_rightTailComponentSizeCount;
