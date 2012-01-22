@@ -24,6 +24,7 @@ namespace BrainLabLibrary
 
 	private:
 		GraphComparisonMulti *_cmpMulti;
+		int _permutations;
 	};
 }
 

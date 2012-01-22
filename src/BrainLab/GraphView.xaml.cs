@@ -42,8 +42,10 @@ namespace BrainLab.Studio
 			_dataManager = dataManager;
 		}
 
-		public void LoadGraphComponents(List<GraphComponent> components)
+		public void LoadGraphComponents(Overlap overlap, string dataType)
 		{
+			List<GraphComponent> components = overlap.Components[dataType];
+
 			int edgeCount = 0;
 			double width = this.ActualWidth - 30;
 			double height = this.ActualHeight - 30;
@@ -91,7 +93,7 @@ namespace BrainLab.Studio
 			GraphComponent cmp = null;
 			for (var i = 0; i < components.Count; i++ )
 			{
-				if ((components[i].PValue < 0.10) && (components[i].Edges.Count > cmpSize))
+				if ((components[i].PValue < 0.05) && (components[i].Edges.Count > cmpSize))
 				{
 					cmp = components[i];
 					cmpSize = cmp.Edges.Count;
@@ -106,7 +108,9 @@ namespace BrainLab.Studio
 				IEdge e = ec.Add(v1.Vertex, v2.Vertex);
 
 				double diff = edge.M2 - edge.M1;
-				string lbl = string.Format("{0} ({1})", diff.ToString("0.000"), edge.PValue.ToString("0.0000"));
+				double pval = ( (double)edge.RightTailCount ) / ( (double)overlap.Permutations );
+
+				string lbl = string.Format("{0} ({1})", diff.ToString("0.000"), pval.ToString("0.0000"));
 
 				if (v1.Roi.Special && v2.Roi.Special)
 				{
@@ -117,7 +121,7 @@ namespace BrainLab.Studio
 					e.SetValue(ReservedMetadataKeys.PerEdgeWidth, 4.0f);
 					e.SetValue(ReservedMetadataKeys.PerColor, Color.FromArgb(255, 0, 0, 0));
 
-					if (edge.PValue >= 0.05)
+					if (pval >= 0.05)
 					{
 						e.SetValue(ReservedMetadataKeys.PerAlpha, 40.0f);
 						e.SetValue(ReservedMetadataKeys.PerColor, Color.FromArgb(255, 0, 255, 0));
@@ -127,7 +131,7 @@ namespace BrainLab.Studio
 				{
 					e.SetValue(ReservedMetadataKeys.PerEdgeLabel, lbl);
 
-					if (edge.PValue < 0.05)
+					if (pval < 0.05)
 					{
 						e.SetValue(ReservedMetadataKeys.PerAlpha, 70.0f);
 						e.SetValue(ReservedMetadataKeys.PerColor, Color.FromArgb(255, 255, 0, 0));

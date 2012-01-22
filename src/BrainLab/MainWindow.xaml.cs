@@ -96,10 +96,10 @@ namespace BrainLab.Studio
 
 		private void Display(object sender, RoutedEventArgs e)
 		{
-			Dictionary<string, List<GraphComponent>> cmps = _dataManager.GetGraphComponents();
+			Overlap overlap = _dataManager.GetOverlap();
 
-			dComponents.LoadGraphComponents(cmps["DTI"]);
-			fComponents.LoadGraphComponents(cmps["fMRI"]);
+			dComponents.LoadGraphComponents(overlap, "DTI");
+			fComponents.LoadGraphComponents(overlap, "fMRI");
 
 			//DistroSummary ds = null;
 			//for (double d = 2.16; d < 2.19; d += 0.001)

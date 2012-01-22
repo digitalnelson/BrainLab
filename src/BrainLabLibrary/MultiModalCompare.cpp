@@ -14,6 +14,7 @@ namespace BrainLabLibrary
 			dtypes.push_back(msclr::interop::marshal_as<std::string>(dstr));
 
 		_cmpMulti = new	GraphComparisonMulti(subjectCount, vertices, edges, dtypes);
+		_permutations = 0;
 	}
 
 	void MultiModalCompare::LoadSubjects(List<SubjectData^>^ itms)
@@ -78,6 +79,7 @@ namespace BrainLabLibrary
 		}
 
 		_cmpMulti->Permute(permutations, group1Size, threshes);
+		_permutations += permutations;
 	}
 
 	BrainLabStorage::Overlap^ MultiModalCompare::GetResult()
@@ -88,6 +90,7 @@ namespace BrainLabLibrary
 		// Convert the NBS computation result back to managed C++
 		BrainLabStorage::Overlap^ blsor = gcnew BrainLabStorage::Overlap();
 		blsor->Components = gcnew Dictionary<String^, List<GraphComponent^>^>();
+		blsor->Permutations = _permutations;
 		
 		for(auto cit=overlapResult.Components.begin(); cit!=overlapResult.Components.end();++cit)
 		{
@@ -111,7 +114,7 @@ namespace BrainLabLibrary
 					ge.Var1 = ces[i].EdgeValue.V1;
 					ge.Var2 = ces[i].EdgeValue.V2;
 					ge.TStat = ces[i].EdgeValue.TStat;
-					ge.PValue = ces[i].EdgeValue.PValue;
+					ge.RightTailCount = ces[i].EdgeValue.RightTailCount;
 
 					gc->Edges->Add(ge);
 				}

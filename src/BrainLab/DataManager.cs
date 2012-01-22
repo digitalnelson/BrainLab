@@ -112,6 +112,11 @@ namespace BrainLab.Studio
 			}
 		}
 
+		public Overlap GetOverlap()
+		{
+			return _overlap;
+		}
+
 		public Dictionary<string, List<GraphComponent>> GetGraphComponents()
 		{
 			return _overlap.Components;

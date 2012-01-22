@@ -10,6 +10,7 @@ namespace BrainLabStorage
 	{
 		public double PValue;
 		public List<int> Vertices;
+		public int Permutations;
 
 		public Dictionary<string, List<GraphComponent>> Components;
 	}
@@ -20,6 +21,7 @@ namespace BrainLabStorage
 		public double PValue = 1;
 		public double VertexCount;
 		public List<GraphEdge> Edges = new List<GraphEdge>();
+		public int Permutations;
 	}
 
 	public struct GraphEdge
@@ -33,13 +35,14 @@ namespace BrainLabStorage
 		public double Var1;
 		public double Var2;
 		public double TStat;
-		public double PValue;
+
+		public int RightTailCount;
 
 		public GraphEdge(int v1, int v2)
 		{
 			V1 = v1;
 			V2 = v2;
-			Value = 0; M1 = 0; M2 = 0; Var1 = 0; Var2 = 0; TStat = 0; PValue = 0;
+			Value = 0; M1 = 0; M2 = 0; Var1 = 0; Var2 = 0; TStat = 0; RightTailCount = 0;
 		}
 	}
 }

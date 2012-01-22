@@ -37,7 +37,7 @@ namespace BrainLabNative
 		
 		map<int, int> componentVertexLookup;
 
-		//// Loop through and gather all of the vertex ids for each component
+		// Loop through and gather all of the vertex ids for each component
 		for(int i=0; i<cmpRawListingByVertex.size(); ++i)
 			ComponentVertices[cmpRawListingByVertex[i]].push_back(i);
 
@@ -51,7 +51,7 @@ namespace BrainLabNative
 			// Look up the first edge vertex
 			int cmpId = cmpRawListingByVertex[ce.Edge.first];
 			
-			// Add our values to the component maps
+			// Add edge to component edge map
 			ComponentEdges[cmpId].push_back(ce);
 		}
 	}

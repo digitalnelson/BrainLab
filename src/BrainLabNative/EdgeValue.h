@@ -12,7 +12,7 @@ struct EdgeValue
 	
 	double TStat;
 	
-	int RtTailIdx;
 	double PValue;
+	int RightTailCount;
 };
 

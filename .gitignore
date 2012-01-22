@@ -33,3 +33,4 @@ out/
 src/BrainLab.sdf
 src/ipch/
 src/BrainLab.opensdf
+src/alglib-3.4.0.cpp

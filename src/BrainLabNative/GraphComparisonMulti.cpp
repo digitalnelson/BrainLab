@@ -49,49 +49,35 @@ namespace BrainLabNative
 			idxs.push_back(itm);
 
 		// Temporary map to hold our node counts
-		std::map<int, int> nodeCounts;
+		std::vector<int> nodeCounts(_vertices);
 
 		// Loop through our comparisons and call compare group passing our actual subject labels
 		for(auto it=_dataByType.begin(); it!=_dataByType.end(); ++it)
 		{
-			Graph g(_vertices);
+			std::vector<int> vertList;
 
 			// Grab the graph comparison for this data type
 			auto compare = it->second;
 
 			// Run the permutation for this index arrangement
-			compare->CompareGroups(idxs, _subIdxsByGroup[group1].size(), threshes[it->first].Value, g);
-
-			// Compute our components
-			g.ComputeComponents();
-
-			// Get the index of the largest component
-			int idx = g.GetLargestComponentId();
-
-			// Get verts
-			auto cvV = g.ComponentVertices[idx];
+			compare->CompareGroups(idxs, _subIdxsByGroup[group1].size(), threshes[it->first].Value, vertList);
 
 			// Pull out the vertices and store then in our counting map
-			for(auto cv=cvV.begin(); cv<cvV.end(); ++cv)
+			for(auto cv=0; cv<vertList.size(); ++cv)
 			{
-				if(nodeCounts.find(*cv) != nodeCounts.end())
-					nodeCounts[*cv]++;
-				else
-					nodeCounts[*cv] = 1;
+				if(vertList[cv] == 1)
+					++nodeCounts[cv];
 			}
-
-			// Ask the graph for the components
-			g.GetComponents(_overlap.Components[it->first]);
 		}
 
 		// Calculate how many nodes overlap between all of the nodes
 		int maxOverlap = _dataByType.size();
-		for(auto nc=nodeCounts.begin(); nc!=nodeCounts.end();++nc)
+		for(auto nc=0; nc<nodeCounts.size();++nc)
 		{
-			if(nc->second == maxOverlap)
+			if(nodeCounts[nc] == maxOverlap)
 			{
 				++_realOverlap;
-				_overlap.Vertices.push_back(nc->first);
+				_overlapVertices.push_back(nc);
 			}
 		}
 	}
@@ -109,41 +95,37 @@ namespace BrainLabNative
 			// Shuffle the indexes
 			random_shuffle(idxs.begin(), idxs.end());
 
-			std::map<int, int> nodeCounts;
+			std::vector<int> nodeCounts(_vertices);
 
 			// Loop through our comparisons and call permute on them passing our new random
 			// subject assortement
 			for(auto it=_dataByType.begin(); it!=_dataByType.end(); ++it)
 			{
-				Graph g(_vertices);
+				std::vector<int> vertList;
 
 				// Grab the graph comparison for this data type
 				auto compare = it->second;
 
 				// Run the permutation for this index arrangement
-				compare->Permute(idxs, group1Size, threshes[it->first].Value, g);
-
-				// Get the index of the largest component
-				int id = g.GetLargestComponentId();
+				compare->Permute(idxs, group1Size, threshes[it->first].Value, vertList);
 
 				// Pull out the vertices and store then in our counting map
-				for(auto it=g.ComponentVertices[id].begin(); it<g.ComponentVertices[id].end(); ++it)
+				for(auto cv=0; cv<vertList.size(); ++cv)
 				{
-					if(nodeCounts.find(*it) != nodeCounts.end())
-						nodeCounts[*it]++;
-					else
-						nodeCounts[*it] = 1;
+					if(vertList[cv] == 1)
+						++nodeCounts[cv];
 				}
 			}
 
 			// Calculate how many nodes overlap between all of the nodes
 			int permOverlap = 0, maxOverlap = _dataByType.size();
-			for(auto it=nodeCounts.begin(); it!=nodeCounts.end();++it)
+			for(auto nc=0; nc<nodeCounts.size();++nc)
 			{
-				if(it->second == maxOverlap)
+				if(nodeCounts[nc] == maxOverlap)
 					++permOverlap;
 			}
-
+			
+			// NBS multimodal compare
 			if(permOverlap >= _realOverlap)
 				++_rightTailOverlapCount;
 		}
@@ -151,7 +133,22 @@ namespace BrainLabNative
 
 	Overlap GraphComparisonMulti::GetOverlapResult()
 	{
-		return _overlap;
+		Overlap overlap;
+
+		for(auto it=_dataByType.begin(); it!=_dataByType.end(); ++it)
+		{
+			// Ask the graph for the components
+			it->second->GetComponents(overlap.Components[it->first]);
+		}
+
+		for(auto it=_overlapVertices.begin(); it<_overlapVertices.end(); it++)
+		{
+			overlap.Vertices.push_back(*it);
+		}
+
+		overlap.RightTailOverlapCount = _rightTailOverlapCount;
+
+		return overlap;
 	}
 
 	double GraphComparisonMulti::GetComponentSizePVal(std::string dataType)

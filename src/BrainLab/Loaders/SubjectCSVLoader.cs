@@ -36,11 +36,6 @@ namespace BrainLab.Studio.Loaders
 				for (int i = 0; i < fields.Length; i++)
 					subject.AddProperty(headers[i], fields[i]);
 
-				//// TODO: Replace this with filters
-				//// Throw this one away if not 2929
-				//if (!System.Convert.ToBoolean(subject.Is2929))
-				//	continue;
-
 				// TODO: Replace this with group id maps
 				if (subject.GroupId == "1")
 					subject.Group = "1";

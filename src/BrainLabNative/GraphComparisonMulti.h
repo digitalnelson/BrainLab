@@ -23,10 +23,10 @@ namespace BrainLabNative
 
 	struct Overlap
 	{
-		typedef std::map<std::string, std::vector<BrainLabNative::Graph::Component>> ComponentByTypeCollection;
+		typedef std::map<std::string, std::vector<BrainLabNative::GraphComparison::Component>> ComponentByTypeCollection;
 
 		std::vector<int> Vertices;
-		double PValue;
+		int RightTailOverlapCount;
 		ComponentByTypeCollection Components;
 	};
 
@@ -59,8 +59,7 @@ namespace BrainLabNative
 		std::vector<std::string> _dataTypes;
 		std::map<std::string, GraphComparison*> _dataByType;
 		std::map<std::string, std::vector<int>> _subIdxsByGroup;
-
-		Overlap _overlap;
+		std::vector<int> _overlapVertices;
 	};
 }
 
