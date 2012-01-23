@@ -25,4 +25,10 @@ namespace BrainLabLibrary
 
 		RawGraph->AddEdge(i, j, edgeVal);
 	}
+
+	double  SubjectGraphItem::GetEdge(int i, int j)
+	{
+		EdgeValue edgeVal = RawGraph->GetEdge(i, j);
+		return edgeVal.Value;
+	}
 }

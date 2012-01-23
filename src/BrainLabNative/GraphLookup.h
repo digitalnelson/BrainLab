@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <map>
 
 namespace BrainLabNative
 {
@@ -11,6 +12,8 @@ namespace BrainLabNative
 
 		GraphLookup(int m) : _idxToEdge( ( m * (m-1) ) / 2)
 		{
+			_size = m;
+
 			int idx=0;
 			for(int i=0; i<m; ++i)
 			{
@@ -19,7 +22,10 @@ namespace BrainLabNative
 					// Make sure this is only the upper triangle
 					if(j > i)
 					{
-						_idxToEdge[idx] = std::pair<int, int>(i, j);
+						std::pair<int, int> edge = std::pair<int, int>(i, j);
+
+						_idxToEdge[idx] = edge;
+						_edgeToIdx[edge] = idx;
 						++idx;
 					}
 				}
@@ -31,7 +37,17 @@ namespace BrainLabNative
 			return _idxToEdge[idx];
 		}
 
+		int GetEdge(int i, int j)
+		{
+			if(i < j)
+				return _edgeToIdx[std::pair<int, int>(i, j)];
+			else
+				return _edgeToIdx[std::pair<int, int>(j, i)];
+		}
+
 	private:
 		std::vector<std::pair<int, int>> _idxToEdge;
+		std::map<std::pair<int, int>, int> _edgeToIdx;
+		int _size;
 	};
 }

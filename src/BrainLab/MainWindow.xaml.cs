@@ -101,6 +101,8 @@ namespace BrainLab.Studio
 			dComponents.LoadGraphComponents(overlap, "DTI");
 			fComponents.LoadGraphComponents(overlap, "fMRI");
 
+
+
 			//DistroSummary ds = null;
 			//for (double d = 2.16; d < 2.19; d += 0.001)
 			//{

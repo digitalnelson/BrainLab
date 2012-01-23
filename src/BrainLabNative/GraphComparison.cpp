@@ -7,6 +7,7 @@
 #include <ppl.h>
 #include <concurrent_vector.h>
 #include <math.h>
+#include <iostream>
 
 using namespace Concurrency;
 using namespace std;
@@ -64,6 +65,9 @@ namespace BrainLabNative
 		{
 			// Lookup our edge
 			std::pair<int, int> edge = _lu.GetEdge(idx);
+
+			if(edge.first == 2 && edge.second == 68)
+				cout << "Nice";
 
 			// If our edge tstat is larger than our threshold keep it for NBS
 			if(abs(_grpStats[idx].TStat) > tStatThreshold)

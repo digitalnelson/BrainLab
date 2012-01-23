@@ -110,6 +110,9 @@ namespace BrainLab.Studio
 				var r = _regionsOfInterestByIndex[v];
 				r.Special = true;
 			}
+
+			// Do correlations
+			
 		}
 
 		public Overlap GetOverlap()
@@ -120,6 +123,30 @@ namespace BrainLab.Studio
 		public Dictionary<string, List<GraphComponent>> GetGraphComponents()
 		{
 			return _overlap.Components;
+		}
+
+		public void CorrelateEdgeAndMeasure(GraphEdge edge, string dataType, string measure)
+		{
+			List<double> edgeValues1 = new List<double>();
+			List<double> edgeValues2 = new List<double>();
+			List<double> measureValues1 = new List<double>();
+			List<double> measureValues2 = new List<double>();
+
+			foreach(var sd in _subjectData)
+			{
+				Subject s = _subjectsById[sd.SubjectId];
+
+				if (s.Group == "0")
+				{
+					measureValues1.Add(Double.Parse(s[measure]));
+					edgeValues1.Add(sd.Graphs[dataType].GetEdge(edge.V1, edge.V2));
+				}
+				else
+				{
+					measureValues2.Add(Double.Parse(s[measure]));
+					edgeValues2.Add(sd.Graphs[dataType].GetEdge(edge.V1, edge.V2));
+				}
+			}
 		}
 
 		public double XMin;

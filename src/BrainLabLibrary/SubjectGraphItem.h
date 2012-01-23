@@ -16,5 +16,6 @@ namespace BrainLabLibrary
 		~SubjectGraphItem();
 
 		void AddEdge(int i, int j, double val);
+		double GetEdge(int i, int j);
 	};
 }

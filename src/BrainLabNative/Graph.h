@@ -1,5 +1,6 @@
 #pragma once
 #include "EdgeValue.h"
+#include "GraphLookup.h"
 #include <vector>
 #include <map>
 #include <boost/graph/adjacency_matrix.hpp>
@@ -39,6 +40,7 @@ namespace BrainLabNative
 		typedef std::map<int, std::vector<ComponentEdge>> ComponentEdgeCollection;
 
 		void AddEdge(int m, int n, EdgeValue val);
+		EdgeValue GetEdge(int m, int n);
 
 		void ComputeComponents();
 		void GetComponents(std::vector<Component> &components);
@@ -55,6 +57,7 @@ namespace BrainLabNative
 	private:
 		UDGraph _graph;
 		int _nVerts;
+		GraphLookup _lu;
 	};
 }
 

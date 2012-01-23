@@ -126,6 +126,11 @@ namespace BrainLab.Studio
 						e.SetValue(ReservedMetadataKeys.PerAlpha, 40.0f);
 						e.SetValue(ReservedMetadataKeys.PerColor, Color.FromArgb(255, 0, 255, 0));
 					}
+					else
+					{
+						// Calc corr for this edge
+						_dataManager.CorrelateEdgeAndMeasure(edge, dataType, "CogMem");
+					}
 				}
 				else
 				{

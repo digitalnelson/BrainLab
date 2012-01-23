@@ -13,6 +13,21 @@ namespace BrainLabStorage
 			Graphs = new Dictionary<string, Graph>();
 		}
 
+		public string this[string name]
+		{
+			get
+			{
+				string val = "";
+
+				if (_attributes.TryGetValue(name, out val))
+					return val;
+				else
+					return null;
+			}
+			private set
+			{}
+		}
+
 		public void AddProperty(string name, string value)
 		{
 			_attributes[name] = value;
@@ -32,22 +47,6 @@ namespace BrainLabStorage
 				string val = "";
 
 				if (_attributes.TryGetValue("eventId", out val))
-					return val;
-				else
-					return null;
-			}
-		}
-
-		public string Is2929
-		{
-			private set
-			{ }
-
-			get
-			{
-				string val = "";
-
-				if (_attributes.TryGetValue("is2929", out val))
 					return val;
 				else
 					return null;

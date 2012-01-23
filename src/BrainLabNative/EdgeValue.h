@@ -2,6 +2,8 @@
 
 struct EdgeValue
 {
+	int Idx;
+
 	double Value;
 
 	double M1;

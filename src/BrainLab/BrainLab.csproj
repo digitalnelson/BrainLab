@@ -108,6 +108,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="alg\alglibinternal.cs" />
+    <Compile Include="alg\alglibmisc.cs" />
+    <Compile Include="alg\ap.cs" />
+    <Compile Include="alg\dataanalysis.cs" />
+    <Compile Include="alg\diffequations.cs" />
+    <Compile Include="alg\fasttransforms.cs" />
+    <Compile Include="alg\integration.cs" />
+    <Compile Include="alg\interpolation.cs" />
+    <Compile Include="alg\linalg.cs" />
+    <Compile Include="alg\optimization.cs" />
+    <Compile Include="alg\solvers.cs" />
+    <Compile Include="alg\specialfunctions.cs" />
+    <Compile Include="alg\statistics.cs" />
     <Compile Include="Convert.cs" />
     <Compile Include="DataManager.cs" />
     <Compile Include="GraphView.xaml.cs">

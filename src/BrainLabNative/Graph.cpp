@@ -5,7 +5,7 @@
 
 namespace BrainLabNative
 {
-	Graph::Graph(int nVerts) : _graph(nVerts)
+	Graph::Graph(int nVerts) : _graph(nVerts), _lu(nVerts)
 	{
 		_nVerts = nVerts;
 		ComponentCount = 0;
@@ -25,6 +25,12 @@ namespace BrainLabNative
 		EdgeValues.push_back(val);
 
 		boost::add_edge(i, j, _graph);
+	}
+
+	EdgeValue Graph::GetEdge(int i, int j)
+	{
+		int idx = _lu.GetEdge(i, j);
+		return EdgeValues[idx];
 	}
 
 	void Graph::ComputeComponents()
