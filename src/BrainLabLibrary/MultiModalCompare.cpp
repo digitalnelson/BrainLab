@@ -91,6 +91,7 @@ namespace BrainLabLibrary
 		BrainLabStorage::Overlap^ blsor = gcnew BrainLabStorage::Overlap();
 		blsor->Components = gcnew Dictionary<String^, List<GraphComponent^>^>();
 		blsor->Permutations = _permutations;
+		blsor->RightTailOverlapCount = overlapResult.RightTailOverlapCount;
 		
 		for(auto cit=overlapResult.Components.begin(); cit!=overlapResult.Components.end();++cit)
 		{
@@ -100,7 +101,7 @@ namespace BrainLabLibrary
 			auto cmps = cit->second;
 			for(auto vi=cmps.begin(); vi<cmps.end(); ++vi)
 			{
-				GraphComponent^ gc = gcnew GraphComponent();
+				GraphComponent^ gc = ref new GraphComponent();
 
 				auto ces = vi->Edges;
 
@@ -120,8 +121,8 @@ namespace BrainLabLibrary
 				}
 
 				int edgeCount = gc->Edges->Count;
-				gc->VertexCount = vi->Vertices.size();
-				gc->PValue = _cmpMulti->GetComponentSizePVal(cit->first);
+				//gc->VertexCount = vi->Vertices.size();
+				gc->RightTailExtentCount = vi->RightTailExtent;
 
 				components->Add(gc);
 			}

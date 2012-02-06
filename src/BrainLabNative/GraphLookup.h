@@ -4,6 +4,10 @@
 
 namespace BrainLabNative
 {
+	class GraphEdgeMapper
+	{
+	};
+
 	class GraphLookup
 	{
 	public:

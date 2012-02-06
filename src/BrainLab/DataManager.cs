@@ -69,8 +69,8 @@ namespace BrainLab.Studio
 
 		public void LoadAdjFiles(string fullPath, int vertexCount)
 		{
-			_adjLoader = new AdjCSVLoader(fullPath);
-			_subjectData = _adjLoader.Load(vertexCount);
+			_adjLoader = new AdjCSVLoader(fullPath, vertexCount);
+			_subjectData = _adjLoader.Load();
 
 			foreach (var itm in _subjectData)
 			{
@@ -125,28 +125,67 @@ namespace BrainLab.Studio
 			return _overlap.Components;
 		}
 
-		public void CorrelateEdgeAndMeasure(GraphEdge edge, string dataType, string measure)
+		public class EdgeStats
+		{
+			public string Group;
+			public string Measure;
+
+			public double Corr;
+			
+			public double Both;
+			public double Left;
+			public double Right;
+		}
+
+		class CorrVals
+		{
+			public List<double> EdgeValues = new List<double>();
+			public List<double> MeasureValues = new List<double>();
+		}
+
+		public List<EdgeStats> CorrelateEdgeAndMeasure(GraphEdge edge, string dataType, string measure)
 		{
 			List<double> edgeValues1 = new List<double>();
 			List<double> edgeValues2 = new List<double>();
 			List<double> measureValues1 = new List<double>();
 			List<double> measureValues2 = new List<double>();
 
+			Dictionary<string, CorrVals> vals = new Dictionary<string, CorrVals>();
+
 			foreach(var sd in _subjectData)
 			{
 				Subject s = _subjectsById[sd.SubjectId];
+				var val = s[measure];
 
-				if (s.Group == "0")
+				if (val == "None")
+					continue;
+
+				if (!vals.ContainsKey(s.Group))
+					vals[s.Group] = new CorrVals();
+
+				vals[s.Group].MeasureValues.Add(Double.Parse(s[measure]));
+				vals[s.Group].EdgeValues.Add(sd.Graphs[dataType].GetEdge(edge.V1, edge.V2));
+			}
+
+			List<EdgeStats> stats = new List<EdgeStats>();
+			foreach(var itm in vals)
+			{
+				var ev = itm.Value.EdgeValues;
+				var mv = itm.Value.MeasureValues;
+
+				if (ev.Count > 5 && mv.Count > 5)
 				{
-					measureValues1.Add(Double.Parse(s[measure]));
-					edgeValues1.Add(sd.Graphs[dataType].GetEdge(edge.V1, edge.V2));
-				}
-				else
-				{
-					measureValues2.Add(Double.Parse(s[measure]));
-					edgeValues2.Add(sd.Graphs[dataType].GetEdge(edge.V1, edge.V2));
+					EdgeStats es = new EdgeStats();
+					es.Group = itm.Key;
+					es.Measure = measure;
+					es.Corr = alglib.spearmancorr2(ev.ToArray(), mv.ToArray());
+					alglib.spearmanrankcorrelationsignificance(es.Corr, ev.Count, out es.Both, out es.Left, out es.Right);
+
+					stats.Add(es);
 				}
 			}
+
+			return stats;
 		}
 
 		public double XMin;

@@ -168,6 +168,7 @@
     <ClInclude Include="BrainLabManager.h" />
     <ClInclude Include="MultiModalCompare.h" />
     <ClInclude Include="SubjectData.h" />
+    <ClInclude Include="SubjectGraphFactory.h" />
     <ClInclude Include="SubjectGraphItem.h" />
     <ClInclude Include="GroupCompare.h" />
     <ClInclude Include="resource.h" />
@@ -178,6 +179,7 @@
     <ClCompile Include="BrainLabManager.cpp" />
     <ClCompile Include="MultiModalCompare.cpp" />
     <ClCompile Include="SubjectData.cpp" />
+    <ClCompile Include="SubjectGraphFactory.cpp" />
     <ClCompile Include="SubjectGraphItem.cpp" />
     <ClCompile Include="GroupCompare.cpp" />
     <ClCompile Include="Stdafx.cpp">

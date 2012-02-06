@@ -38,9 +38,9 @@ namespace BrainLab.Studio.Loaders
 
 				// TODO: Replace this with group id maps
 				if (subject.GroupId == "1")
-					subject.Group = "1";
+					subject.Group = "p";
 				else
-					subject.Group = "0";
+					subject.Group = "c";
 
 				// Store the subject
 				subjects.Add(subject);

@@ -136,31 +136,13 @@ namespace BrainLabNative
 		Overlap overlap;
 
 		for(auto it=_dataByType.begin(); it!=_dataByType.end(); ++it)
-		{
-			// Ask the graph for the components
-			it->second->GetComponents(overlap.Components[it->first]);
-		}
+			it->second->GetComponents(overlap.Components[it->first]); // Ask the graph for the components
 
 		for(auto it=_overlapVertices.begin(); it<_overlapVertices.end(); it++)
-		{
 			overlap.Vertices.push_back(*it);
-		}
 
 		overlap.RightTailOverlapCount = _rightTailOverlapCount;
 
 		return overlap;
-	}
-
-	double GraphComparisonMulti::GetComponentSizePVal(std::string dataType)
-	{
-		return _dataByType[dataType]->GetComponentSizePVal();
-	}
-
-	double GraphComparisonMulti::GetOverlapSizePVal()
-	{
-		if(_permutations > 0)
-			return ((double)_rightTailOverlapCount) / ((double)_permutations);
-		else
-			return 1.0;
 	}
 }

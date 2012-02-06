@@ -10,12 +10,14 @@ namespace BrainLab.Studio.Loaders
 {
 	class AdjCSVLoader
 	{
-		public AdjCSVLoader(string fullPath)
+		public AdjCSVLoader(string fullPath, int vertexCount)
 		{
 			_fullPath = fullPath;
+			_vertexCount = vertexCount;
+			_sgf = new SubjectGraphFactory(_vertexCount);
 		}
 
-		public List<SubjectData> Load(int vertexCount)
+		public List<SubjectData> Load()
 		{
 			string[] adjFiles = Directory.GetFiles(_fullPath);
 			
@@ -44,7 +46,7 @@ namespace BrainLab.Studio.Loaders
 
 				sd.SubjectId = subjId;
 
-				SubjectGraphItem itm = new SubjectGraphItem(vertexCount);
+				SubjectGraphItem itm = _sgf.CreateSubject();
 				itm.DataSource = adjType;
 
 				// Read in all the lines
@@ -57,7 +59,7 @@ namespace BrainLab.Studio.Loaders
 
 					for (int colIdx = 0; colIdx < columns.Length; colIdx++)
 					{
-						if (lineIdx < vertexCount && colIdx < vertexCount)
+						if (lineIdx < _vertexCount && colIdx < _vertexCount)
 						{
 							// TODO: Only load the upper triangle
 							// Parse the value - set the identity to NaN
@@ -75,5 +77,7 @@ namespace BrainLab.Studio.Loaders
 		}
 
 		private string _fullPath;
+		private int _vertexCount;
+		private SubjectGraphFactory _sgf;
 	}
 }

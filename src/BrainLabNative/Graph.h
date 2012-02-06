@@ -15,7 +15,7 @@ namespace BrainLabNative
 	class Graph
 	{
 	public:
-		Graph(int nVerts);
+		Graph(int nVerts, GraphLookup* lu);
 		~Graph(void);
 
 		typedef boost::adjacency_matrix<boost::undirectedS> UDGraph;
@@ -56,8 +56,8 @@ namespace BrainLabNative
 
 	private:
 		UDGraph _graph;
+		GraphLookup * _lu;
 		int _nVerts;
-		GraphLookup _lu;
 	};
 }
 

@@ -33,19 +33,15 @@ namespace BrainLabNative
 			int Identifier;
 			std::vector<ComponentEdge> Edges;
 			std::vector<int> Vertices;
+			int RightTailExtent;
 		};
 
 		void AddGraph(Graph* graph);
 		
 		void CalcEdgeTStats(std::vector<int> &idxs, int szGrp1, std::vector<EdgeValue> &edgeStats);
-		
 		void CompareGroups(std::vector<int> &idxs, int szGrp1, double tStatThreshold, std::vector<int> &vertexList);
 		void Permute(std::vector<int> &idxs, int szGrp1, double tStatThreshold, std::vector<int> &vertexList);
-
 		void GetComponents(std::vector<Component> &components);
-		
-		double GetComponentSizePVal();
-		double GetEdgePVal(int edgeIdx);
 	
 	private:
 		typedef boost::multi_array<double, 2> EdgesBySubject;

@@ -8,20 +8,21 @@ namespace BrainLabStorage
 {
 	public class Overlap
 	{
-		public double PValue;
 		public List<int> Vertices;
-		public int Permutations;
-
 		public Dictionary<string, List<GraphComponent>> Components;
+
+		public int Permutations;
+		public int RightTailOverlapCount;
 	}
 
 	public class GraphComponent
 	{
 		public int Id;
-		public double PValue = 1;
-		public double VertexCount;
 		public List<GraphEdge> Edges = new List<GraphEdge>();
+
 		public int Permutations;
+		public int RightTailExtentCount;
+		//public double VertexCount;
 	}
 
 	public struct GraphEdge

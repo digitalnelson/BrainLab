@@ -4,9 +4,10 @@
 
 namespace BrainLabLibrary
 {
-	SubjectGraphItem::SubjectGraphItem(int m)
+	SubjectGraphItem::SubjectGraphItem(int m, GraphLookup *lu)
 	{
-		RawGraph = new Graph(m);
+		RawGraph = new Graph(m, lu);
+		_lu = lu;
 	}
 
 	SubjectGraphItem::~SubjectGraphItem(void)

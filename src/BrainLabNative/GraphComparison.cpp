@@ -15,7 +15,7 @@ using namespace std;
 namespace BrainLabNative
 {
 	GraphComparison::GraphComparison(int subjectCount, int verts, int edges) 
-		: _subjectEdges(boost::extents[edges][subjectCount]), _lu(verts), _grpStats(edges), _g(verts), _graph(verts)
+		: _subjectEdges(boost::extents[edges][subjectCount]), _lu(verts), _grpStats(edges), _g(verts, &_lu), _graph(verts)
 	{
 		_subjectCount = subjectCount;
 		_vertCount = verts;
@@ -186,6 +186,7 @@ namespace BrainLabNative
 	void GraphComparison::GetComponents(std::vector<Component> &components)
 	{
 		Component c;
+		c.RightTailExtent = _rightTailComponentSizeCount;
 
 		for(auto ei=_grpComponent.begin(); ei < _grpComponent.end(); ++ei)
 		{
@@ -197,13 +198,5 @@ namespace BrainLabNative
 		}
 
 		components.push_back(c);
-	}
-
-	double GraphComparison::GetComponentSizePVal()
-	{
-		if(_permutations > 0)
-			return ((double)_rightTailComponentSizeCount) / ((double)_permutations);
-		else
-			return 1.0;
 	}
 }

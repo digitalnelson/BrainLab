@@ -5,15 +5,72 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
+    <Grid x:Name="_ctl">
+        
         <Grid.RowDefinitions>
-            <RowDefinition Height="26" />
-            <RowDefinition Height="1*" />
+            <RowDefinition Height=".7*" />
+            <RowDefinition Height=".3*" />
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
-            <Label Content="Edge Count: " />
-            <Label x:Name="_lblEdgeCount" Content="0" />
-        </StackPanel>
-        <Border  Grid.Row="1" Name="GraphXL" BorderThickness="2" BorderBrush="LightGray" />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.6*" />
+            <ColumnDefinition Width="0.4*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Margin="6,6,3,3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <StackPanel Orientation="Horizontal" Grid.Row="0">
+                <Label Content="Modality: " />
+                <Label Content="" x:Name="_lblModality" />
+            </StackPanel>
+            <Border Name="_graphXL" BorderThickness="2" BorderBrush="LightGray" Grid.Row="1" />
+        </Grid>
+
+        <Grid Grid.Column="1" Margin="3,6,6,3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height=".5*" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height=".5*" />
+            </Grid.RowDefinitions>
+            
+            <StackPanel Orientation="Horizontal" Grid.Row="0">
+                <Label Content="Intermodal Nodes: " />
+                <Label Content="{Binding InterModalNodes.Count}" />
+                <Label Content="(" />
+                <Label Content="{Binding InterModalPValue}" />
+                <Label Content=")" />
+            </StackPanel>
+            <ListBox Grid.Row="1" ItemsSource="{Binding InterModalNodes}"/>
+            
+            <StackPanel Orientation="Horizontal" Grid.Row="2">
+                <Label Content="Intermodal Edges: " />
+                <Label Content="{Binding InterModalEdges.Count}" />
+            </StackPanel>
+            <ListBox Grid.Row="3" ItemsSource="{Binding InterModalEdges}" />
+        </Grid>
+        
+        <DockPanel Grid.Row="1" Margin="6,3,3,6">
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                <Label Content="Component Nodes: " />
+                <Label Content="{Binding CmpNodes.Count}" />
+                <Label Content="(" />
+                <Label Content="{Binding CmpPValue}" />
+                <Label Content=")" />
+            </StackPanel>
+            <ListBox DockPanel.Dock="Top" ItemsSource="{Binding CmpNodes}" />
+        </DockPanel>
+        
+        <DockPanel Grid.Row="1" Grid.Column="1" Margin="3,3,6,6">
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                <Label Content="Component Edges: " />
+                <Label Content="{Binding CmpEdges.Count}" />
+            </StackPanel>
+            <ListBox DockPanel.Dock="Top" ItemsSource="{Binding CmpEdges}" />
+        </DockPanel>
+        
     </Grid>
 </UserControl>

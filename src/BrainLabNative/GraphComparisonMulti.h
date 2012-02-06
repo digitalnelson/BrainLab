@@ -43,8 +43,6 @@ namespace BrainLabNative
 		void Permute(int permutations, int group1Size, std::map<std::string, Threshold> threshes);
 
 		Overlap GetOverlapResult();
-		double GetComponentSizePVal(std::string);
-		double GetOverlapSizePVal();
 
 	private:
 		int _subjectCount;

@@ -5,9 +5,10 @@
 
 namespace BrainLabNative
 {
-	Graph::Graph(int nVerts) : _graph(nVerts), _lu(nVerts)
+	Graph::Graph(int nVerts, GraphLookup* lu) : _graph(nVerts)
 	{
 		_nVerts = nVerts;
+		_lu = lu;
 		ComponentCount = 0;
 	}
 
@@ -29,7 +30,7 @@ namespace BrainLabNative
 
 	EdgeValue Graph::GetEdge(int i, int j)
 	{
-		int idx = _lu.GetEdge(i, j);
+		int idx = _lu->GetEdge(i, j);
 		return EdgeValues[idx];
 	}
 

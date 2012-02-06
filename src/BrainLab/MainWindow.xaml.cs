@@ -34,6 +34,10 @@ namespace BrainLab.Studio
 			_dataManager = new DataManager();
 			dComponents.SetDataManager(_dataManager);
 			fComponents.SetDataManager(_dataManager);
+
+			_txtRegionFile.Text = DataStore.AppPrefs.RoiFilePath;
+			_txtSubjectFile.Text = DataStore.AppPrefs.SubjectfilePath;
+			_txtDataFolder.Text = DataStore.AppPrefs.DataFileDir;
 		}
 				
 		private async void Load(object sender, RoutedEventArgs e)
@@ -55,8 +59,8 @@ namespace BrainLab.Studio
 
 				// Allow each data source to be NBS thresholded at a different level
 				_thresholds = new Dictionary<string, double>();
-				_thresholds["DTI"] = threshold; //2.0; //2.15;
-				_thresholds["fMRI"] = threshold; //2.15; //3.225;
+				_thresholds["DTI"] = 2.15; //threshold; //2.0; //2.15;
+				_thresholds["fMRI"] = 3.225; //threshold; //2.15; //3.225;
 
 				// Load the graphs into the comparison system
 				_dataManager.LoadComparisons();
@@ -76,7 +80,7 @@ namespace BrainLab.Studio
 			await Task.Run(delegate
 			{
 				// Calculate our group differences
-				_dataManager.CalculateGroupDifferences("0", "1", _thresholds);
+				_dataManager.CalculateGroupDifferences("c", "p", _thresholds);
 
 				Stopwatch sw = new Stopwatch();
 				sw.Start();
@@ -100,8 +104,6 @@ namespace BrainLab.Studio
 
 			dComponents.LoadGraphComponents(overlap, "DTI");
 			fComponents.LoadGraphComponents(overlap, "fMRI");
-
-
 
 			//DistroSummary ds = null;
 			//for (double d = 2.16; d < 2.19; d += 0.001)
@@ -157,6 +159,18 @@ namespace BrainLab.Studio
 			//fEdgeOverview.LoadData(aalByIndex, "fMRI", DoubleArray.From(ctls.Select(s => s.Graphs["fMRI"].AdjMatrix)), DoubleArray.From(pros.Select(s => s.Graphs["fMRI"].AdjMatrix)), SeriesChartType.Column, permStore);
 			//dEdgeOverview.LoadData(aalByIndex, "DTI", DoubleArray.From(ctls.Select(s => s.Graphs["DTI"].AdjMatrix)), DoubleArray.From(pros.Select(s => s.Graphs["DTI"].AdjMatrix)), SeriesChartType.Column, permStore);
 		}
+
+		public void Report(object sender, RoutedEventArgs e)
+		{
+			string dReport = dComponents.GetReport();
+			string fReport = fComponents.GetReport();
+
+			string dta = string.Format("DTI\n{0}\nfMRI{1}", dReport, fReport);
+
+			Report rpt = new Report();
+			rpt.SetData(dta);
+
+			rpt.ShowDialog();
+		}
 	}
 }
-
