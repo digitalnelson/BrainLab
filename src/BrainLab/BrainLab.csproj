@@ -63,6 +63,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>BrainLab.Studio.App</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AsyncCtpLibrary">
       <HintPath>..\packages\RavenDB-Embedded.1.0.616\lib\net40\AsyncCtpLibrary.dll</HintPath>

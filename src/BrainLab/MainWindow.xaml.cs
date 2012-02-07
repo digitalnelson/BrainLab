@@ -38,6 +38,14 @@ namespace BrainLab.Studio
 			_txtRegionFile.Text = DataStore.AppPrefs.RoiFilePath;
 			_txtSubjectFile.Text = DataStore.AppPrefs.SubjectfilePath;
 			_txtDataFolder.Text = DataStore.AppPrefs.DataFileDir;
+
+			if (DataStore.AppPrefs.WindowLocation != null &&  DataStore.AppPrefs.WindowLocation.Width != 0.0d && DataStore.AppPrefs.WindowLocation.Height != 0.0d)
+			{
+				this.Left = DataStore.AppPrefs.WindowLocation.X;
+				this.Top = DataStore.AppPrefs.WindowLocation.Y;
+				this.Width = DataStore.AppPrefs.WindowLocation.Width;
+				this.Height = DataStore.AppPrefs.WindowLocation.Height;
+			}
 		}
 				
 		private async void Load(object sender, RoutedEventArgs e)
@@ -171,6 +179,23 @@ namespace BrainLab.Studio
 			rpt.SetData(dta);
 
 			rpt.ShowDialog();
+		}
+
+		protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+		{
+			base.OnClosing(e);
+
+			DataStore.AppPrefs.RoiFilePath = _txtRegionFile.Text;
+			DataStore.AppPrefs.SubjectfilePath = _txtSubjectFile.Text;
+			DataStore.AppPrefs.DataFileDir = _txtDataFolder.Text;
+
+			DataStore.AppPrefs.WindowLocation.X = this.Left;
+			DataStore.AppPrefs.WindowLocation.Y = this.Top;
+			DataStore.AppPrefs.WindowLocation.Width = this.Width;
+			DataStore.AppPrefs.WindowLocation.Height = this.Height;
+			
+			DataStore.Save();
+			DataStore.Close();
 		}
 	}
 }

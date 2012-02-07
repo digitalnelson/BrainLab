@@ -13,64 +13,58 @@ namespace BrainLab.Studio
 	{
 		static DataStore()
 		{
-			if(!Directory.Exists("Data"))
-				Directory.CreateDirectory("Data");
+			//if (!Directory.Exists("Data"))
+			//	Directory.CreateDirectory("Data");
 
 			_eds = new EmbeddableDocumentStore() { DataDirectory = "Data" };
 			_eds.Initialize();
+			_sess = _eds.OpenSession();
 
 			LoadAppPrefs();
 		}
 
-		private static void InternalSave(IDocumentSession session)
-		{
-			session.Store(AppPrefs);
-			session.SaveChanges();
-		}
-
 		public static void LoadAppPrefs()
 		{
-			using (var session = _eds.OpenSession())
+			var prefs = _sess.Query<AppPrefs>().ToArray();
+			if (prefs != null && prefs.Length > 0)
 			{
-				var prefs = session.Load<AppPrefs>();
-				if (prefs != null && prefs.Length > 0)
-				{
-					AppPrefs = prefs[0];
-				}
-				else
-				{
-					AppPrefs = new AppPrefs();
-					AppPrefs.WindowLocation = new WindowLocation();
-
-					InternalSave(session);
-				}
+				AppPrefs = prefs[0];
+			}
+			else
+			{
+				AppPrefs = new AppPrefs();
+				AppPrefs.WindowLocation = new WindowLocation();
+				_sess.Store(AppPrefs);
 			}
 		}
 
-		public static void SaveAppPrefs()
+		public static void Save()
 		{
-			using (var session = _eds.OpenSession())
-			{
-				InternalSave(session);
-			}
+			_sess.SaveChanges();
+		}
+
+		public static void Close()
+		{
+			_sess.Dispose();
 		}
 
 		public static AppPrefs AppPrefs { get; set; }
 
 		private static EmbeddableDocumentStore _eds;
+		private static IDocumentSession _sess;
 	}
 
 	public class WindowLocation
 	{
-		public int X { get; set; }
-		public int Y { get; set; }
-		public int Width { get; set; }
-		public int X { get; set; }
+		public double X { get; set; }
+		public double Y { get; set; }
+		public double Width { get; set; }
+		public double Height { get; set; }
 	}
 
 	public class AppPrefs
 	{
-		public int Id  {get; set;}
+		public string Id  {get; set;}
 		public string RoiFilePath {get; set;}
 		public string SubjectfilePath {get; set;}
 		public string DataFileDir {get; set;}
