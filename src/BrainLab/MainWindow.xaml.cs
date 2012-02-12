@@ -31,13 +31,24 @@ namespace BrainLab.Studio
 		{
 			InitializeComponent();
 
-			_dataManager = new DataManager();
-			dComponents.SetDataManager(_dataManager);
-			fComponents.SetDataManager(_dataManager);
-
+			// Set up user prefs for file locations
 			_txtRegionFile.Text = DataStore.AppPrefs.RoiFilePath;
 			_txtSubjectFile.Text = DataStore.AppPrefs.SubjectfilePath;
 			_txtDataFolder.Text = DataStore.AppPrefs.DataFileDir;
+
+			// Set up last window location and size
+			if (DataStore.AppPrefs.WindowLocation != null &&  DataStore.AppPrefs.WindowLocation.Width != 0.0d && DataStore.AppPrefs.WindowLocation.Height != 0.0d)
+			{
+				this.Left = DataStore.AppPrefs.WindowLocation.X;
+				this.Top = DataStore.AppPrefs.WindowLocation.Y;
+				this.Width = DataStore.AppPrefs.WindowLocation.Width;
+				this.Height = DataStore.AppPrefs.WindowLocation.Height;
+			}
+
+			// Create and connect our modules to our data manager
+			_dataManager = new DataManager();
+			dComponents.SetDataManager(_dataManager);
+			fComponents.SetDataManager(_dataManager);
 		}
 				
 		private async void Load(object sender, RoutedEventArgs e)
@@ -57,6 +68,7 @@ namespace BrainLab.Studio
 				_dataManager.LoadSubjectFile(subjectFile);
 				_dataManager.LoadAdjFiles(dataFolder, Int32.Parse(vertexCount));
 
+				// TODO: Make this user configurable
 				// Allow each data source to be NBS thresholded at a different level
 				_thresholds = new Dictionary<string, double>();
 				_thresholds["DTI"] = 2.15; //threshold; //2.0; //2.15;
@@ -77,10 +89,12 @@ namespace BrainLab.Studio
 
 			_btnPermute.IsEnabled = false;
 
+			// TODO: Make this a task with the notify interface so we can update UI
+			// with progress towards permutations
 			await Task.Run(delegate
 			{
 				// Calculate our group differences
-				_dataManager.CalculateGroupDifferences("c", "p", _thresholds);
+				_dataManager.CalculateGroupDifferences("c", "p", _thresholds); // TODO: Make the group choosing configurable
 
 				Stopwatch sw = new Stopwatch();
 				sw.Start();
@@ -92,6 +106,7 @@ namespace BrainLab.Studio
 				dur = sw.ElapsedMilliseconds;
 			});
 
+			// TODO: Make this a label on the control form instead of a popup
 			// Put together a quick timing popup for debugging release mode
 			MessageBox.Show("Elapsed - " + dur.ToString());
 
@@ -104,6 +119,8 @@ namespace BrainLab.Studio
 
 			dComponents.LoadGraphComponents(overlap, "DTI");
 			fComponents.LoadGraphComponents(overlap, "fMRI");
+
+			_btnReport.IsEnabled = true;
 
 			//DistroSummary ds = null;
 			//for (double d = 2.16; d < 2.19; d += 0.001)
@@ -171,6 +188,23 @@ namespace BrainLab.Studio
 			rpt.SetData(dta);
 
 			rpt.ShowDialog();
+		}
+
+		protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+		{
+			base.OnClosing(e);
+
+			DataStore.AppPrefs.RoiFilePath = _txtRegionFile.Text;
+			DataStore.AppPrefs.SubjectfilePath = _txtSubjectFile.Text;
+			DataStore.AppPrefs.DataFileDir = _txtDataFolder.Text;
+
+			DataStore.AppPrefs.WindowLocation.X = this.Left;
+			DataStore.AppPrefs.WindowLocation.Y = this.Top;
+			DataStore.AppPrefs.WindowLocation.Width = this.Width;
+			DataStore.AppPrefs.WindowLocation.Height = this.Height;
+			
+			DataStore.Save();
+			DataStore.Close();
 		}
 	}
 }
