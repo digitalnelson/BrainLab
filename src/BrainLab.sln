@@ -14,6 +14,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BrainLabLibrary", "BrainLab
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrainLabStorage", "BrainLabStorage\BrainLabStorage.csproj", "{5477F53E-48E6-48F2-93B9-4901855F4F32}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrainLabFileConvert", "BrainLabFileConvert\BrainLabFileConvert.csproj", "{224D2043-9982-4174-89FD-942CFC074B04}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,27 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{224D2043-9982-4174-89FD-942CFC074B04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{224D2043-9982-4174-89FD-942CFC074B04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{224D2043-9982-4174-89FD-942CFC074B04}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{224D2043-9982-4174-89FD-942CFC074B04}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{224D2043-9982-4174-89FD-942CFC074B04}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{224D2043-9982-4174-89FD-942CFC074B04}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{224D2043-9982-4174-89FD-942CFC074B04}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{224D2043-9982-4174-89FD-942CFC074B04}.Release20|Any CPU.ActiveCfg = Release|Any CPU
+		{224D2043-9982-4174-89FD-942CFC074B04}.Release20|Any CPU.Build.0 = Release|Any CPU
+		{224D2043-9982-4174-89FD-942CFC074B04}.Release20|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{224D2043-9982-4174-89FD-942CFC074B04}.Release20|Mixed Platforms.Build.0 = Release|Any CPU
+		{224D2043-9982-4174-89FD-942CFC074B04}.Release20|Win32.ActiveCfg = Release|Any CPU
+		{224D2043-9982-4174-89FD-942CFC074B04}.Release20|x64.ActiveCfg = Release|Any CPU
+		{224D2043-9982-4174-89FD-942CFC074B04}.Release20|x86.ActiveCfg = Release|Any CPU
+		{224D2043-9982-4174-89FD-942CFC074B04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{224D2043-9982-4174-89FD-942CFC074B04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{224D2043-9982-4174-89FD-942CFC074B04}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{224D2043-9982-4174-89FD-942CFC074B04}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{224D2043-9982-4174-89FD-942CFC074B04}.Release|Win32.ActiveCfg = Release|Any CPU
+		{224D2043-9982-4174-89FD-942CFC074B04}.Release|x64.ActiveCfg = Release|Any CPU
+		{224D2043-9982-4174-89FD-942CFC074B04}.Release|x86.ActiveCfg = Release|Any CPU
 		{5477F53E-48E6-48F2-93B9-4901855F4F32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5477F53E-48E6-48F2-93B9-4901855F4F32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5477F53E-48E6-48F2-93B9-4901855F4F32}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
