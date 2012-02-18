@@ -5,15 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BrainLabLibrary;
+using BrainLabStorage;
 
 namespace BrainLab.Studio.Loaders
 {
 	class AdjCSVLoader
 	{
-		public AdjCSVLoader(string fullPath, int vertexCount)
+		public AdjCSVLoader(string fullPath, int vertexCount, Dictionary<string, Subject> subjects)
 		{
 			_fullPath = fullPath;
 			_vertexCount = vertexCount;
+			_subjects = subjects;
 			_sgf = new SubjectGraphFactory(_vertexCount);
 		}
 
@@ -33,6 +35,9 @@ namespace BrainLab.Studio.Loaders
 				var subjId = fileParts[0];
 				var adjType = fileParts[1];
 				var desc = fileParts[2];
+
+				if (!_subjects.ContainsKey(subjId))
+					continue;
 
 				SubjectData sd = null;
 				if (!subs.ContainsKey(subjId))
@@ -55,15 +60,13 @@ namespace BrainLab.Studio.Loaders
 				for (int lineIdx = 0; lineIdx < lines.Length; lineIdx++)
 				{
 					var line = lines[lineIdx];
-					var columns = line.TrimEnd().Split(' ');
+					var columns = line.TrimEnd().Split('\t');
 
 					for (int colIdx = 0; colIdx < columns.Length; colIdx++)
 					{
 						if (lineIdx < _vertexCount && colIdx < _vertexCount)
 						{
-							// TODO: Only load the upper triangle
-							// Parse the value - set the identity to NaN
-							//double dVal = colIdx == lineIdx ? Double.NaN : Double.Parse(columns[colIdx]);
+							// Only load the upper triangle
 							if (colIdx > lineIdx)
 								itm.AddEdge(lineIdx, colIdx, Math.Abs(Double.Parse(columns[colIdx])));
 						}
@@ -78,6 +81,7 @@ namespace BrainLab.Studio.Loaders
 
 		private string _fullPath;
 		private int _vertexCount;
+		Dictionary<string, Subject> _subjects;
 		private SubjectGraphFactory _sgf;
 	}
 }

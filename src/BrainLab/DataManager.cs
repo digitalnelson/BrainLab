@@ -69,9 +69,11 @@ namespace BrainLab.Studio
 
 		public void LoadAdjFiles(string fullPath, int vertexCount)
 		{
-			_adjLoader = new AdjCSVLoader(fullPath, vertexCount);
+			_vertexCount = vertexCount;
+			_adjLoader = new AdjCSVLoader(fullPath, _vertexCount, _subjectsById);
 			_subjectData = _adjLoader.Load();
 
+			// TODO: Keep track of data types and data type counts
 			foreach (var itm in _subjectData)
 			{
 				Subject subj = null;
@@ -86,13 +88,13 @@ namespace BrainLab.Studio
 
 		public void LoadComparisons()
 		{
-			_compare = new MultiModalCompare(58, 90, 4005, new List<string>() { "DTI", "fMRI" });
-			_compare.LoadSubjects(_subjectData);
-		}
+			// TODO: Loop through our subject data and get rid of the ones without complete data
+			// based on user selection
 
-		public ROI GetROI(int roiIdx)
-		{
-			return _regionsOfInterestByIndex[roiIdx];
+			_edgeCount = (_vertexCount * (_vertexCount - 1)) / 2;
+
+			_compare = new MultiModalCompare(_subjectData.Count, _vertexCount, _edgeCount, new List<string>() { "DTI", "fMRI" });
+			_compare.LoadSubjects(_subjectData);
 		}
 
 		public void CalculateGroupDifferences(string group1Id, string group2Id, Dictionary<string, double> thresholds)
@@ -113,6 +115,11 @@ namespace BrainLab.Studio
 
 			// Do correlations
 			
+		}
+
+		public ROI GetROI(int roiIdx)
+		{
+			return _regionsOfInterestByIndex[roiIdx];
 		}
 
 		public Overlap GetOverlap()
@@ -196,6 +203,9 @@ namespace BrainLab.Studio
 		private ROILoader _roiLoader;
 		private SubjectCSVLoader _subjectLoader;
 		private AdjCSVLoader _adjLoader;
+
+		private int _vertexCount;
+		private int _edgeCount;
 
 		private List<ROI> _regionsOfInterest;
 		private Dictionary<string, List<Subject>> _subjectsByGroup;

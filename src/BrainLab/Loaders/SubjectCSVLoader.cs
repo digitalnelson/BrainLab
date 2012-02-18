@@ -19,7 +19,7 @@ namespace BrainLab.Studio.Loaders
 			// Read in all the lines
 			string[] lines = System.IO.File.ReadAllLines(_fullPath);
 
-			char[] splitChars = new char[] { ' ', '\t' };
+			char[] splitChars = new char[] { '\t' };
 
 			// Pull out the headers
 			var headers = lines[0].Split(splitChars);
@@ -36,11 +36,13 @@ namespace BrainLab.Studio.Loaders
 				for (int i = 0; i < fields.Length; i++)
 					subject.AddProperty(headers[i], fields[i]);
 
-				// TODO: Replace this with group id maps
-				if (subject.GroupId == "1")
-					subject.Group = "p";
-				else
-					subject.Group = "c";
+				//// TODO: Replace this with group id maps
+				//if (subject.GroupId == "1")
+				//	subject.Group = "p";
+				//else
+				//	subject.Group = "c";
+
+				subject.Group = subject.GroupId;
 
 				// Store the subject
 				subjects.Add(subject);

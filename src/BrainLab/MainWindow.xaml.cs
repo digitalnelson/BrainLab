@@ -56,7 +56,7 @@ namespace BrainLab.Studio
 			string regionFile = _txtRegionFile.Text;
 			string subjectFile = _txtSubjectFile.Text;
 			string dataFolder = _txtDataFolder.Text;
-			string vertexCount = _txtVertexCount.Text;
+			int vertexCount = Int32.Parse(_txtVertexCount.Text);
 			double threshold = Double.Parse(_txtThreshold.Text);
 
 			_btnData.IsEnabled = false;
@@ -66,19 +66,9 @@ namespace BrainLab.Studio
 				// Load the data files into the data manager
 				_dataManager.LoadROIFile(regionFile);
 				_dataManager.LoadSubjectFile(subjectFile);
-				_dataManager.LoadAdjFiles(dataFolder, Int32.Parse(vertexCount));
-
-				// TODO: Make this user configurable
-				// Allow each data source to be NBS thresholded at a different level
-				_thresholds = new Dictionary<string, double>();
-				_thresholds["DTI"] = 2.15; //threshold; //2.0; //2.15;
-				_thresholds["fMRI"] = 3.225; //threshold; //2.15; //3.225;
-
-				// Load the graphs into the comparison system
-				_dataManager.LoadComparisons();
+				_dataManager.LoadAdjFiles(dataFolder, vertexCount);
 			});
 			
-
 			_btnPermute.IsEnabled = true;
 		}
 
@@ -93,6 +83,16 @@ namespace BrainLab.Studio
 			// with progress towards permutations
 			await Task.Run(delegate
 			{
+				// TODO: Move this to a separate method cause we need to let the user decided which data to turn on and off
+				// TODO: Make this user configurable
+				// Allow each data source to be NBS thresholded at a different level
+				_thresholds = new Dictionary<string, double>();
+				_thresholds["DTI"] = 2.15; //threshold; //2.0; //2.15;
+				_thresholds["fMRI"] = 3.225; //threshold; //2.15; //3.225;
+
+				// Load the graphs into the comparison system
+				_dataManager.LoadComparisons();
+
 				// Calculate our group differences
 				_dataManager.CalculateGroupDifferences("c", "p", _thresholds); // TODO: Make the group choosing configurable
 
