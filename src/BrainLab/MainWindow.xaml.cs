@@ -47,6 +47,7 @@ namespace BrainLab.Studio
 
 			// Create and connect our modules to our data manager
 			_dataManager = new DataManager();
+            oComponents.SetDataManager(_dataManager);
 			dComponents.SetDataManager(_dataManager);
 			fComponents.SetDataManager(_dataManager);
 		}
@@ -117,8 +118,9 @@ namespace BrainLab.Studio
 		{
 			Overlap overlap = _dataManager.GetOverlap();
 
-			dComponents.LoadGraphComponents(overlap, "DTI");
-			fComponents.LoadGraphComponents(overlap, "fMRI");
+            oComponents.LoadGraphComponents(overlap, "DTI");
+            dComponents.LoadGraphComponents(overlap, "DTI", Color.FromArgb(255, 0, 255, 0));
+			fComponents.LoadGraphComponents(overlap, "fMRI", Color.FromArgb(255, 0, 0, 255));
 
 			_btnReport.IsEnabled = true;
 

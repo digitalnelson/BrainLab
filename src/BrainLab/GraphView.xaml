@@ -6,78 +6,63 @@
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="400">
     <Grid x:Name="_ctl">
-        
+
         <Grid.RowDefinitions>
-            <RowDefinition Height=".7*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height=".33*" />
+            <RowDefinition Height=".33*" />
+            <RowDefinition Height=".33*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.5*" />
             <ColumnDefinition Width="0.5*" />
         </Grid.ColumnDefinitions>
+        
+        <StackPanel Orientation="Horizontal" Grid.Row="0">
+            <Label Content="Modality: " />
+            <Label Content="" x:Name="_lblModality" />
+        </StackPanel>
 
-        <Grid Margin="6,6,3,3">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="0.33*"/>
-                <RowDefinition Height="0.33*"/>
-                <RowDefinition Height="0.33*"/>
-            </Grid.RowDefinitions>
-            
-            <StackPanel Orientation="Horizontal" Grid.Row="0">
-                <Label Content="Modality: " />
-                <Label Content="" x:Name="_lblModality" />
-            </StackPanel>
-            <!--<Border Name="_graphXL" BorderThickness="2" BorderBrush="LightGray" Grid.Row="1" />-->
-            <my:GraphDisplay x:Name="_graphCrXL" Grid.Row="1" />
-            <my:GraphDisplay x:Name="_graphSgXL" Grid.Row="2" />
-            <my:GraphDisplay x:Name="_graphAxXL" Grid.Row="3" />
-            <!--<Border Name="_graphSgXL" BorderThickness="2" BorderBrush="LightGray" Grid.Row="2" />
-            <Border Name="_graphAxXL" BorderThickness="2" BorderBrush="LightGray" Grid.Row="3" />-->
+        <my:GraphDisplay x:Name="_graphAxXL" Grid.Row="1" Grid.ColumnSpan="2" Margin="6,6,6,3" />
+
+        <Grid Margin="6,3,6,0" Grid.Row="2" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <my:GraphDisplay x:Name="_graphCrXL" Grid.Column="0" Margin="0,0,3,0" />
+            <my:GraphDisplay x:Name="_graphSgXL" Grid.Column="1" Margin="3,0,0,0" />
         </Grid>
 
-        <Grid Grid.Column="1" Margin="3,6,6,3">
+        <Grid Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Margin="6,0,6,6">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
-                <RowDefinition Height=".20*" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height=".20*" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height=".30*" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height=".30*" />
+                <RowDefinition Height=".50*" />
             </Grid.RowDefinitions>
-            
-            <StackPanel Orientation="Horizontal" Grid.Row="0">
-                <Label Content="Intermodal Nodes: " />
-                <Label Content="{Binding InterModalNodes.Count}" />
-                <Label Content="(" />
-                <Label Content="{Binding InterModalPValue}" />
-                <Label Content=")" />
-            </StackPanel>
-            <ListBox Grid.Row="1" ItemsSource="{Binding InterModalNodes}"/>
-            
-            <StackPanel Orientation="Horizontal" Grid.Row="2">
-                <Label Content="Intermodal Edges: " />
-                <Label Content="{Binding InterModalEdges.Count}" />
-            </StackPanel>
-            <ListBox Grid.Row="3" ItemsSource="{Binding InterModalEdges}" />
 
-            <StackPanel Orientation="Horizontal" Grid.Row="4">
+            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0">
                 <Label Content="Component Nodes: " />
                 <Label Content="{Binding CmpNodes.Count}" />
                 <Label Content="(" />
                 <Label Content="{Binding CmpPValue}" />
                 <Label Content=")" />
             </StackPanel>
-            <ListBox  Grid.Row="5" ItemsSource="{Binding CmpNodes}" />
+            <ListBox Grid.Column="0" Grid.Row="1" ItemsSource="{Binding CmpNodes}" Margin="0,0,3,0" />
 
-            <StackPanel Orientation="Horizontal" Grid.Row="6">
+            <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
                 <Label Content="Component Edges: " />
                 <Label Content="{Binding CmpEdges.Count}" />
             </StackPanel>
-            <ListBox Grid.Row="7" ItemsSource="{Binding CmpEdges}" />
-            
+            <ListBox Grid.Column="1" Grid.Row="1" ItemsSource="{Binding CmpEdges}" Margin="3,0,0,0" />
+
         </Grid>
-        
+
     </Grid>
+    
 </UserControl>

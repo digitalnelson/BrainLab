@@ -18,14 +18,12 @@ using Smrf.NodeXL.Visualization.Wpf;
 
 namespace BrainLab.Studio
 {
-	public delegate double SelectDim(ROIVertex v);
-
 	/// <summary>
 	/// Interaction logic for GraphDisplay.xaml
 	/// </summary>
-	public partial class GraphDisplay : UserControl
+	public partial class OverlapDisplay : UserControl
 	{
-		public GraphDisplay()
+		public OverlapDisplay()
 		{
 			InitializeComponent();
 
@@ -33,7 +31,7 @@ namespace BrainLab.Studio
 			_graphXL.Child = _oNodeXLControl;
 		}
 
-		public void DoSomething(List<ROIVertex> nodes, List<GraphEdge> edges, SelectDim horiz, double hRange, SelectDim vert, double vRange, bool flipX, System.Windows.Media.Color componentColor)
+		public void DoSomething(List<ROIVertex> nodes, List<GraphEdge> edges, SelectDim horiz, double hRange, SelectDim vert, double vRange, bool flipX)
 		{
 			double width = this.ActualWidth - 30;
 			double height = this.ActualHeight - 30;
@@ -73,14 +71,27 @@ namespace BrainLab.Studio
                 double xCoord = (hf * hSize) + hOffset;
                 if (flipX)
                     xCoord = width - xCoord;
-
+                
                 double yCoord = (vf * vSize) + vOffset;
-                yCoord = height - yCoord;
+				yCoord = height - yCoord;
 
 				IVertex vertex = vc.Add();
 
-                vertex.SetValue(ReservedMetadataKeys.PerVertexRadius, 8.0f);
-                vertex.SetValue(ReservedMetadataKeys.PerAlpha, 75.0f);
+				//if (!node.Roi.Special)
+					//vertex.SetValue(ReservedMetadataKeys.PerAlpha, 40.0f);
+
+				//vertex.SetValue(ReservedMetadataKeys.PerVertexLabel, node.Roi.Name);
+                if (node.Roi.Special)
+                {
+                    vertex.SetValue(ReservedMetadataKeys.PerColor, Color.FromArgb(255, 255, 0, 0));
+                    vertex.SetValue(ReservedMetadataKeys.PerVertexRadius, 8.0f);
+                }
+                else
+                {
+                    vertex.SetValue(ReservedMetadataKeys.PerVertexRadius, 8.0f);
+                    vertex.SetValue(ReservedMetadataKeys.PerAlpha, 75.0f);
+                }
+
 				vertex.SetValue(ReservedMetadataKeys.LockVertexLocation, true);
 
 				vertex.Location = new System.Drawing.PointF((float)xCoord + 15, (float)yCoord + 15);
@@ -88,22 +99,40 @@ namespace BrainLab.Studio
 				verts.Add(vertex);
 			}
 
+			//Dictionary<int, ROIVertex> cmpVerts = new Dictionary<int, ROIVertex>();
+
 			foreach (var edge in edges)
 			{
-                IVertex v1 = verts[edge.V1];
-                IVertex v2 = verts[edge.V2];
-                v1.SetValue(ReservedMetadataKeys.PerColor, componentColor);
-                v1.SetValue(ReservedMetadataKeys.PerAlpha, 100.0f);
-                v2.SetValue(ReservedMetadataKeys.PerColor, componentColor);
-                v2.SetValue(ReservedMetadataKeys.PerAlpha, 100.0f);
+			//	ROIVertex v1 = nodes[edge.V1];
+			//	ROIVertex v2 = nodes[edge.V2];
 
-                //double diff = edge.M2 - edge.M1;
-                //double pval = ((double)edge.RightTailCount) / ((double)overlap.Permutations);
-                //string lbl = string.Format("{0} ({1})", diff.ToString("0.000"), pval.ToString("0.0000"));
+			//	if (!cmpVerts.ContainsKey(edge.V1))
+			//		cmpVerts[edge.V1] = v1;
+			//	if (!cmpVerts.ContainsKey(edge.V2))
+			//		cmpVerts[edge.V2] = v2;
 
-                IEdge e = ec.Add(v1, v2);
-                e.SetValue(ReservedMetadataKeys.PerEdgeWidth, 2.0f);
-                e.SetValue(ReservedMetadataKeys.PerColor, componentColor);
+			//	IEdge e = ec.Add(v1.Vertex, v2.Vertex);
+
+			//	double diff = edge.M2 - edge.M1;
+			//	//double pval = ((double)edge.RightTailCount) / ((double)overlap.Permutations);
+
+			//	string lbl = string.Format("{0} ({1})", diff.ToString("0.000"), pval.ToString("0.0000"));
+
+			//	if (v1.Roi.Special && v2.Roi.Special)
+			//	{
+			//		//e.SetValue(ReservedMetadataKeys.PerEdgeLabel, lbl);
+			//		//e.SetValue(ReservedMetadataKeys.PerEdgeLabelFontSize, 16.0f);
+			//		e.SetValue(ReservedMetadataKeys.PerEdgeWidth, 4.0f);
+			//		e.SetValue(ReservedMetadataKeys.PerColor, Color.FromArgb(255, 0, 0, 0));
+
+			//		//InterModalEdges.Add(string.Format("{0} - {1} [{2} ({3} {4})] ", v1.Roi.Name, v2.Roi.Name, diff.ToString("0.000"), edge.TStat.ToString("0.00"), pval.ToString("0.0000")));
+			//	}
+			//	else
+			//	{
+			//		//e.SetValue(ReservedMetadataKeys.PerEdgeLabel, lbl);
+			//		e.SetValue(ReservedMetadataKeys.PerAlpha, 70.0f);
+			//		e.SetValue(ReservedMetadataKeys.PerColor, Color.FromArgb(255, 0, 0, 0));
+			//	}
 			}
 
 			_oNodeXLControl.DrawGraph(true);

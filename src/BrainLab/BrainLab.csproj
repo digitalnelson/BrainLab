@@ -178,6 +178,12 @@
     <Compile Include="alg\specialfunctions.cs" />
     <Compile Include="alg\statistics.cs" />
     <Compile Include="Convert.cs" />
+    <Compile Include="OverlapDisplay.xaml.cs">
+      <DependentUpon>OverlapDisplay.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="OverlapView.xaml.cs">
+      <DependentUpon>OverlapView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DataManager.cs" />
     <Compile Include="DataStore.cs" />
     <Compile Include="GraphDisplay.xaml.cs">
@@ -209,6 +215,14 @@
       <DependentUpon>Report.xaml</DependentUpon>
     </Compile>
     <Compile Include="Stats.cs" />
+    <Page Include="OverlapDisplay.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="OverlapView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="GraphDisplay.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
