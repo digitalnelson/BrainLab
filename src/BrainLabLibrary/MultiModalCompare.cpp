@@ -101,7 +101,7 @@ namespace BrainLabLibrary
 			auto cmps = cit->second;
 			for(auto vi=cmps.begin(); vi<cmps.end(); ++vi)
 			{
-				GraphComponent^ gc = ref new GraphComponent();
+				GraphComponent^ gc = gcnew GraphComponent();
 
 				auto ces = vi->Edges;
 

@@ -180,6 +180,9 @@
     <Compile Include="Convert.cs" />
     <Compile Include="DataManager.cs" />
     <Compile Include="DataStore.cs" />
+    <Compile Include="GraphDisplay.xaml.cs">
+      <DependentUpon>GraphDisplay.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GraphView.xaml.cs">
       <DependentUpon>GraphView.xaml</DependentUpon>
     </Compile>
@@ -206,6 +209,9 @@
       <DependentUpon>Report.xaml</DependentUpon>
     </Compile>
     <Compile Include="Stats.cs" />
+    <Page Include="GraphDisplay.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GraphView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

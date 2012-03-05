@@ -108,7 +108,7 @@ namespace BrainLab.Studio
 
 			// TODO: Make this a label on the control form instead of a popup
 			// Put together a quick timing popup for debugging release mode
-			MessageBox.Show("Elapsed - " + dur.ToString());
+			//MessageBox.Show("Elapsed - " + dur.ToString());
 
 			_btnDisplay.IsEnabled = true;
 		}

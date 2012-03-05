@@ -1,7 +1,7 @@
 ﻿<Window x:Class="BrainLab.Studio.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="BrainLab Studio" Height="750" Width="1200" xmlns:my="clr-namespace:BrainLab.Studio">
+        Title="BrainLab Studio" Height="750" Width="1200" xmlns:my="clr-namespace:BrainLab.Studio" Background="#FFCFCFCF">
     <Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="100" />
@@ -16,7 +16,7 @@
 
             <Label Content="Modality Selection" />
             
-            <ListBox Height="150" HorizontalContentAlignment="Stretch">
+            <ListBox Height="150" HorizontalContentAlignment="Stretch" Margin="0" Background="{x:Null}">
                 <Grid HorizontalAlignment="Stretch" VerticalAlignment="Center">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width=".1*" />
@@ -60,7 +60,7 @@
                 <Label Content="Subject File" />
                 <TextBox x:Name="_txtSubjectFile" Text="..\..\..\..\..\data\169_sz_2929\subs.txt" />
             </StackPanel>
-            <StackPanel Grid.Column="1">
+            <StackPanel Grid.Column="1" Margin="5,0,0,0">
                 <StackPanel>
                     <Label Content="Data Folder" />
                     <TextBox x:Name="_txtDataFolder"  Text="..\..\..\..\..\data\169_sz_2929\adj" />

@@ -18,6 +18,8 @@ namespace BrainLab.Studio.Loaders
 		public double XMin;
 		public double YMax;
 		public double YMin;
+		public double ZMax;
+		public double ZMin;
 
 		private Dictionary<int, string> _isSpecial = new Dictionary<int, string>() 
 		{
@@ -66,6 +68,9 @@ namespace BrainLab.Studio.Loaders
 
 			YMax = (double)regionsOfInterest.Max(r => r.Y);
 			YMin = (double)regionsOfInterest.Min(r => r.Y);
+
+			ZMax = (double)regionsOfInterest.Max(r => r.Z);
+			ZMin = (double)regionsOfInterest.Min(r => r.Z);
 
 			return regionsOfInterest;
 		}

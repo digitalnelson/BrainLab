@@ -34,17 +34,12 @@ namespace BrainLab.Studio
 			InitializeComponent();
 
 			_ctl.DataContext = this;
+
+			// These are to power lists in the displays
 			InterModalNodes = new ObservableCollection<string>();
 			InterModalEdges = new ObservableCollection<string>();
 			CmpNodes = new ObservableCollection<string>();
 			CmpEdges = new ObservableCollection<string>();
-
-			m_oNodeXLWithAxesControl = new NodeXLWithAxesControl();
-			m_oNodeXLWithAxesControl.XAxis.Label = "R  ---  L";
-			m_oNodeXLWithAxesControl.YAxis.Label = "P  ---  A";
-			m_oNodeXLControl = m_oNodeXLWithAxesControl.NodeXLControl;
-
-			_graphXL.Child = m_oNodeXLWithAxesControl;
 		}
 
 		public void SetDataManager(DataManager dataManager)
@@ -55,26 +50,15 @@ namespace BrainLab.Studio
 		public void LoadGraphComponents(Overlap overlap, string dataType)
 		{
 			DataType = dataType;
-			InterModalPValue = ((double)overlap.RightTailOverlapCount) / ((double)overlap.Permutations);
+			//InterModalPValue = ((double)overlap.RightTailOverlapCount) / ((double)overlap.Permutations);
 
 			List<GraphComponent> components = overlap.Components[dataType];
-			
-			
-			
-			
-			
-			
-			
-			double width = _graphXL.ActualWidth - 30;
-			double height = _graphXL.ActualHeight - 30;
+			List<ROIVertex> nodes = new List<ROIVertex>();
+			List<GraphEdge> edges = new List<GraphEdge>();
+
 			double xRange = _dataManager.XMax - _dataManager.XMin;
 			double yRange = _dataManager.YMax - _dataManager.YMin;
-
-			IGraph g = m_oNodeXLControl.Graph;
-			IVertexCollection vc = g.Vertices;
-			IEdgeCollection ec = g.Edges;
-
-			_mapVtx = new Dictionary<int, ROIVertex>();
+			double zRange = _dataManager.ZMax - _dataManager.ZMin;
 
 			for (var i = 0; i < 90; i++)
 			{
@@ -82,34 +66,14 @@ namespace BrainLab.Studio
 
 				double xFactor = (roi.X - _dataManager.XMin) / xRange;
 				double yFactor = (roi.Y - _dataManager.YMin) / yRange;
+				double zFactor = (roi.Z - _dataManager.ZMin) / zRange;
 
-				double x = xFactor * width;
-				double y = yFactor * height;
-				y = height - y;
-
-				IVertex v = vc.Add();
-
-				if (roi.Special)
-				{
-					InterModalNodes.Add(string.Format("{0} ({1}) ", roi.Name, roi.Index));
-				}
-				else
-				{
-					v.SetValue(ReservedMetadataKeys.PerAlpha, 40.0f);
-				}
-
-				v.SetValue(ReservedMetadataKeys.PerVertexLabel, roi.Name);
-				v.SetValue(ReservedMetadataKeys.PerVertexRadius, 11.0f);
-				v.SetValue(ReservedMetadataKeys.LockVertexLocation, true);
-
-				v.Location = new System.Drawing.PointF((float)x + 15, (float)y + 15);
-				
-				_mapVtx[i] = new ROIVertex() { Vertex = v, Roi = roi };
+				nodes.Add( new ROIVertex() { Roi = roi, XF = xFactor, YF = yFactor, ZF = zFactor } );
 			}
 
 			int cmpSize = 0;
 			GraphComponent cmp = null;
-			for (var i = 0; i < components.Count; i++ )
+			for (var i = 0; i < components.Count; i++)
 			{
 				double pval = ((double)components[i].RightTailExtentCount) / ((double)overlap.Permutations);
 
@@ -122,51 +86,58 @@ namespace BrainLab.Studio
 
 			if (cmp != null)
 			{
-				CmpPValue = ((double)cmp.RightTailExtentCount) / ((double)overlap.Permutations);
-				Dictionary<int, ROIVertex> cmpVerts = new Dictionary<int, ROIVertex>();
-
-				foreach (var edge in cmp.Edges)
-				{
-					ROIVertex v1 = _mapVtx[edge.V1];
-					ROIVertex v2 = _mapVtx[edge.V2];
-
-					if (!cmpVerts.ContainsKey(edge.V1))
-						cmpVerts[edge.V1] = v1;
-					if (!cmpVerts.ContainsKey(edge.V2))
-						cmpVerts[edge.V2] = v2;
-
-					IEdge e = ec.Add(v1.Vertex, v2.Vertex);
-
-					double diff = edge.M2 - edge.M1;
-					double pval = ((double)edge.RightTailCount) / ((double)overlap.Permutations);
-
-					string lbl = string.Format("{0} ({1})", diff.ToString("0.000"), pval.ToString("0.0000"));
-
-					if (v1.Roi.Special && v2.Roi.Special)
-					{
-						//e.SetValue(ReservedMetadataKeys.PerEdgeLabel, lbl);
-						//e.SetValue(ReservedMetadataKeys.PerEdgeLabelFontSize, 16.0f);
-						e.SetValue(ReservedMetadataKeys.PerEdgeWidth, 4.0f);
-						e.SetValue(ReservedMetadataKeys.PerColor, Color.FromArgb(255, 0, 0, 0));
-
-						InterModalEdges.Add(string.Format("{0} - {1} [{2} ({3} {4})] ", v1.Roi.Name, v2.Roi.Name, diff.ToString("0.000"), edge.TStat.ToString("0.00"), pval.ToString("0.0000")));
-					}
-					else
-					{
-						//e.SetValue(ReservedMetadataKeys.PerEdgeLabel, lbl);
-						e.SetValue(ReservedMetadataKeys.PerAlpha, 70.0f);
-						e.SetValue(ReservedMetadataKeys.PerColor, Color.FromArgb(255, 0, 0, 0));
-					}
-
-					CmpEdges.Add(string.Format("{0} - {1} [{2} ({3} {4})] ", v1.Roi.Name, v2.Roi.Name, diff.ToString("0.000"), edge.TStat.ToString("0.00"), pval.ToString("0.0000")));
-				}
-
-				var itms = from v in cmpVerts.Values orderby v.Roi.Index select v;
-				foreach (var vert in itms)
-					CmpNodes.Add(string.Format("{0} ({1})", vert.Roi.Name, vert.Roi.Index));
-
-				m_oNodeXLControl.DrawGraph(true);
+				_graphCrXL.DoSomething(nodes, cmp.Edges, r => r.XF, xRange, r => r.ZF, zRange);
+				_graphSgXL.DoSomething(nodes, cmp.Edges, r => r.XF, xRange, r => r.YF, yRange);
+				_graphAxXL.DoSomething(nodes, cmp.Edges, r => r.YF, yRange, r => r.ZF, zRange);
 			}
+
+			//if (cmp != null)
+			//{
+				//CmpPValue = ((double)cmp.RightTailExtentCount) / ((double)overlap.Permutations);
+				//Dictionary<int, ROIVertex> cmpVerts = new Dictionary<int, ROIVertex>();
+
+				//foreach (var edge in cmp.Edges)
+				//{
+				//	ROIVertex v1 = _mapVtx[edge.V1];
+				//	ROIVertex v2 = _mapVtx[edge.V2];
+
+				//	if (!cmpVerts.ContainsKey(edge.V1))
+				//		cmpVerts[edge.V1] = v1;
+				//	if (!cmpVerts.ContainsKey(edge.V2))
+				//		cmpVerts[edge.V2] = v2;
+
+				//	IEdge e = ec.Add(v1.Vertex, v2.Vertex);
+
+				//	double diff = edge.M2 - edge.M1;
+				//	double pval = ((double)edge.RightTailCount) / ((double)overlap.Permutations);
+
+				//	string lbl = string.Format("{0} ({1})", diff.ToString("0.000"), pval.ToString("0.0000"));
+
+				//	if (v1.Roi.Special && v2.Roi.Special)
+				//	{
+				//		//e.SetValue(ReservedMetadataKeys.PerEdgeLabel, lbl);
+				//		//e.SetValue(ReservedMetadataKeys.PerEdgeLabelFontSize, 16.0f);
+				//		e.SetValue(ReservedMetadataKeys.PerEdgeWidth, 4.0f);
+				//		e.SetValue(ReservedMetadataKeys.PerColor, Color.FromArgb(255, 0, 0, 0));
+
+				//		InterModalEdges.Add(string.Format("{0} - {1} [{2} ({3} {4})] ", v1.Roi.Name, v2.Roi.Name, diff.ToString("0.000"), edge.TStat.ToString("0.00"), pval.ToString("0.0000")));
+				//	}
+				//	else
+				//	{
+				//		//e.SetValue(ReservedMetadataKeys.PerEdgeLabel, lbl);
+				//		e.SetValue(ReservedMetadataKeys.PerAlpha, 70.0f);
+				//		e.SetValue(ReservedMetadataKeys.PerColor, Color.FromArgb(255, 0, 0, 0));
+				//	}
+
+				//	CmpEdges.Add(string.Format("{0} - {1} [{2} ({3} {4})] ", v1.Roi.Name, v2.Roi.Name, diff.ToString("0.000"), edge.TStat.ToString("0.00"), pval.ToString("0.0000")));
+				//}
+
+				//var itms = from v in cmpVerts.Values orderby v.Roi.Index select v;
+				//foreach (var vert in itms)
+				//	CmpNodes.Add(string.Format("{0} ({1})", vert.Roi.Name, vert.Roi.Index));
+
+				//m_oNodeXLControl.DrawGraph(true);
+			//}
 		}
 
 		public string GetReport()
@@ -249,14 +220,21 @@ namespace BrainLab.Studio
 		}
 
 		private DataManager _dataManager;
+		
+		
 		private NodeXLWithAxesControl m_oNodeXLWithAxesControl;
 		private NodeXLControl m_oNodeXLControl;
+
+
 		private Dictionary<int, ROIVertex> _mapVtx = null;
 	}
 
-	class ROIVertex
+	public class ROIVertex
 	{
-		public IVertex Vertex;
 		public ROI Roi;
+
+		public double XF;
+		public double YF;
+		public double ZF;
 	}
 }

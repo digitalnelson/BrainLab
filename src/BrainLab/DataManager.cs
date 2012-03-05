@@ -44,6 +44,8 @@ namespace BrainLab.Studio
 			this.XMax = _roiLoader.XMax;
 			this.YMin = _roiLoader.YMin;
 			this.YMax = _roiLoader.YMax;
+			this.ZMin = _roiLoader.ZMin;
+			this.ZMax = _roiLoader.ZMax;
 		}
 
 		public void LoadSubjectFile(string fullPath)
@@ -90,11 +92,17 @@ namespace BrainLab.Studio
 		{
 			// TODO: Loop through our subject data and get rid of the ones without complete data
 			// based on user selection
+			var data = new List<SubjectData>();
+			foreach(var sd in _subjectData)
+			{
+				if (sd.Graphs.ContainsKey("DTI") && sd.Graphs.ContainsKey("fMRI"))
+					data.Add(sd);
+			}
 
 			_edgeCount = (_vertexCount * (_vertexCount - 1)) / 2;
 
-			_compare = new MultiModalCompare(_subjectData.Count, _vertexCount, _edgeCount, new List<string>() { "DTI", "fMRI" });
-			_compare.LoadSubjects(_subjectData);
+			_compare = new MultiModalCompare(data.Count, _vertexCount, _edgeCount, new List<string>() { "DTI", "fMRI" });
+			_compare.LoadSubjects(data);
 		}
 
 		public void CalculateGroupDifferences(string group1Id, string group2Id, Dictionary<string, double> thresholds)
@@ -199,6 +207,8 @@ namespace BrainLab.Studio
 		public double XMax;
 		public double YMin;
 		public double YMax;
+		public double ZMin;
+		public double ZMax;
 
 		private ROILoader _roiLoader;
 		private SubjectCSVLoader _subjectLoader;
