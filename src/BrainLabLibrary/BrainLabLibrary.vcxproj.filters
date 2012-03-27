@@ -39,25 +39,25 @@
     <ClInclude Include="SubjectGraphFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\BrainLabNative\EdgeValue.h">
+    <ClInclude Include="EdgeValue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\BrainLabNative\Exports.h">
+    <ClInclude Include="Exports.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\BrainLabNative\Graph.h">
+    <ClInclude Include="Graph.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\BrainLabNative\GraphComparison.h">
+    <ClInclude Include="GraphComparison.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\BrainLabNative\GraphComparisonMulti.h">
+    <ClInclude Include="GraphComparisonMulti.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\BrainLabNative\GraphLookup.h">
+    <ClInclude Include="GraphLookup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\BrainLabNative\Stats.h">
+    <ClInclude Include="Stats.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -86,19 +86,19 @@
     <ClCompile Include="SubjectGraphFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\BrainLabNative\Graph.cpp">
+    <ClCompile Include="Graph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\BrainLabNative\GraphComparison.cpp">
+    <ClCompile Include="GraphComparison.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\BrainLabNative\GraphComparisonMulti.cpp">
+    <ClCompile Include="GraphComparisonMulti.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\BrainLabNative\GraphLookup.cpp">
+    <ClCompile Include="GraphLookup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\BrainLabNative\Stats.cpp">
+    <ClCompile Include="Stats.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -111,5 +111,8 @@
     <ResourceCompile Include="app.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
   </ItemGroup>
 </Project>
