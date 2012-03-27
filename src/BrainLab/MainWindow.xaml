@@ -16,33 +16,28 @@
 
             <Label Content="Modality Selection" />
             
-            <ListBox Height="150" HorizontalContentAlignment="Stretch" Margin="0" Background="{x:Null}">
-                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width=".1*" />
-                        <ColumnDefinition Width=".45*" />
-                        <ColumnDefinition Width=".45*" />
-                    </Grid.ColumnDefinitions>
-               
-                    <CheckBox Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="True"/>
-                    <Label Content="fMRI" Grid.Column="1" VerticalAlignment="Center" />
-                    <TextBox Text="3.225" Grid.Column="2" VerticalAlignment="Center" />
-                </Grid>
-                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width=".1*" />
-                        <ColumnDefinition Width=".45*" />
-                        <ColumnDefinition Width=".45*" />
-                    </Grid.ColumnDefinitions>
+            <ListBox ItemsSource="{Binding DataTypes}" Height="150" HorizontalContentAlignment="Stretch" Margin="0" Background="{x:Null}">
+                
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width=".1*" />
+                                <ColumnDefinition Width=".45*" />
+                                <ColumnDefinition Width=".45*" />
+                            </Grid.ColumnDefinitions>
 
-                    <CheckBox Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="True"/>
-                    <Label Content="DTI" Grid.Column="1" VerticalAlignment="Center" />
-                    <TextBox Text="2.15" Grid.Column="2" VerticalAlignment="Center" />
-                </Grid>
+                            <CheckBox Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding Selected}"/>
+                            <Label Content="{Binding Tag}" Grid.Column="1" VerticalAlignment="Center" />
+                            <TextBox Text="{Binding Threshold}" Grid.Column="2" VerticalAlignment="Center" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+				
             </ListBox>
             
             <Label Content="Permutations" />
-            <TextBox x:Name="_txtPermutations" Text="5000" />
+            <TextBox x:Name="_txtPermutations" Text="{Binding Permutations}" />
             <Button x:Name="_btnPermute" IsEnabled="False"  Click="Permute" Content="Permute" Width="75" Height="30" HorizontalAlignment="Center" Margin="0,10,0,0"  />
             <Button x:Name="_btnDisplay" IsEnabled="False" Click="Display" Content="Stats" Width="75" Height="30" HorizontalAlignment="Center" Margin="0,10,0,0"  />
             <Button x:Name="_btnReport" IsEnabled="False" Click="Report" Content="Report" Width="75" Height="30" HorizontalAlignment="Center" Margin="0,10,0,0"  />

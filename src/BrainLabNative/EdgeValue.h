@@ -4,17 +4,17 @@ struct EdgeValue
 {
 	int Idx;
 
-	double Value;
+	float Value;
 
-	double M1;
-	double M2;
+	float M1;
+	float M2;
 
-	double V1;
-	double V2;
+	float V1;
+	float V2;
 	
-	double TStat;
+	float TStat;
 	
-	double PValue;
+	float PValue;
 	int RightTailCount;
 };
 

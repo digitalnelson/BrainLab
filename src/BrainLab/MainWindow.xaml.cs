@@ -24,6 +24,7 @@ namespace BrainLab.Studio
 {
 	public partial class MainWindow : Window
 	{
+		private MainWindowViewModel _viewModel;
 		private DataManager _dataManager;
 		Dictionary<string, double> _thresholds;
 
@@ -50,6 +51,9 @@ namespace BrainLab.Studio
             oComponents.SetDataManager(_dataManager);
 			dComponents.SetDataManager(_dataManager);
 			fComponents.SetDataManager(_dataManager);
+
+			_viewModel = new MainWindowViewModel(_dataManager);
+			this.DataContext = _viewModel;
 		}
 				
 		private async void Load(object sender, RoutedEventArgs e)
@@ -61,55 +65,15 @@ namespace BrainLab.Studio
 			double threshold = Double.Parse(_txtThreshold.Text);
 
 			_btnData.IsEnabled = false;
-
-			await Task.Run(delegate
-			{
-				// Load the data files into the data manager
-				_dataManager.LoadROIFile(regionFile);
-				_dataManager.LoadSubjectFile(subjectFile);
-				_dataManager.LoadAdjFiles(dataFolder, vertexCount);
-			});
-			
+			await _viewModel.Load(regionFile, subjectFile, dataFolder, vertexCount);
 			_btnPermute.IsEnabled = true;
 		}
 
 		private async void Permute(object sender, RoutedEventArgs e)
-		{
-			int numOfPerms = Int32.Parse(_txtPermutations.Text);
-			long dur = 0;
-
+		{	
 			_btnPermute.IsEnabled = false;
 
-			// TODO: Make this a task with the notify interface so we can update UI
-			// with progress towards permutations
-			await Task.Run(delegate
-			{
-				// TODO: Move this to a separate method cause we need to let the user decided which data to turn on and off
-				// TODO: Make this user configurable
-				// Allow each data source to be NBS thresholded at a different level
-				_thresholds = new Dictionary<string, double>();
-				_thresholds["DTI"] = 2.15; //threshold; //2.0; //2.15;
-				_thresholds["fMRI"] = 3.225; //threshold; //2.15; //3.225;
-
-				// Load the graphs into the comparison system
-				_dataManager.LoadComparisons();
-
-				// Calculate our group differences
-				_dataManager.CalculateGroupDifferences("c", "p", _thresholds); // TODO: Make the group choosing configurable
-
-				Stopwatch sw = new Stopwatch();
-				sw.Start();
-
-				// Run permutations
-				_dataManager.PermuteComparisons(numOfPerms, 29, _thresholds);  // TODO: Make the subject size dynamic based on groups chosen
-
-				sw.Stop();
-				dur = sw.ElapsedMilliseconds;
-			});
-
-			// TODO: Make this a label on the control form instead of a popup
-			// Put together a quick timing popup for debugging release mode
-			//MessageBox.Show("Elapsed - " + dur.ToString());
+			await _viewModel.Permute();
 
 			_btnDisplay.IsEnabled = true;
 		}

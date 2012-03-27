@@ -1,5 +1,5 @@
-#include "stdafx.h"
 #include "GraphComparisonMulti.h"
+#include "GraphComparison.h"
 #include "Stats.h"
 
 namespace BrainLabNative
@@ -90,7 +90,8 @@ namespace BrainLabNative
 		// Fill with values 0..subjectCount
 		BrainLabNative::Stats::FillVectorInc(idxs);
 
-		for(int i=0; i<permutations; i++)
+		//for(int i=0; i<permutations; i++)
+		parallel_for(0, permutations, [=, &idxs, &threshes] (int i)
 		{	
 			// Shuffle the indexes
 			random_shuffle(idxs.begin(), idxs.end());
@@ -128,7 +129,7 @@ namespace BrainLabNative
 			// NBS multimodal compare
 			if(permOverlap >= _realOverlap)
 				++_rightTailOverlapCount;
-		}
+		});
 	}
 
 	Overlap GraphComparisonMulti::GetOverlapResult()

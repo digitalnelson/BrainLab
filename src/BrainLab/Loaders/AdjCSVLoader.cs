@@ -36,6 +36,9 @@ namespace BrainLab.Studio.Loaders
 				var adjType = fileParts[1];
 				var desc = fileParts[2];
 
+				if (!DataTypes.ContainsKey(adjType))
+					DataTypes[adjType] = adjType;
+
 				if (!_subjects.ContainsKey(subjId))
 					continue;
 
@@ -78,6 +81,8 @@ namespace BrainLab.Studio.Loaders
 
 			return subList;
 		}
+
+		public Dictionary<string, string> DataTypes = new Dictionary<string, string>();
 
 		private string _fullPath;
 		private int _vertexCount;

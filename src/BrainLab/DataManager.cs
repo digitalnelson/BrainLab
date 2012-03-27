@@ -8,10 +8,11 @@ using BrainLabStorage;
 using BrainLabLibrary;
 using System.Diagnostics;
 using BrainLab.Studio.Loaders;
+using System.ComponentModel;
 
 namespace BrainLab.Studio
 {
-	public class DataManager
+	public class DataManager : INotifyPropertyChanged
 	{
 		public DataManager()
 		{
@@ -22,7 +23,7 @@ namespace BrainLab.Studio
 			_subjectsById = new Dictionary<string, Subject>();
 			
 			_graphsBySource = new Dictionary<string, List<SubjectGraphItem>>();
-			_analysisBySource = new Dictionary<string, GroupCompare>();
+			//_analysisBySource = new Dictionary<string, GroupCompare>();
 
 			_subjectData = new List<SubjectData>();
 		}
@@ -53,6 +54,8 @@ namespace BrainLab.Studio
 			_subjectLoader = new SubjectCSVLoader(fullPath);
 			List<Subject> subjects = _subjectLoader.LoadSubjectFile();
 
+			Groups = _subjectLoader.Groups.Keys.ToList();
+
 			foreach (var sub in subjects)
 			{
 				List<Subject> subs = null;
@@ -75,6 +78,8 @@ namespace BrainLab.Studio
 			_adjLoader = new AdjCSVLoader(fullPath, _vertexCount, _subjectsById);
 			_subjectData = _adjLoader.Load();
 
+			DataTypes = _adjLoader.DataTypes.Keys.ToList();
+
 			// TODO: Keep track of data types and data type counts
 			foreach (var itm in _subjectData)
 			{
@@ -90,18 +95,33 @@ namespace BrainLab.Studio
 
 		public void LoadComparisons()
 		{
-			// TODO: Loop through our subject data and get rid of the ones without complete data
-			// based on user selection
+			List<string> selectedDataTypes = new List<string>();
+			foreach (var dt in DataTypes)
+			{
+				selectedDataTypes.Add(dt);
+			}
+
+			// Loop through our subject data and get rid of the ones without complete data based on user selection
 			var data = new List<SubjectData>();
 			foreach(var sd in _subjectData)
 			{
-				if (sd.Graphs.ContainsKey("DTI") && sd.Graphs.ContainsKey("fMRI"))
+				bool bHasData = true;
+
+				foreach (var dt in selectedDataTypes)
+				{
+					if (!sd.Graphs.ContainsKey(dt))
+					{
+						bHasData = false;
+						break;
+					}
+				}
+
+				if (bHasData)
 					data.Add(sd);
 			}
 
 			_edgeCount = (_vertexCount * (_vertexCount - 1)) / 2;
-
-			_compare = new MultiModalCompare(data.Count, _vertexCount, _edgeCount, new List<string>() { "DTI", "fMRI" });
+			_compare = new MultiModalCompare(data.Count, _vertexCount, _edgeCount, selectedDataTypes);
 			_compare.LoadSubjects(data);
 		}
 
@@ -120,9 +140,6 @@ namespace BrainLab.Studio
 				var r = _regionsOfInterestByIndex[v];
 				r.Special = true;
 			}
-
-			// Do correlations
-			
 		}
 
 		public ROI GetROI(int roiIdx)
@@ -210,6 +227,9 @@ namespace BrainLab.Studio
 		public double ZMin;
 		public double ZMax;
 
+		public List<string> Groups { get; set; }
+		public List<string> DataTypes { get; set; }
+
 		private ROILoader _roiLoader;
 		private SubjectCSVLoader _subjectLoader;
 		private AdjCSVLoader _adjLoader;
@@ -218,15 +238,18 @@ namespace BrainLab.Studio
 		private int _edgeCount;
 
 		private List<ROI> _regionsOfInterest;
+		private Dictionary<int, ROI> _regionsOfInterestByIndex;
+		
 		private Dictionary<string, List<Subject>> _subjectsByGroup;
 		private Dictionary<string, Subject> _subjectsById;
 		private List<SubjectData> _subjectData;
-		private Dictionary<int, ROI> _regionsOfInterestByIndex;
-
+		
 		private Dictionary<string, List<SubjectGraphItem>> _graphsBySource;
-		private Dictionary<string, GroupCompare> _analysisBySource;
+		//private Dictionary<string, GroupCompare> _analysisBySource;
 
 		private MultiModalCompare _compare;
 		private Overlap _overlap;
+
+		public event PropertyChangedEventHandler PropertyChanged;
 	}
 }

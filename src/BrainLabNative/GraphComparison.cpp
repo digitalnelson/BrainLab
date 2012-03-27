@@ -1,7 +1,7 @@
-#include "stdafx.h"
 #include "GraphComparison.h"
 #include "Graph.h"
 #include "Stats.h"
+#include <amp_math.h>
 #include <vector>
 #include <algorithm>
 #include <ppl.h>
@@ -9,13 +9,14 @@
 #include <math.h>
 #include <iostream>
 
-using namespace Concurrency;
 using namespace std;
+using namespace concurrency;
 
 namespace BrainLabNative
 {
 	GraphComparison::GraphComparison(int subjectCount, int verts, int edges) 
-		: _subjectEdges(boost::extents[edges][subjectCount]), _lu(verts), _grpStats(edges), _g(verts, &_lu), _graph(verts)
+		: _subjectEdges(boost::extents[edges][subjectCount]), _lu(verts), _grpStats(edges), _g(verts, &_lu), _graph(verts),
+		_subjectEdgesArr(edges, subjectCount)
 	{
 		_subjectCount = subjectCount;
 		_vertCount = verts;
@@ -36,38 +37,158 @@ namespace BrainLabNative
 		for(Graph::EdgeValueCollection::iterator iter = graph->EdgeValues.begin(); iter < graph->EdgeValues.end(); ++iter)
 		{
 			_subjectEdges[edge][_currentSubjectIdx] = iter->Value;
+			//_subjectEdgesView(edge, _currentSubjectIdx) = iter->Value;
+			_allEdges.push_back(iter->Value);
 			++edge;
 		}
 		++_currentSubjectIdx;
 	}
 
+	// Calculate a T stat for the two groups based on the indexes passed in
 	void GraphComparison::CalcEdgeTStats(vector<int>& idxs, int szGrp1, vector<EdgeValue>& edgeStats)
 	{
+		// TODO: Probably need to make this thread safe
 		//for(int i=0; i<_edgeCount; i++)
 		parallel_for(0, _edgeCount, [=, &idxs, &edgeStats] (int i)
 		{
 			// Pull out a view of the subject values for a single edge
 			SingleEdgeBySubject edgeValues = _subjectEdges[ boost::indices[i][range(0, _subjectCount)] ];
+			
+			int n1 = 0, n2 = 0;
+			float m1 = 0, m2 = 0;
+			float dv1 = 0, dv2 = 0;
 
-			// TODO: Probably need to make this thread safe
-			// Calculate a T stat for the two groups based on the indexes passed in
-			Stats::TStatByIndexEx(idxs, &edgeValues[0], _subjectCount, szGrp1, edgeStats[i]);
+			// Loop through the vals we were passed
+			for (int idx = 0; idx < _subjectCount; ++idx)
+			{
+				float edgeVal = edgeValues[idxs[idx]];
+
+				if (idx < szGrp1)
+				{
+					n1++;
+
+					float delta = edgeVal - m1;
+					m1 += delta / n1;
+
+					if(n1 > 1)
+						dv1 = dv1 + delta * (edgeVal - m1);
+				}
+				else
+				{
+					n2++;
+
+					float delta = edgeVal - m2;
+					m2 += delta / n2;
+
+					if(n2 > 1)
+						dv2 = dv2 + delta * (edgeVal - m2);
+				}
+			}
+
+			float v1 = abs(dv1) / ( n1 - 1 );
+			float v2 = abs(dv2) / ( n2 - 1 );
+			
+			float tstat = 0;
+			if(v1 < 0.00000001f && v2 < 0.00000001f)
+				tstat = 0;
+			else
+				tstat = (m1 - m2) / sqrt( ( v1 / (float)n1 ) + ( v2 / (float)n2 ) );
+
+			edgeStats[i].V1 = v1;
+			edgeStats[i].V2 = v2;
+			edgeStats[i].M1 = m1;
+			edgeStats[i].M2 = m2;
+			edgeStats[i].TStat = tstat;
 		});
 	}
 
+	void GraphComparison::CalcEdgeTStatsAmpedWorker(int subjectCount, int szGroup1, array_view<EdgeValue, 1> &tstatView, array_view<int, 1> &subjectIdxs, array<float, 2> &subjectEdgesView)
+	{
+		// Run code on the GPU
+		//parallel_for_each(tstatView.extent, [&subjectEdgesView, subjectCount, subjectIdxs, szGroup1, tstatView] (index<1> idx) restrict(amp)
+		parallel_for_each(tstatView.extent, [&subjectEdgesView, subjectCount, szGroup1] (index<1> idx) restrict(amp)
+		{	
+			int n1 = 0, n2 = 0;
+			float m1 = 0, m2 = 0;
+			float dv1 = 0, dv2 = 0;
+
+			// Loop through the vals we were passed
+			/*for (int subjectIdx = 0; subjectIdx < subjectCount; ++subjectIdx)
+			{
+				float edgeVal = subjectEdgesView(idx[0], subjectIdxs[subjectIdx]);
+
+				if (subjectIdx < szGroup1)
+				{
+					n1++;
+
+					float delta = edgeVal - m1;
+					m1 += delta / n1;
+
+					if(n1 > 1)
+						dv1 = dv1 + delta * (edgeVal - m1);
+				}
+				else
+				{
+					n2++;
+
+					float delta = edgeVal - m2;
+					m2 += delta / n2;
+
+					if(n2 > 1)
+						dv2 = dv2 + delta * (edgeVal - m2);
+				}
+			}*/
+
+			/*float adv1 = 0, adv2 = 0;
+			adv1 = dv1;
+			if(dv1 < 0)
+				dv1 *= -1;
+			adv2 = dv2;
+			if(dv2 < 0)
+				dv2 *= -1;
+
+			float v1 = adv1 / ( n1 - 1 );
+			float v2 = adv2 / ( n2 - 1 );
+			
+			float tstat = 0;
+			if(v1 < 0.00000001f && v2 < 0.00000001f)
+				tstat = 0;
+			else
+				tstat = (m1 - m2) / fast_math::sqrtf( ( v1 / (float)n1 ) + ( v2 / (float)n2 ) );*/
+
+			/*tstatView[idx[0]].V1 = v1;
+			tstatView[idx[0]].V2 = v2;
+			tstatView[idx[0]].M1 = m1;
+			tstatView[idx[0]].M2 = m2;
+			tstatView[idx[0]].TStat = tstat;*/
+		});
+				
+		// Copy data from GPU to CPU
+		//tstatView.synchronize();
+	}
+
+	void GraphComparison::CalcEdgeTStatsAmped(vector<int>& idxs, int szGrp1, vector<EdgeValue>& edgeStats)
+	{
+		// Create a view over the data on the GPU
+		array_view<EdgeValue, 1> tstatView(_edgeCount, &edgeStats[0]);
+		array_view<int, 1> subjectIdxs(_subjectCount, &idxs[0]);
+
+		CalcEdgeTStatsAmpedWorker(_subjectCount, szGrp1, tstatView, subjectIdxs, _subjectEdgesArr);
+	}
+
 	void GraphComparison::CompareGroups(vector<int>& idxs, int szGrp1, double tStatThreshold, std::vector<int> &vertexList)
-	{				
+	{
+		// Setup the array or array_view for AMP
+		concurrency::copy(_allEdges.begin(), _allEdges.end(), _subjectEdgesArr);
+
 		// Calculate t stats for this subject labeling
-		CalcEdgeTStats(idxs, szGrp1, _grpStats);
+		CalcEdgeTStatsAmped(idxs, szGrp1, _grpStats);
 
 		// Load graph with thresholded t stats
-		for(auto idx=0; idx<_grpStats.size(); ++idx)
+		for(vector<EdgeValue>::size_type idx=0; idx<_grpStats.size(); ++idx)
 		{
 			// Lookup our edge
 			std::pair<int, int> edge = _lu.GetEdge(idx);
-
-			if(edge.first == 2 && edge.second == 68)
-				cout << "Nice";
 
 			// If our edge tstat is larger than our threshold keep it for NBS
 			if(abs(_grpStats[idx].TStat) > tStatThreshold)
@@ -84,7 +205,7 @@ namespace BrainLabNative
 		_largestComponentSize = _grpComponent.size();
 	}
 
-	void GraphComparison::Permute(vector<int>& idxs, int szGrp1, double tStatThreshold, std::vector<int> &vertexList)
+	void GraphComparison::Permute(vector<int>& idxs, int szGrp1, double tStatThreshold, vector<int> &vertexList)
 	{
 		// Make a temp graph for calculating high-level graph stats
 		UDGraph g(_vertCount);
@@ -94,10 +215,10 @@ namespace BrainLabNative
 		vector<int> supraThreshEdgeIdxs;
 
 		// Calculate t stats for this random subject labeling
-		CalcEdgeTStats(idxs, szGrp1, permEdgeStats);
+		CalcEdgeTStatsAmped(idxs, szGrp1, permEdgeStats);
 
 		// Loop through edge stats and calc	our measures
-		for(auto idx=0; idx<permEdgeStats.size(); ++idx)
+		for(vector<EdgeValue>::size_type idx=0; idx<permEdgeStats.size(); ++idx)
 		{
 			// Edge level testing - If this tstat is bigger than our grp tstat, increment the count
 			if(abs(permEdgeStats[idx].TStat) >= abs(_grpStats[idx].TStat))
@@ -173,7 +294,7 @@ namespace BrainLabNative
 
 		// Save the biggest component into the caller's vertex array
 		vertexList.resize(_vertCount);
-		for(auto i=0; i<components.size(); ++i)
+		for(vector<int>::size_type i=0; i<components.size(); ++i)
 		{
 			int edgeIdx = components[i];
 			std::pair<int, int> edge = _lu.GetEdge(edgeIdx);

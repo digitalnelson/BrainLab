@@ -1,12 +1,12 @@
 #pragma once
-
 #include <vector>
 #include <map>
 #include "Graph.h"
-#include "GraphComparison.h"
 
 namespace BrainLabNative
 {
+	class GraphComparison;
+
 	struct Subject
 	{
 		std::string SubjectId;
@@ -23,7 +23,7 @@ namespace BrainLabNative
 
 	struct Overlap
 	{
-		typedef std::map<std::string, std::vector<BrainLabNative::GraphComparison::Component>> ComponentByTypeCollection;
+		typedef std::map<std::string, std::vector<BrainLabNative::Component>> ComponentByTypeCollection;
 
 		std::vector<int> Vertices;
 		int RightTailOverlapCount;
@@ -36,7 +36,7 @@ namespace BrainLabNative
 		GraphComparisonMulti(int subjectCount, int verts, int edges, std::vector<std::string> dataTypes);
 		~GraphComparisonMulti(void);
 
-		typedef std::map<std::string, std::vector<BrainLabNative::Graph::Component>> ComponentByTypeCollection;
+		typedef std::map<std::string, std::vector<BrainLabNative::Component>> ComponentByTypeCollection;
 		
 		void AddSubject(Subject *itm);
 		void Compare(std::string group1, std::string group2, std::map<std::string, Threshold> threshes);

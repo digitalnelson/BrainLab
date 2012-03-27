@@ -36,11 +36,8 @@ namespace BrainLab.Studio.Loaders
 				for (int i = 0; i < fields.Length; i++)
 					subject.AddProperty(headers[i], fields[i]);
 
-				//// TODO: Replace this with group id maps
-				//if (subject.GroupId == "1")
-				//	subject.Group = "p";
-				//else
-				//	subject.Group = "c";
+				if (!Groups.ContainsKey(subject.GroupId))
+					Groups[subject.GroupId] = subject.GroupId;
 
 				subject.Group = subject.GroupId;
 
@@ -50,6 +47,8 @@ namespace BrainLab.Studio.Loaders
 
 			return subjects;
 		}
+
+		public Dictionary<string, string> Groups = new Dictionary<string, string>();
 
 		private string _fullPath;
 	}

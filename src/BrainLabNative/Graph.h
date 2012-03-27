@@ -5,13 +5,28 @@
 #include <map>
 #include <boost/graph/adjacency_matrix.hpp>
 #include <boost/graph/graph_utility.hpp>
-
 #include <boost/graph/connected_components.hpp>
 #include <boost/graph/iteration_macros.hpp>
 
-
 namespace BrainLabNative
 {
+	typedef std::pair<int, int> Edge;
+	typedef std::vector<Edge> EdgeCollection;
+
+	struct ComponentEdge
+	{
+		Edge Edge;
+		EdgeValue EdgeValue;
+	};
+
+	struct Component
+	{
+		int Identifier;
+		std::vector<ComponentEdge> Edges;
+		std::vector<int> Vertices;
+		int RightTailExtent;
+	};
+
 	class Graph
 	{
 	public:
@@ -22,19 +37,6 @@ namespace BrainLabNative
 		typedef std::pair<int, int> Edge;
 		typedef std::vector<Edge> EdgeCollection;
 		typedef std::vector<EdgeValue> EdgeValueCollection;
-
-		struct ComponentEdge
-		{
-			Edge Edge;
-			EdgeValue EdgeValue;
-		};
-
-		struct Component
-		{
-			int Identifier;
-			std::vector<ComponentEdge> Edges;
-			std::vector<int> Vertices;
-		};
 
 		typedef std::map<int, std::vector<int>> ComponentVertexCollection;   // Component id to component edge mapping
 		typedef std::map<int, std::vector<ComponentEdge>> ComponentEdgeCollection;
