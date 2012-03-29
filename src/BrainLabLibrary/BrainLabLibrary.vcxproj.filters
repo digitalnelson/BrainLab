@@ -27,9 +27,6 @@
     <ClInclude Include="SubjectGraphItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GroupCompare.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MultiModalCompare.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -40,9 +37,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EdgeValue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Exports.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graph.h">
@@ -72,9 +66,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SubjectGraphItem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GroupCompare.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MultiModalCompare.cpp">
@@ -111,8 +102,5 @@
     <ResourceCompile Include="app.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
   </ItemGroup>
 </Project>

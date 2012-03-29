@@ -61,11 +61,9 @@ namespace BrainLab.Studio
 			string regionFile = _txtRegionFile.Text;
 			string subjectFile = _txtSubjectFile.Text;
 			string dataFolder = _txtDataFolder.Text;
-			int vertexCount = Int32.Parse(_txtVertexCount.Text);
-			double threshold = Double.Parse(_txtThreshold.Text);
 
 			_btnData.IsEnabled = false;
-			await _viewModel.Load(regionFile, subjectFile, dataFolder, vertexCount);
+			await _viewModel.Load(regionFile, subjectFile, dataFolder);
 			_btnPermute.IsEnabled = true;
 		}
 

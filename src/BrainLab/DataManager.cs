@@ -72,9 +72,9 @@ namespace BrainLab.Studio
 			}
 		}
 
-		public void LoadAdjFiles(string fullPath, int vertexCount)
+		public void LoadAdjFiles(string fullPath)
 		{
-			_vertexCount = vertexCount;
+            _vertexCount = _regionsOfInterest.Count;
 			_adjLoader = new AdjCSVLoader(fullPath, _vertexCount, _subjectsById);
 			_subjectData = _adjLoader.Load();
 

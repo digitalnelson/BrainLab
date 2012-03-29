@@ -182,7 +182,7 @@ namespace BrainLabNative
 		concurrency::copy(_allEdges.begin(), _allEdges.end(), _subjectEdgesArr);
 
 		// Calculate t stats for this subject labeling
-		CalcEdgeTStatsAmped(idxs, szGrp1, _grpStats);
+		CalcEdgeTStats(idxs, szGrp1, _grpStats);
 
 		// Load graph with thresholded t stats
 		for(vector<EdgeValue>::size_type idx=0; idx<_grpStats.size(); ++idx)
@@ -215,7 +215,7 @@ namespace BrainLabNative
 		vector<int> supraThreshEdgeIdxs;
 
 		// Calculate t stats for this random subject labeling
-		CalcEdgeTStatsAmped(idxs, szGrp1, permEdgeStats);
+		CalcEdgeTStats(idxs, szGrp1, permEdgeStats);
 
 		// Loop through edge stats and calc	our measures
 		for(vector<EdgeValue>::size_type idx=0; idx<permEdgeStats.size(); ++idx)

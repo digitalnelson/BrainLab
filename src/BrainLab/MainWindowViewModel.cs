@@ -21,14 +21,14 @@ namespace BrainLab.Studio
 			Permutations = "10000";
 		}
 
-		public async Task Load(string regionFile, string subjectFile, string dataFolder, int vertexCount)
+		public async Task Load(string regionFile, string subjectFile, string dataFolder)
 		{
 			// Load the data files into the data manager
 			await Task.Run(delegate
 			{
 				_dataManager.LoadROIFile(regionFile);
 				_dataManager.LoadSubjectFile(subjectFile);
-				_dataManager.LoadAdjFiles(dataFolder, vertexCount);
+				_dataManager.LoadAdjFiles(dataFolder);
 			});
 
 			foreach (var itm in _dataManager.Groups)

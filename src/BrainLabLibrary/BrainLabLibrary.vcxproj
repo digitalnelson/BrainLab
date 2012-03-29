@@ -100,7 +100,6 @@
   <ItemGroup>
     <ClInclude Include="BrainLabManager.h" />
     <ClInclude Include="EdgeValue.h" />
-    <ClInclude Include="Exports.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="GraphComparison.h" />
     <ClInclude Include="GraphComparisonMulti.h" />
@@ -110,7 +109,6 @@
     <ClInclude Include="SubjectData.h" />
     <ClInclude Include="SubjectGraphFactory.h" />
     <ClInclude Include="SubjectGraphItem.h" />
-    <ClInclude Include="GroupCompare.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Stdafx.h" />
   </ItemGroup>
@@ -141,7 +139,6 @@
     <ClCompile Include="SubjectData.cpp" />
     <ClCompile Include="SubjectGraphFactory.cpp" />
     <ClCompile Include="SubjectGraphItem.cpp" />
-    <ClCompile Include="GroupCompare.cpp" />
     <ClCompile Include="Stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -157,9 +154,6 @@
     <ProjectReference Include="..\BrainLabStorage\BrainLabStorage.csproj">
       <Project>{5477f53e-48e6-48f2-93b9-4901855f4f32}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

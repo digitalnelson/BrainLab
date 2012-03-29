@@ -4,58 +4,30 @@
         Title="BrainLab Studio" Height="750" Width="1200" xmlns:my="clr-namespace:BrainLab.Studio" Background="#FFCFCFCF">
     <Grid>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="100" />
+			<RowDefinition Height="115" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="150" />
             <ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
-		
-		<StackPanel Grid.Column="0" Orientation="Vertical" Grid.Row="1" Grid.RowSpan="1" Margin="5,5,15,5">
-
-            <Label Content="Modality Selection" />
-            
-            <ListBox ItemsSource="{Binding DataTypes}" Height="150" HorizontalContentAlignment="Stretch" Margin="0" Background="{x:Null}">
-                
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width=".1*" />
-                                <ColumnDefinition Width=".45*" />
-                                <ColumnDefinition Width=".45*" />
-                            </Grid.ColumnDefinitions>
-
-                            <CheckBox Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding Selected}"/>
-                            <Label Content="{Binding Tag}" Grid.Column="1" VerticalAlignment="Center" />
-                            <TextBox Text="{Binding Threshold}" Grid.Column="2" VerticalAlignment="Center" />
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-				
-            </ListBox>
-            
-            <Label Content="Permutations" />
-            <TextBox x:Name="_txtPermutations" Text="{Binding Permutations}" />
-            <Button x:Name="_btnPermute" IsEnabled="False"  Click="Permute" Content="Permute" Width="75" Height="30" HorizontalAlignment="Center" Margin="0,10,0,0"  />
-            <Button x:Name="_btnDisplay" IsEnabled="False" Click="Display" Content="Stats" Width="75" Height="30" HorizontalAlignment="Center" Margin="0,10,0,0"  />
-            <Button x:Name="_btnReport" IsEnabled="False" Click="Report" Content="Report" Width="75" Height="30" HorizontalAlignment="Center" Margin="0,10,0,0"  />
-		</StackPanel>
         
         <Grid Grid.Column="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <StackPanel>
+            <StackPanel Grid.Column="0" Margin="5,5,5,5">
                 <Label Content="Region File" />
                 <TextBox x:Name="_txtRegionFile" Text="..\..\..\..\..\data\169_sz_2929\AAL.txt" />
                 <Label Content="Subject File" />
                 <TextBox x:Name="_txtSubjectFile" Text="..\..\..\..\..\data\169_sz_2929\subs.txt" />
             </StackPanel>
-            <StackPanel Grid.Column="1" Margin="5,0,0,0">
+
+            <StackPanel Grid.Column="1" Margin="5,5,5,5">
                 <StackPanel>
                     <Label Content="Data Folder" />
                     <TextBox x:Name="_txtDataFolder"  Text="..\..\..\..\..\data\169_sz_2929\adj" />
@@ -66,20 +38,74 @@
                         <ColumnDefinition />
                         <ColumnDefinition Width="90" />
                     </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="0">
-                        <Label Content="Vertex Count" />
-                        <TextBox x:Name="_txtVertexCount"  Text="90" />
-                    </StackPanel>
-                    <StackPanel Grid.Column="1">
-                        <Label Content="Threshold" />
-                        <TextBox x:Name="_txtThreshold"  Text="2.15" />
-                    </StackPanel>
-                    <Button x:Name="_btnData"  Grid.Column="2" Click="Load" Content="Load Data"  Width="75" Height="30" HorizontalAlignment="Center" Margin="0,10,0,0" />
+                    <StackPanel Grid.Column="0"/>
+                    <StackPanel Grid.Column="1"/>
+                    <Button x:Name="_btnData"  Grid.Column="2" Click="Load" Content="Load Data"  Width="75" Height="30" HorizontalAlignment="Center" />
                 </Grid>
+            </StackPanel>
+
+            <Grid Grid.Column="2" Margin="5,5,5,5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Label Content="Types" />
+                <ListBox Grid.Row="1" ItemsSource="{Binding DataTypes}" HorizontalContentAlignment="Stretch" Margin="0" Background="{x:Null}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width=".1*" />
+                                    <ColumnDefinition Width=".45*" />
+                                    <ColumnDefinition Width=".45*" />
+                                </Grid.ColumnDefinitions>
+
+                                <CheckBox Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding Selected}"/>
+                                <Label Content="{Binding Tag}" Grid.Column="1" VerticalAlignment="Center" />
+                                <TextBox Text="{Binding Threshold}" Grid.Column="2" VerticalAlignment="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+
+            <Grid Grid.Column="3" Margin="5,5,5,5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Label Content="Groups" />
+                <ListBox Grid.Row="1" ItemsSource="{Binding DataTypes}" HorizontalContentAlignment="Stretch" Margin="0" Background="{x:Null}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width=".1*" />
+                                    <ColumnDefinition Width=".45*" />
+                                    <ColumnDefinition Width=".45*" />
+                                </Grid.ColumnDefinitions>
+
+                                <CheckBox Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding Selected}"/>
+                                <Label Content="{Binding Tag}" Grid.Column="1" VerticalAlignment="Center" />
+                                <TextBox Text="{Binding Threshold}" Grid.Column="2" VerticalAlignment="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+
+            <StackPanel Grid.Column="4" Margin="5,5,5,5">
+                <Label Content="Permutations" />
+                <TextBox x:Name="_txtPermutations" Text="{Binding Permutations}" />
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="_btnPermute" IsEnabled="False"  Click="Permute" Content="Permute" Width="75" Height="30" HorizontalAlignment="Center" Margin="0,10,0,0"  />
+                    <Button x:Name="_btnDisplay" IsEnabled="False" Click="Display" Content="Stats" Width="75" Height="30" HorizontalAlignment="Center" Margin="0,10,0,0"  />
+                    <Button x:Name="_btnReport" IsEnabled="False" Click="Report" Content="Report" Width="75" Height="30" HorizontalAlignment="Center" Margin="0,10,0,0"  />
+                   </StackPanel>
             </StackPanel>
         </Grid>
 
-        <Grid x:Name="charts" Grid.Column="1" Grid.Row="1">
+        <Grid x:Name="charts" Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.33*" />
                 <ColumnDefinition Width="0.33*"/>
