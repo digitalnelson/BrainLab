@@ -12,6 +12,8 @@ namespace BrainLabLibrary
 		_dataTypes = dataTypes;
 		_subCounter = 0;
 
+		srand(time(0));
+
 		_permutations = 0;
 		_realOverlap = 0;
 		_rightTailOverlapCount = 0;
@@ -90,8 +92,8 @@ namespace BrainLabLibrary
 		// Fill with values 0..subjectCount
 		Stats::FillVectorInc(idxs);
 
-		//for(int i=0; i<permutations; i++)
-		parallel_for(0, permutations, [=, &idxs, &threshes] (int i)
+		for(int i=0; i<permutations; i++)
+		//parallel_for(0, permutations, [=, &idxs, &threshes] (int i)
 		{	
 			// Shuffle the indexes
 			random_shuffle(idxs.begin(), idxs.end());
@@ -129,7 +131,7 @@ namespace BrainLabLibrary
 			// NBS multimodal compare
 			if(permOverlap >= _realOverlap)
 				++_rightTailOverlapCount;
-		});
+		}//);
 	}
 
 	Overlap GraphComparisonMulti::GetOverlapResult()
