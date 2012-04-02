@@ -75,9 +75,7 @@ namespace BrainLab.Studio
 			GraphComponent cmp = null;
 			for (var i = 0; i < components.Count; i++)
 			{
-				double pval = ((double)components[i].RightTailExtentCount) / ((double)overlap.Permutations);
-
-				if ((pval < 0.05) && (components[i].Edges.Count > cmpSize))
+				if (components[i].Edges.Count > cmpSize)
 				{
 					cmp = components[i];
 					cmpSize = cmp.Edges.Count;
@@ -86,9 +84,9 @@ namespace BrainLab.Studio
 
 			if (cmp != null)
 			{
-                _graphCrXL.DoSomething(nodes, cmp.Edges, r => r.XF, xRange, r => r.ZF, zRange, false, componentColor);
-                _graphSgXL.DoSomething(nodes, cmp.Edges, r => r.XF, xRange, r => r.YF, yRange, false, componentColor);
-                _graphAxXL.DoSomething(nodes, cmp.Edges, r => r.YF, yRange, r => r.ZF, zRange, true, componentColor);
+                _graphCrXL.DoSomething(nodes, cmp.Edges, r => r.XF, xRange, r => r.ZF, zRange, false, componentColor, overlap);
+				_graphSgXL.DoSomething(nodes, cmp.Edges, r => r.XF, xRange, r => r.YF, yRange, false, componentColor, overlap);
+				_graphAxXL.DoSomething(nodes, cmp.Edges, r => r.YF, yRange, r => r.ZF, zRange, true, componentColor, overlap);
 			}
 
             if (cmp != null)
@@ -117,6 +115,11 @@ namespace BrainLab.Studio
                 foreach (var vert in itms)
                     CmpNodes.Add(string.Format("{0} ({1})", vert.Roi.Name, vert.Roi.Index));
             }
+
+			string strLoc = "d:\\";
+			_graphAxXL.SaveGraphML(strLoc, dataType, "Sagital");
+			_graphSgXL.SaveGraphML(strLoc, dataType, "Axial");
+			_graphCrXL.SaveGraphML(strLoc, dataType, "Coronal");
 		}
 
 		public string GetReport()

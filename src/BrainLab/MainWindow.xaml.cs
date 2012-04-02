@@ -84,7 +84,7 @@ namespace BrainLab.Studio
             dComponents.LoadGraphComponents(overlap, "DTI", Color.FromArgb(255, 0, 255, 0));
 			fComponents.LoadGraphComponents(overlap, "fMRI", Color.FromArgb(255, 0, 0, 255));
 
-			_btnReport.IsEnabled = true;
+			//_btnReport.IsEnabled = true;
 
 			//DistroSummary ds = null;
 			//for (double d = 2.16; d < 2.19; d += 0.001)

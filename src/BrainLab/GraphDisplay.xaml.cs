@@ -30,10 +30,12 @@ namespace BrainLab.Studio
 			InitializeComponent();
 
 			_oNodeXLControl = new NodeXLControl();
+			_oNodeXLControl.Graph = new Smrf.NodeXL.Core.Graph(GraphDirectedness.Undirected);
+
 			_graphXL.Child = _oNodeXLControl;
 		}
 
-		public void DoSomething(List<ROIVertex> nodes, List<GraphEdge> edges, SelectDim horiz, double hRange, SelectDim vert, double vRange, bool flipX, System.Windows.Media.Color componentColor)
+		public void DoSomething(List<ROIVertex> nodes, List<GraphEdge> edges, SelectDim horiz, double hRange, SelectDim vert, double vRange, bool flipX, System.Windows.Media.Color componentColor, Overlap overlap)
 		{
 			double width = this.ActualWidth - 30;
 			double height = this.ActualHeight - 30;
@@ -60,7 +62,7 @@ namespace BrainLab.Studio
                 hSize = width;
             }
 
-			IGraph g = _oNodeXLControl.Graph;
+			IGraph g = _oNodeXLControl.Graph;	
 			IVertexCollection vc = g.Vertices;
 			IEdgeCollection ec = g.Edges;
 
@@ -74,17 +76,23 @@ namespace BrainLab.Studio
                 if (flipX)
                     xCoord = width - xCoord;
 
-                double yCoord = (vf * vSize) + vOffset;
-                yCoord = height - yCoord;
+                double yCoordNative = (vf * vSize) + vOffset;
+				double yCoord = height - yCoordNative;
 
 				IVertex vertex = vc.Add();
 
+				vertex.Name = node.Roi.Index.ToString();
+								
                 vertex.SetValue(ReservedMetadataKeys.PerVertexRadius, 8.0f);
                 vertex.SetValue(ReservedMetadataKeys.PerAlpha, 75.0f);
 				vertex.SetValue(ReservedMetadataKeys.LockVertexLocation, true);
 
 				vertex.Location = new System.Drawing.PointF((float)xCoord + 15, (float)yCoord + 15);
-
+				
+				vertex.SetValue("x", xCoord.ToString());
+				vertex.SetValue("y", yCoordNative.ToString());
+				vertex.SetValue("name", node.Roi.Name);
+					
 				verts.Add(vertex);
 			}
 
@@ -97,16 +105,36 @@ namespace BrainLab.Studio
                 v2.SetValue(ReservedMetadataKeys.PerColor, componentColor);
                 v2.SetValue(ReservedMetadataKeys.PerAlpha, 100.0f);
 
-                //double diff = edge.M2 - edge.M1;
-                //double pval = ((double)edge.RightTailCount) / ((double)overlap.Permutations);
+				v1.SetValue("r", componentColor.R.ToString());
+				v1.SetValue("g", componentColor.G.ToString());
+				v1.SetValue("b", componentColor.B.ToString());
+				v2.SetValue("r", componentColor.R.ToString());
+				v2.SetValue("g", componentColor.G.ToString());
+				v2.SetValue("b", componentColor.B.ToString());
+
+                double diff = edge.M2 - edge.M1;
+                double pval = ((double)edge.RightTailCount) / ((double)overlap.Permutations);
                 //string lbl = string.Format("{0} ({1})", diff.ToString("0.000"), pval.ToString("0.0000"));
 
                 IEdge e = ec.Add(v1, v2);
+				e.SetValue("diff", diff);
+				e.SetValue("pval", pval);
                 e.SetValue(ReservedMetadataKeys.PerEdgeWidth, 2.0f);
                 e.SetValue(ReservedMetadataKeys.PerColor, componentColor);
 			}
 
 			_oNodeXLControl.DrawGraph(true);
+		}
+
+		public void SaveGraphML(string folder, string dataType, string view)
+		{
+			string fileName = "graph_" + dataType + "_" + view + ".graphml";
+
+			_oNodeXLControl.Graph.SetValue(ReservedMetadataKeys.AllEdgeMetadataKeys, new string[] { "diff", "pval" });
+			_oNodeXLControl.Graph.SetValue(ReservedMetadataKeys.AllVertexMetadataKeys, new string[] { "x", "y", "name", "r", "g", "b" });
+
+			Smrf.NodeXL.Adapters.GraphMLGraphAdapter ga = new Smrf.NodeXL.Adapters.GraphMLGraphAdapter();
+			ga.SaveGraph(_oNodeXLControl.Graph, System.IO.Path.Combine(folder, fileName));
 		}
 
 		//private NodeXLWithAxesControl m_oNodeXLWithAxesControl;

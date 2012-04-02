@@ -20,7 +20,7 @@
         
         <StackPanel Orientation="Horizontal" Grid.Row="0">
             <Label Content="Modality: " />
-            <Label Content="" x:Name="_lblModality" />
+			<Label Content="{Binding DataType}" />
         </StackPanel>
 
         <my:GraphDisplay x:Name="_graphAxXL" Grid.Row="1" Grid.ColumnSpan="2" Margin="6,6,6,3" />
