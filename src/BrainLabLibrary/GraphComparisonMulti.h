@@ -3,7 +3,7 @@
 #include <map>
 #include "Graph.h"
 
-namespace BrainLabNative
+namespace BrainLabLibrary
 {
 	class GraphComparison;
 
@@ -23,7 +23,7 @@ namespace BrainLabNative
 
 	struct Overlap
 	{
-		typedef std::map<std::string, std::vector<BrainLabNative::Component>> ComponentByTypeCollection;
+		typedef std::map<std::string, std::vector<Component>> ComponentByTypeCollection;
 
 		std::vector<int> Vertices;
 		int RightTailOverlapCount;
@@ -36,7 +36,7 @@ namespace BrainLabNative
 		GraphComparisonMulti(int subjectCount, int verts, int edges, std::vector<std::string> dataTypes);
 		~GraphComparisonMulti(void);
 
-		typedef std::map<std::string, std::vector<BrainLabNative::Component>> ComponentByTypeCollection;
+		typedef std::map<std::string, std::vector<Component>> ComponentByTypeCollection;
 		
 		void AddSubject(Subject *itm);
 		void Compare(std::string group1, std::string group2, std::map<std::string, Threshold> threshes);

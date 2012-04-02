@@ -13,7 +13,7 @@
 using namespace Concurrency;
 using namespace std;
 
-namespace BrainLabNative
+namespace BrainLabLibrary
 {
 	class Stats
 	{

@@ -1,9 +1,8 @@
-#include "stdafx.h"
 #include "Graph.h"
 #include <exception>
 #include <map>
 
-namespace BrainLabNative
+namespace BrainLabLibrary
 {
 	Graph::Graph(int nVerts, GraphLookup* lu) : _graph(nVerts)
 	{

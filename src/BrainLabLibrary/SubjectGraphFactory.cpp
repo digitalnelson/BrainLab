@@ -6,7 +6,7 @@ namespace BrainLabLibrary
 	SubjectGraphFactory::SubjectGraphFactory(int vertexCount)
 	{
 		_vertexCount  = vertexCount;
-		_lu = new BrainLabNative::GraphLookup(vertexCount);
+		_lu = new GraphLookup(vertexCount);
 	};
 
 	SubjectGraphItem^ SubjectGraphFactory::CreateSubject()

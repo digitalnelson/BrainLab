@@ -27,9 +27,16 @@ namespace BrainLab.Studio
 		{
 			InitializeComponent();
 
-			_oNodeXLControl = new NodeXLControl();
-			_graphXL.Child = _oNodeXLControl;
+            Clear();
 		}
+
+        public void Clear()
+        {
+            _oNodeXLControl = new NodeXLControl();
+            _oNodeXLControl.Graph = new Smrf.NodeXL.Core.Graph(GraphDirectedness.Undirected);
+
+            _graphXL.Child = _oNodeXLControl;
+        }
 
 		public void DoSomething(List<ROIVertex> nodes, List<GraphEdge> edges, SelectDim horiz, double hRange, SelectDim vert, double vRange, bool flipX)
 		{
@@ -62,7 +69,6 @@ namespace BrainLab.Studio
 			IVertexCollection vc = g.Vertices;
 			IEdgeCollection ec = g.Edges;
 
-			List<IVertex> verts = new List<IVertex>();
 			foreach (var node in nodes)
 			{
 				double hf = horiz(node);
@@ -76,12 +82,7 @@ namespace BrainLab.Studio
 				yCoord = height - yCoord;
 
 				IVertex vertex = vc.Add();
-
-				//if (!node.Roi.Special)
-					//vertex.SetValue(ReservedMetadataKeys.PerAlpha, 40.0f);
-
-				//vertex.SetValue(ReservedMetadataKeys.PerVertexLabel, node.Roi.Name);
-                if (node.Roi.Special)
+                if (node.Highlight)
                 {
                     vertex.SetValue(ReservedMetadataKeys.PerColor, Color.FromArgb(255, 255, 0, 0));
                     vertex.SetValue(ReservedMetadataKeys.PerVertexRadius, 8.0f);
@@ -93,16 +94,13 @@ namespace BrainLab.Studio
                 }
 
 				vertex.SetValue(ReservedMetadataKeys.LockVertexLocation, true);
-
 				vertex.Location = new System.Drawing.PointF((float)xCoord + 15, (float)yCoord + 15);
-
-				verts.Add(vertex);
 			}
 
 			//Dictionary<int, ROIVertex> cmpVerts = new Dictionary<int, ROIVertex>();
 
-			foreach (var edge in edges)
-			{
+			//foreach (var edge in edges)
+			//{
 			//	ROIVertex v1 = nodes[edge.V1];
 			//	ROIVertex v2 = nodes[edge.V2];
 
@@ -133,12 +131,11 @@ namespace BrainLab.Studio
 			//		e.SetValue(ReservedMetadataKeys.PerAlpha, 70.0f);
 			//		e.SetValue(ReservedMetadataKeys.PerColor, Color.FromArgb(255, 0, 0, 0));
 			//	}
-			}
+			//}
 
 			_oNodeXLControl.DrawGraph(true);
 		}
 
-		//private NodeXLWithAxesControl m_oNodeXLWithAxesControl;
 		private NodeXLControl _oNodeXLControl;
 	}
 }

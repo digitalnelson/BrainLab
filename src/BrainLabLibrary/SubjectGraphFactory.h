@@ -12,7 +12,7 @@ namespace BrainLabLibrary
 
 	private:
 		int _vertexCount;
-		BrainLabNative::GraphLookup *_lu;
+		GraphLookup *_lu;
 	};
 }
 

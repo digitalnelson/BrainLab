@@ -8,7 +8,7 @@
 #include <boost/graph/connected_components.hpp>
 #include <boost/graph/iteration_macros.hpp>
 
-namespace BrainLabNative
+namespace BrainLabLibrary
 {
 	typedef std::pair<int, int> Edge;
 	typedef std::vector<Edge> EdgeCollection;

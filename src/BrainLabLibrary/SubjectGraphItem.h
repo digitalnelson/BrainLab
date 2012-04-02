@@ -1,12 +1,12 @@
 #pragma once
-#include "Graph.h"
 #include "GraphLookup.h"
 
 using namespace System;
-using namespace BrainLabNative;
 
 namespace BrainLabLibrary
 {
+	class Graph;
+
 	public ref class SubjectGraphItem
 	{
 	public:

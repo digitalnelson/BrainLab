@@ -29,11 +29,16 @@ namespace BrainLab.Studio
 		{
 			InitializeComponent();
 
-			_oNodeXLControl = new NodeXLControl();
-			_oNodeXLControl.Graph = new Smrf.NodeXL.Core.Graph(GraphDirectedness.Undirected);
-
-			_graphXL.Child = _oNodeXLControl;
+            Clear();
 		}
+
+        public void Clear()
+        {
+            _oNodeXLControl = new NodeXLControl();
+            _oNodeXLControl.Graph = new Smrf.NodeXL.Core.Graph(GraphDirectedness.Undirected);
+
+            _graphXL.Child = _oNodeXLControl;
+        }
 
 		public void DoSomething(List<ROIVertex> nodes, List<GraphEdge> edges, SelectDim horiz, double hRange, SelectDim vert, double vRange, bool flipX, System.Windows.Media.Color componentColor, Overlap overlap)
 		{

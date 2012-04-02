@@ -8,7 +8,7 @@
 #include <boost/graph/connected_components.hpp>
 #include <boost/graph/iteration_macros.hpp>
 
-namespace BrainLabNative
+namespace BrainLabLibrary
 {
 	Stats::Stats(void)
 	{

@@ -2,7 +2,7 @@
 #include "GraphComparison.h"
 #include "Stats.h"
 
-namespace BrainLabNative
+namespace BrainLabLibrary
 {
 	GraphComparisonMulti::GraphComparisonMulti(int subjectCount, int vertices, int edges, std::vector<std::string> dataTypes)
 	{
@@ -88,7 +88,7 @@ namespace BrainLabNative
 		std::vector<int> idxs(_subjectCount);
 		
 		// Fill with values 0..subjectCount
-		BrainLabNative::Stats::FillVectorInc(idxs);
+		Stats::FillVectorInc(idxs);
 
 		//for(int i=0; i<permutations; i++)
 		parallel_for(0, permutations, [=, &idxs, &threshes] (int i)

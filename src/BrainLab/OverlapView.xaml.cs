@@ -35,7 +35,6 @@ namespace BrainLab.Studio
 
 			_ctl.DataContext = this;
 
-			// These are to power lists in the displays
 			InterModalNodes = new ObservableCollection<string>();
 			InterModalEdges = new ObservableCollection<string>();
 			CmpNodes = new ObservableCollection<string>();
@@ -47,10 +46,32 @@ namespace BrainLab.Studio
 			_dataManager = dataManager;
 		}
 
+        public void Clear()
+        {
+            _mapVtx = new Dictionary<int, ROIVertex>();
+
+            InterModalNodes.Clear();
+            InterModalEdges.Clear();
+            CmpNodes.Clear();
+            CmpEdges.Clear();
+
+            _graphAxXL.Clear();
+            _graphCrXL.Clear();
+            _graphSgXL.Clear();
+        }
+
 		public void LoadGraphComponents(Overlap overlap, string dataType)
 		{
 			DataType = dataType;
-			//InterModalPValue = ((double)overlap.RightTailOverlapCount) / ((double)overlap.Permutations);
+			InterModalPValue = ((double)overlap.RightTailOverlapCount) / ((double)overlap.Permutations);
+
+            foreach (var node in overlap.Vertices)
+            {
+                ROI roi = _dataManager.GetROI(node);
+				_mapVtx[node] = new ROIVertex() { Roi = roi, XF = 0, YF = 0, ZF = 0, Highlight = true };
+
+				InterModalNodes.Add(string.Format("{0} ({1})", roi.Name, roi.Index));
+            }
 
 			List<GraphComponent> components = overlap.Components[dataType];
 			List<ROIVertex> nodes = new List<ROIVertex>();
@@ -68,28 +89,22 @@ namespace BrainLab.Studio
 				double yFactor = (roi.Y - _dataManager.YMin) / yRange;
 				double zFactor = (roi.Z - _dataManager.ZMin) / zRange;
 
-				nodes.Add( new ROIVertex() { Roi = roi, XF = xFactor, YF = yFactor, ZF = zFactor } );
+				ROIVertex vtx = null;
+				if (_mapVtx.ContainsKey(i))
+					vtx = _mapVtx[i];
+				else
+					vtx = new ROIVertex() { Roi = roi, XF = 0, YF = 0, ZF = 0 };
+
+				vtx.XF = xFactor;
+				vtx.YF = yFactor;
+				vtx.ZF = zFactor;
+
+				nodes.Add(vtx);
 			}
 
-			int cmpSize = 0;
-			GraphComponent cmp = null;
-			for (var i = 0; i < components.Count; i++)
-			{
-				double pval = ((double)components[i].RightTailExtentCount) / ((double)overlap.Permutations);
-
-				if ((pval < 0.05) && (components[i].Edges.Count > cmpSize))
-				{
-					cmp = components[i];
-					cmpSize = cmp.Edges.Count;
-				}
-			}
-
-			if (cmp != null)
-			{
-				_graphCrXL.DoSomething(nodes, cmp.Edges, r => r.XF, xRange, r => r.ZF, zRange, false);
-				_graphSgXL.DoSomething(nodes, cmp.Edges, r => r.XF, xRange, r => r.YF, yRange, false);
-				_graphAxXL.DoSomething(nodes, cmp.Edges, r => r.YF, yRange, r => r.ZF, zRange, true);
-			}
+            _graphCrXL.DoSomething(nodes, edges, r => r.XF, xRange, r => r.ZF, zRange, false);
+            _graphSgXL.DoSomething(nodes, edges, r => r.XF, xRange, r => r.YF, yRange, false);
+            _graphAxXL.DoSomething(nodes, edges, r => r.YF, yRange, r => r.ZF, zRange, true);
 
             //if (cmp != null)
             //{
@@ -206,11 +221,6 @@ namespace BrainLab.Studio
 
 		private DataManager _dataManager;
 		
-		
-		private NodeXLWithAxesControl m_oNodeXLWithAxesControl;
-		private NodeXLControl m_oNodeXLControl;
-
-
 		private Dictionary<int, ROIVertex> _mapVtx = null;
 	}
 }

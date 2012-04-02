@@ -26,7 +26,7 @@ namespace BrainLabLibrary
 			SubjectData ^subj = itms[idx];
 
 			// Create an unmanaged subject
-			BrainLabNative::Subject s;
+			Subject s;
 			s.GroupId = msclr::interop::marshal_as<std::string>(subj->GroupId);
 
 			// Loop through the graphs for this subject
@@ -85,7 +85,7 @@ namespace BrainLabLibrary
 	BrainLabStorage::Overlap^ MultiModalCompare::GetResult()
 	{
 		// Pull the results of the comparison
-		BrainLabNative::Overlap overlapResult = _cmpMulti->GetOverlapResult();
+		BrainLabLibrary::Overlap overlapResult = _cmpMulti->GetOverlapResult();
 		
 		// Convert the NBS computation result back to managed C++
 		BrainLabStorage::Overlap^ blsor = gcnew BrainLabStorage::Overlap();

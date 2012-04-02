@@ -12,7 +12,7 @@
 using namespace std;
 using namespace concurrency;
 
-namespace BrainLabNative
+namespace BrainLabLibrary
 {
 	GraphComparison::GraphComparison(int subjectCount, int verts, int edges) 
 		: _subjectEdges(boost::extents[edges][subjectCount]), _lu(verts), _grpStats(edges), _g(verts, &_lu), _graph(verts),

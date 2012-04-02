@@ -68,22 +68,24 @@ namespace BrainLab.Studio
 		}
 
 		private async void Permute(object sender, RoutedEventArgs e)
-		{	
-			_btnPermute.IsEnabled = false;
-
+		{
+            oComponents.Clear();
+            dComponents.Clear();
+            fComponents.Clear();
+	
 			await _viewModel.Permute();
+
+            Overlap overlap = _dataManager.GetOverlap();
+
+            oComponents.LoadGraphComponents(overlap, "DTI");
+            dComponents.LoadGraphComponents(overlap, "DTI", Color.FromArgb(255, 0, 255, 0));
+            fComponents.LoadGraphComponents(overlap, "fMRI", Color.FromArgb(255, 0, 0, 255));
 
 			_btnDisplay.IsEnabled = true;
 		}
 
 		private void Display(object sender, RoutedEventArgs e)
 		{
-			Overlap overlap = _dataManager.GetOverlap();
-
-            oComponents.LoadGraphComponents(overlap, "DTI");
-            dComponents.LoadGraphComponents(overlap, "DTI", Color.FromArgb(255, 0, 255, 0));
-			fComponents.LoadGraphComponents(overlap, "fMRI", Color.FromArgb(255, 0, 0, 255));
-
 			//_btnReport.IsEnabled = true;
 
 			//DistroSummary ds = null;

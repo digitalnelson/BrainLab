@@ -47,6 +47,18 @@ namespace BrainLab.Studio
 			_dataManager = dataManager;
 		}
 
+        public void Clear()
+        {
+            InterModalNodes.Clear();
+            InterModalEdges.Clear();
+            CmpNodes.Clear();
+            CmpEdges.Clear();
+
+            _graphAxXL.Clear();
+            _graphCrXL.Clear();
+            _graphSgXL.Clear();
+        }
+
 		public void LoadGraphComponents(Overlap overlap, string dataType, System.Windows.Media.Color componentColor)
 		{
 			DataType = dataType;
@@ -116,7 +128,7 @@ namespace BrainLab.Studio
                     CmpNodes.Add(string.Format("{0} ({1})", vert.Roi.Name, vert.Roi.Index));
             }
 
-			string strLoc = "d:\\";
+			string strLoc = @"C:\Users\Brent\Dropbox\Data\169_sz\outputtmp";
 			_graphAxXL.SaveGraphML(strLoc, dataType, "Sagital");
 			_graphSgXL.SaveGraphML(strLoc, dataType, "Axial");
 			_graphCrXL.SaveGraphML(strLoc, dataType, "Coronal");
@@ -218,5 +230,7 @@ namespace BrainLab.Studio
 		public double XF;
 		public double YF;
 		public double ZF;
+
+		public bool Highlight;
 	}
 }

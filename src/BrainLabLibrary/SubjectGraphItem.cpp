@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "SubjectGraphItem.h"
+#include "Graph.h"
 #include "EdgeValue.h"
 
 namespace BrainLabLibrary

@@ -2,7 +2,7 @@
 #include <vector>
 #include <map>
 
-namespace BrainLabNative
+namespace BrainLabLibrary
 {
 	class GraphEdgeMapper
 	{
