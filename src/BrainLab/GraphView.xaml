@@ -21,11 +21,13 @@
         <StackPanel Orientation="Horizontal" Grid.Row="0">
             <Label Content="Modality: " />
 			<Label Content="{Binding DataType}" />
-        </StackPanel>
+			<Label Content="   PVal: " />
+			<Label Content="{Binding CmpPValue}" />
+		</StackPanel>
 
-        <my:GraphDisplay x:Name="_graphAxXL" Grid.Row="1" Grid.ColumnSpan="2" Margin="6,6,6,3" />
+        <my:GraphDisplay x:Name="_graphAxXL" Grid.Row="1" Grid.ColumnSpan="2" Margin="3,3,3,3" />
 
-        <Grid Margin="6,3,6,0" Grid.Row="2" Grid.ColumnSpan="2">
+        <Grid Margin="3,3,3,0" Grid.Row="2" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
@@ -34,10 +36,10 @@
             <my:GraphDisplay x:Name="_graphSgXL" Grid.Column="1" Margin="3,0,0,0" />
         </Grid>
 
-        <Grid Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Margin="6,0,6,6">
+        <Grid Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Margin="3,0,3,6">
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
+                <ColumnDefinition Width=".45*" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
@@ -47,19 +49,30 @@
             </Grid.RowDefinitions>
 
             <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0">
-                <Label Content="Component Nodes: " />
+                <Label Content="Nodes: " />
                 <Label Content="{Binding CmpNodes.Count}" />
-                <Label Content="(" />
-                <Label Content="{Binding CmpPValue}" />
-                <Label Content=")" />
             </StackPanel>
-            <ListBox Grid.Column="0" Grid.Row="1" ItemsSource="{Binding CmpNodes}" Margin="0,0,3,0" />
 
-            <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
-                <Label Content="Component Edges: " />
+			<DataGrid Margin="0,0,3,0" Grid.Row="1" BorderBrush="#FF828790" ItemsSource="{Binding CmpNodes}" GridLinesVisibility="None" AutoGenerateColumns="False" BorderThickness="1" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False">
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="Id"  Binding="{Binding Id}" />
+					<DataGridTextColumn Width="*" Header="Name" Binding="{Binding Name}" />
+				</DataGrid.Columns>
+			</DataGrid>
+
+			<StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
+                <Label Content="Edges: " />
                 <Label Content="{Binding CmpEdges.Count}" />
             </StackPanel>
-            <ListBox Grid.Column="1" Grid.Row="1" ItemsSource="{Binding CmpEdges}" Margin="3,0,0,0" />
+
+			<DataGrid Margin="3,0,0,0" Grid.Column="1" Grid.Row="1" BorderBrush="#FF828790" ItemsSource="{Binding CmpEdges}" GridLinesVisibility="None" AutoGenerateColumns="False" BorderThickness="1" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False">
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="V1"  Binding="{Binding V1}" Width="*" />
+					<DataGridTextColumn Header="V2"  Binding="{Binding V2}" Width="*" />
+					<DataGridTextColumn Header="Diff"  Binding="{Binding Diff}" Width="*" />
+					<DataGridTextColumn Header="PVal"  Binding="{Binding PVal}" Width="*" />
+				</DataGrid.Columns>
+			</DataGrid>
 
         </Grid>
 

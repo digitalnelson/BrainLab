@@ -20,9 +20,9 @@
 
         <Label Content="Intermodal" Grid.Row="0"/>
 
-        <my:OverlapDisplay x:Name="_graphAxXL" Grid.Row="1" Grid.ColumnSpan="2" Margin="6,6,6,3" />
+        <my:OverlapDisplay x:Name="_graphAxXL" Grid.Row="1" Grid.ColumnSpan="2" Margin="3,3,3,3" />
 
-        <Grid Margin="6,3,6,0" Grid.Row="2" Grid.ColumnSpan="2">
+        <Grid Margin="3,3,3,0" Grid.Row="2" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />

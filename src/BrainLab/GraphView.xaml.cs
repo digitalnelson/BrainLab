@@ -36,10 +36,8 @@ namespace BrainLab.Studio
 			_ctl.DataContext = this;
 
 			// These are to power lists in the displays
-			InterModalNodes = new ObservableCollection<string>();
-			InterModalEdges = new ObservableCollection<string>();
-			CmpNodes = new ObservableCollection<string>();
-			CmpEdges = new ObservableCollection<string>();
+			CmpNodes = new ObservableCollection<NodeResult>();
+			CmpEdges = new ObservableCollection<EdgeResult>();
 		}
 
 		public void SetDataManager(DataManager dataManager)
@@ -49,8 +47,6 @@ namespace BrainLab.Studio
 
         public void Clear()
         {
-            InterModalNodes.Clear();
-            InterModalEdges.Clear();
             CmpNodes.Clear();
             CmpEdges.Clear();
 
@@ -62,7 +58,6 @@ namespace BrainLab.Studio
 		public void LoadGraphComponents(Overlap overlap, string dataType, System.Windows.Media.Color componentColor)
 		{
 			DataType = dataType;
-			//InterModalPValue = ((double)overlap.RightTailOverlapCount) / ((double)overlap.Permutations);
 
 			List<GraphComponent> components = overlap.Components[dataType];
 			List<ROIVertex> nodes = new List<ROIVertex>();
@@ -118,14 +113,14 @@ namespace BrainLab.Studio
 
                     double diff = edge.M2 - edge.M1;
                     double pval = ((double)edge.RightTailCount) / ((double)overlap.Permutations);
-                    string lbl = string.Format("{0} ({1})", diff.ToString("0.000"), pval.ToString("0.0000"));
+                    //string lbl = string.Format("{0} ({1})", diff.ToString("0.000"), pval.ToString("0.0000"));
 
-                    CmpEdges.Add(string.Format("{0} - {1} [{2} ({3} {4})] ", v1.Roi.Name, v2.Roi.Name, diff.ToString("0.000"), edge.TStat.ToString("0.00"), pval.ToString("0.0000")));
+					CmpEdges.Add(new EdgeResult() { V1 = v1.Roi.Name, V2 = v2.Roi.Name, Diff = diff, TStat = edge.TStat, PVal = pval });
                 }
 
                 var itms = from v in cmpVerts.Values orderby v.Roi.Index select v;
                 foreach (var vert in itms)
-                    CmpNodes.Add(string.Format("{0} ({1})", vert.Roi.Name, vert.Roi.Index));
+					CmpNodes.Add(new NodeResult() { Name = vert.Roi.Name, Id = vert.Roi.Index });
             }
 
 			string strLoc = @"C:\Users\Brent\Dropbox\Data\169_sz\outputtmp";
@@ -138,21 +133,21 @@ namespace BrainLab.Studio
 		{
 			StringBuilder sbReport = new StringBuilder();
 
-			sbReport.AppendLine("Inter Modal Nodes");
-			foreach (var itm in InterModalNodes)
-				sbReport.AppendLine(itm);
+			//sbReport.AppendLine("Inter Modal Nodes");
+			//foreach (var itm in InterModalNodes)
+			//	sbReport.AppendLine(itm);
 			
-			sbReport.AppendLine("Inter Modal Edges");
-			foreach (var itm in InterModalEdges)
-				sbReport.AppendLine(itm);
+			//sbReport.AppendLine("Inter Modal Edges");
+			//foreach (var itm in InterModalEdges)
+			//	sbReport.AppendLine(itm);
 
-			sbReport.AppendLine("Cmp Nodes");
-			foreach (var itm in CmpNodes)
-				sbReport.AppendLine(itm);
+			//sbReport.AppendLine("Cmp Nodes");
+			//foreach (var itm in CmpNodes)
+			//	sbReport.AppendLine(itm);
 
-			sbReport.AppendLine("Cmp Edges");
-			foreach (var itm in CmpEdges)
-				sbReport.AppendLine(itm);
+			//sbReport.AppendLine("Cmp Edges");
+			//foreach (var itm in CmpEdges)
+			//	sbReport.AppendLine(itm);
 
 			return sbReport.ToString();
 		}
@@ -187,12 +182,6 @@ namespace BrainLab.Studio
 			get { return _dataType; }
 			set { _dataType = value; NotifyPropertyChanged("DataType"); }
 		} private string _dataType;
-
-		public double InterModalPValue
-		{
-			get { return _interModalPValue; }
-			set { _interModalPValue = value; NotifyPropertyChanged("InterModalPValue"); }
-		} private double _interModalPValue;
 		
 		public double CmpPValue
 		{
@@ -200,10 +189,8 @@ namespace BrainLab.Studio
 			set { _cmpPValue = value; NotifyPropertyChanged("CmpPValue"); }
 		} private double _cmpPValue;
 
-		public ObservableCollection<string> InterModalNodes { get; private set; }
-		public ObservableCollection<string> InterModalEdges { get; private set; }
-		public ObservableCollection<string> CmpNodes { get; private set; }
-		public ObservableCollection<string> CmpEdges { get; private set; }
+		public ObservableCollection<NodeResult> CmpNodes { get; private set; }
+		public ObservableCollection<EdgeResult> CmpEdges { get; private set; }
 
 		protected void NotifyPropertyChanged(String info)
 		{
@@ -214,13 +201,21 @@ namespace BrainLab.Studio
 		}
 
 		private DataManager _dataManager;
-		
-		
-		private NodeXLWithAxesControl m_oNodeXLWithAxesControl;
-		private NodeXLControl m_oNodeXLControl;
+	}
 
+	public class NodeResult
+	{
+		public int Id { get; set; }
+		public string Name { get; set; }
+	}
 
-		private Dictionary<int, ROIVertex> _mapVtx = null;
+	public class EdgeResult
+	{
+		public string V1 { get; set; }
+		public string V2 { get; set; }
+		public double Diff { get; set; }
+		public double PVal { get; set; }
+		public double TStat { get; set; }
 	}
 
 	public class ROIVertex
