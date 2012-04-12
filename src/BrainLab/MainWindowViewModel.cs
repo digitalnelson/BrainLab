@@ -21,7 +21,7 @@ namespace BrainLab.Studio
 			Permutations = "25000";
 		}
 
-		public async Task Load(string regionFile, string subjectFile, string dataFolder)
+		public async Task Load(string regionFile, string subjectFile, string dataFolder, string outputFolder)
 		{
 			// Load the data files into the data manager
 			await Task.Run(delegate
@@ -29,6 +29,7 @@ namespace BrainLab.Studio
 				_dataManager.LoadROIFile(regionFile);
 				_dataManager.LoadSubjectFile(subjectFile);
 				_dataManager.LoadAdjFiles(dataFolder);
+				OutputFolder = outputFolder;
 			});
 
 			foreach (var itm in _dataManager.Groups)
@@ -39,7 +40,10 @@ namespace BrainLab.Studio
 
 			foreach (var itm in _dataManager.DataTypes)
 			{
-				var type = new DataType() { Tag = itm, Threshold = "2.15", Selected = true };
+				DataType type = DataStore.GetDataType(itm);
+
+				if (type==null)
+					type =	new DataType() { Tag = itm, Threshold = "2.15", Selected = true };
 				DataTypes.Add(type);
 			}
 		}
@@ -87,16 +91,18 @@ namespace BrainLab.Studio
 		public string Permutations { get; set; }
 		public long PermutationDuration { get; set; }
 
+		public string OutputFolder { get; set; }
+
 		private DataManager _dataManager;
 	}
 
-	class Group
+	public class Group
 	{
 		public bool Selected { get; set; }
 		public string Name { get; set; }
 	}
 
-	class DataType
+	public class DataType
 	{
 		public bool Selected { get; set; }
 		public string Tag { get; set; }

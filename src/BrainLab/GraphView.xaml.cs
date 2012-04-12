@@ -113,7 +113,6 @@ namespace BrainLab.Studio
 
                     double diff = edge.M2 - edge.M1;
                     double pval = ((double)edge.RightTailCount) / ((double)overlap.Permutations);
-                    //string lbl = string.Format("{0} ({1})", diff.ToString("0.000"), pval.ToString("0.0000"));
 
 					CmpEdges.Add(new EdgeResult() { V1 = v1.Roi.Name, V2 = v2.Roi.Name, Diff = diff, TStat = edge.TStat, PVal = pval });
                 }
@@ -121,35 +120,14 @@ namespace BrainLab.Studio
                 var itms = from v in cmpVerts.Values orderby v.Roi.Index select v;
                 foreach (var vert in itms)
 					CmpNodes.Add(new NodeResult() { Name = vert.Roi.Name, Id = vert.Roi.Index });
-            }
-
-			string strLoc = @"C:\Users\Brent\Dropbox\Data\169_sz\outputtmp";
-			_graphAxXL.SaveGraphML(strLoc, dataType, "Sagital");
-			_graphSgXL.SaveGraphML(strLoc, dataType, "Axial");
-			_graphCrXL.SaveGraphML(strLoc, dataType, "Coronal");
+            }		
 		}
 
-		public string GetReport()
+		public void SaveGraphML(string folder, string dataType)
 		{
-			StringBuilder sbReport = new StringBuilder();
-
-			//sbReport.AppendLine("Inter Modal Nodes");
-			//foreach (var itm in InterModalNodes)
-			//	sbReport.AppendLine(itm);
-			
-			//sbReport.AppendLine("Inter Modal Edges");
-			//foreach (var itm in InterModalEdges)
-			//	sbReport.AppendLine(itm);
-
-			//sbReport.AppendLine("Cmp Nodes");
-			//foreach (var itm in CmpNodes)
-			//	sbReport.AppendLine(itm);
-
-			//sbReport.AppendLine("Cmp Edges");
-			//foreach (var itm in CmpEdges)
-			//	sbReport.AppendLine(itm);
-
-			return sbReport.ToString();
+			_graphAxXL.SaveGraphML(folder, dataType, "Sagital");
+			_graphSgXL.SaveGraphML(folder, dataType, "Axial");
+			_graphCrXL.SaveGraphML(folder, dataType, "Coronal");
 		}
 
 		#region Edge stuff

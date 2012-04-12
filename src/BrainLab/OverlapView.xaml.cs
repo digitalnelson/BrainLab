@@ -37,8 +37,6 @@ namespace BrainLab.Studio
 
 			InterModalNodes = new ObservableCollection<string>();
 			InterModalEdges = new ObservableCollection<string>();
-			CmpNodes = new ObservableCollection<string>();
-			CmpEdges = new ObservableCollection<string>();
 		}
 
 		public void SetDataManager(DataManager dataManager)
@@ -48,32 +46,18 @@ namespace BrainLab.Studio
 
         public void Clear()
         {
-            _mapVtx = new Dictionary<int, ROIVertex>();
-
             InterModalNodes.Clear();
             InterModalEdges.Clear();
-            CmpNodes.Clear();
-            CmpEdges.Clear();
 
             _graphAxXL.Clear();
             _graphCrXL.Clear();
             _graphSgXL.Clear();
         }
 
-		public void LoadGraphComponents(Overlap overlap, string dataType)
+		public void LoadGraphComponents(Overlap overlap)
 		{
-			DataType = dataType;
 			InterModalPValue = ((double)overlap.RightTailOverlapCount) / ((double)overlap.Permutations);
 
-            foreach (var node in overlap.Vertices)
-            {
-                ROI roi = _dataManager.GetROI(node);
-				_mapVtx[node] = new ROIVertex() { Roi = roi, XF = 0, YF = 0, ZF = 0, Highlight = true };
-
-				InterModalNodes.Add(string.Format("{0} ({1})", roi.Name, roi.Index));
-            }
-
-			List<GraphComponent> components = overlap.Components[dataType];
 			List<ROIVertex> nodes = new List<ROIVertex>();
 			List<GraphEdge> edges = new List<GraphEdge>();
 
@@ -89,110 +73,30 @@ namespace BrainLab.Studio
 				double yFactor = (roi.Y - _dataManager.YMin) / yRange;
 				double zFactor = (roi.Z - _dataManager.ZMin) / zRange;
 
-				ROIVertex vtx = null;
-				if (_mapVtx.ContainsKey(i))
-					vtx = _mapVtx[i];
-				else
-					vtx = new ROIVertex() { Roi = roi, XF = 0, YF = 0, ZF = 0 };
+				nodes.Add(new ROIVertex() { Roi = roi, XF = xFactor, YF = yFactor, ZF = zFactor });
+			}
 
-				vtx.XF = xFactor;
-				vtx.YF = yFactor;
-				vtx.ZF = zFactor;
+			foreach (var node in overlap.Vertices)
+			{
+				var nd = nodes[node];
+				nd.Highlight = true;
 
-				nodes.Add(vtx);
+				InterModalNodes.Add(string.Format("{0} ({1})", nd.Roi.Name, nd.Roi.Index));
 			}
 
             _graphCrXL.DoSomething(nodes, edges, r => r.XF, xRange, r => r.ZF, zRange, false);
             _graphSgXL.DoSomething(nodes, edges, r => r.XF, xRange, r => r.YF, yRange, false);
             _graphAxXL.DoSomething(nodes, edges, r => r.YF, yRange, r => r.ZF, zRange, true);
-
-            //if (cmp != null)
-            //{
-            //    CmpPValue = ((double)cmp.RightTailExtentCount) / ((double)overlap.Permutations);
-            //    Dictionary<int, ROIVertex> cmpVerts = new Dictionary<int, ROIVertex>();
-
-            //    foreach (var edge in cmp.Edges)
-            //    {
-            //        ROIVertex v1 = _mapVtx[edge.V1];
-            //        ROIVertex v2 = _mapVtx[edge.V2];
-
-            //        if (!cmpVerts.ContainsKey(edge.V1))
-            //            cmpVerts[edge.V1] = v1;
-            //        if (!cmpVerts.ContainsKey(edge.V2))
-            //            cmpVerts[edge.V2] = v2;
-
-
-            //        double diff = edge.M2 - edge.M1;
-            //        double pval = ((double)edge.RightTailCount) / ((double)overlap.Permutations);
-            //        string lbl = string.Format("{0} ({1})", diff.ToString("0.000"), pval.ToString("0.0000"));
-
-            //        if (v1.Roi.Special && v2.Roi.Special)
-            //        {
-            //            InterModalEdges.Add(string.Format("{0} - {1} [{2} ({3} {4})] ", v1.Roi.Name, v2.Roi.Name, diff.ToString("0.000"), edge.TStat.ToString("0.00"), pval.ToString("0.0000")));
-            //        }
-
-            //        CmpEdges.Add(string.Format("{0} - {1} [{2} ({3} {4})] ", v1.Roi.Name, v2.Roi.Name, diff.ToString("0.000"), edge.TStat.ToString("0.00"), pval.ToString("0.0000")));
-            //    }
-
-            //    var itms = from v in cmpVerts.Values orderby v.Roi.Index select v;
-            //    foreach (var vert in itms)
-            //        CmpNodes.Add(string.Format("{0} ({1})", vert.Roi.Name, vert.Roi.Index));
-            //}
 		}
 
-		public string GetReport()
+		public void SaveGraphML(string folder, string dataType)
 		{
-			StringBuilder sbReport = new StringBuilder();
-
-			sbReport.AppendLine("Inter Modal Nodes");
-			foreach (var itm in InterModalNodes)
-				sbReport.AppendLine(itm);
-			
-			sbReport.AppendLine("Inter Modal Edges");
-			foreach (var itm in InterModalEdges)
-				sbReport.AppendLine(itm);
-
-			sbReport.AppendLine("Cmp Nodes");
-			foreach (var itm in CmpNodes)
-				sbReport.AppendLine(itm);
-
-			sbReport.AppendLine("Cmp Edges");
-			foreach (var itm in CmpEdges)
-				sbReport.AppendLine(itm);
-
-			return sbReport.ToString();
+			//_graphAxXL.SaveGraphML(folder, dataType, "Sagital");
+			//_graphSgXL.SaveGraphML(folder, dataType, "Axial");
+			//_graphCrXL.SaveGraphML(folder, dataType, "Coronal");
 		}
-
-		#region Edge stuff
-		// Calc corr for this edge
-		//OutputVals(_dataManager.CorrelateEdgeAndMeasure(edge, dataType, "CogMem"), dataType, v1, v2);
-		//OutputVals(_dataManager.CorrelateEdgeAndMeasure(edge, dataType, "CogAtten"), dataType, v1, v2);
-		//OutputVals(_dataManager.CorrelateEdgeAndMeasure(edge, dataType, "delusionsTotal"), dataType, v1, v2);
-		//OutputVals(_dataManager.CorrelateEdgeAndMeasure(edge, dataType, "bizarreTotal"), dataType, v1, v2);
-		//OutputVals(_dataManager.CorrelateEdgeAndMeasure(edge, dataType, "disorganizationTotal"), dataType, v1, v2);
-		//OutputVals(_dataManager.CorrelateEdgeAndMeasure(edge, dataType, "hallucinationsTotal"), dataType, v1, v2);
-		//OutputVals(_dataManager.CorrelateEdgeAndMeasure(edge, dataType, "sansTotal"), dataType, v1, v2);
-		//OutputVals(_dataManager.CorrelateEdgeAndMeasure(edge, dataType, "sapsTotal"), dataType, v1, v2);
-		private void OutputVals(List<DataManager.EdgeStats> stats, string dataType, ROIVertex v1, ROIVertex v2)
-		{
-			foreach (var es in stats)
-			{
-				if (es.Both < 0.05)
-				{
-					string str = string.Format("{6} {0} {1} {2} {3} {4} ({5})", dataType, es.Group, v1.Roi.Name, v2.Roi.Name, es.Corr.ToString("0.0000"), es.Both.ToString("0.0000"), es.Measure);
-					//_results += "\n" + str;
-				}
-			}
-		}
-		#endregion
-
+		
 		public event PropertyChangedEventHandler PropertyChanged;
-
-		public string DataType
-		{
-			get { return _dataType; }
-			set { _dataType = value; NotifyPropertyChanged("DataType"); }
-		} private string _dataType;
 
 		public double InterModalPValue
 		{
@@ -200,16 +104,8 @@ namespace BrainLab.Studio
 			set { _interModalPValue = value; NotifyPropertyChanged("InterModalPValue"); }
 		} private double _interModalPValue;
 		
-		public double CmpPValue
-		{
-			get { return _cmpPValue; }
-			set { _cmpPValue = value; NotifyPropertyChanged("CmpPValue"); }
-		} private double _cmpPValue;
-
 		public ObservableCollection<string> InterModalNodes { get; private set; }
 		public ObservableCollection<string> InterModalEdges { get; private set; }
-		public ObservableCollection<string> CmpNodes { get; private set; }
-		public ObservableCollection<string> CmpEdges { get; private set; }
 
 		protected void NotifyPropertyChanged(String info)
 		{
@@ -220,7 +116,5 @@ namespace BrainLab.Studio
 		}
 
 		private DataManager _dataManager;
-		
-		private Dictionary<int, ROIVertex> _mapVtx = null;
 	}
 }

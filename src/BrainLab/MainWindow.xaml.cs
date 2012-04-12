@@ -36,6 +36,7 @@ namespace BrainLab.Studio
 			_txtRegionFile.Text = DataStore.AppPrefs.RoiFilePath;
 			_txtSubjectFile.Text = DataStore.AppPrefs.SubjectfilePath;
 			_txtDataFolder.Text = DataStore.AppPrefs.DataFileDir;
+			_txtOutputFolder.Text = DataStore.AppPrefs.OutputDir;
 
 			// Set up last window location and size
 			if (DataStore.AppPrefs.WindowLocation != null &&  DataStore.AppPrefs.WindowLocation.Width != 0.0d && DataStore.AppPrefs.WindowLocation.Height != 0.0d)
@@ -61,9 +62,10 @@ namespace BrainLab.Studio
 			string regionFile = _txtRegionFile.Text;
 			string subjectFile = _txtSubjectFile.Text;
 			string dataFolder = _txtDataFolder.Text;
+			string outputDir = _txtOutputFolder.Text;
 
 			_btnData.IsEnabled = false;
-			await _viewModel.Load(regionFile, subjectFile, dataFolder);
+			await _viewModel.Load(regionFile, subjectFile, dataFolder, outputDir);
 			_btnPermute.IsEnabled = true;
 		}
 
@@ -77,9 +79,13 @@ namespace BrainLab.Studio
 
             Overlap overlap = _dataManager.GetOverlap();
 
-            oComponents.LoadGraphComponents(overlap, "DTI");
+            oComponents.LoadGraphComponents(overlap);
             dComponents.LoadGraphComponents(overlap, "DTI", Color.FromArgb(255, 0, 255, 0));
             fComponents.LoadGraphComponents(overlap, "fMRI", Color.FromArgb(255, 0, 0, 255));
+
+			oComponents.SaveGraphML(_viewModel.OutputFolder, "Overlap");
+			dComponents.SaveGraphML(_viewModel.OutputFolder, "DTI");
+			fComponents.SaveGraphML(_viewModel.OutputFolder, "fMRI");
 
 			//_btnDisplay.IsEnabled = true;
 		}
@@ -143,19 +149,6 @@ namespace BrainLab.Studio
 			//dEdgeOverview.LoadData(aalByIndex, "DTI", DoubleArray.From(ctls.Select(s => s.Graphs["DTI"].AdjMatrix)), DoubleArray.From(pros.Select(s => s.Graphs["DTI"].AdjMatrix)), SeriesChartType.Column, permStore);
 		}
 
-		public void Report(object sender, RoutedEventArgs e)
-		{
-			string dReport = dComponents.GetReport();
-			string fReport = fComponents.GetReport();
-
-			string dta = string.Format("DTI\n{0}\nfMRI{1}", dReport, fReport);
-
-			Report rpt = new Report();
-			rpt.SetData(dta);
-
-			rpt.ShowDialog();
-		}
-
 		protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
 		{
 			base.OnClosing(e);
@@ -163,6 +156,7 @@ namespace BrainLab.Studio
 			DataStore.AppPrefs.RoiFilePath = _txtRegionFile.Text;
 			DataStore.AppPrefs.SubjectfilePath = _txtSubjectFile.Text;
 			DataStore.AppPrefs.DataFileDir = _txtDataFolder.Text;
+			DataStore.AppPrefs.OutputDir = _txtOutputFolder.Text;
 
 			DataStore.AppPrefs.WindowLocation.X = this.Left;
 			DataStore.AppPrefs.WindowLocation.Y = this.Top;
@@ -171,6 +165,88 @@ namespace BrainLab.Studio
 			
 			DataStore.Save();
 			DataStore.Close();
+		}
+
+		private void Button_Click_Region(object sender, RoutedEventArgs e)
+		{
+			// Configure open file dialog box
+			Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+			dlg.FileName = "AAL"; // Default file name
+			dlg.DefaultExt = ".txt"; // Default file extension
+			dlg.Filter = "Text documents (.txt)|*.txt"; // Filter files by extension
+
+			if (_txtRegionFile.Text != "")
+				dlg.InitialDirectory = System.IO.Path.GetFullPath(_txtRegionFile.Text);
+
+			// Show open file dialog box
+			Nullable<bool> result = dlg.ShowDialog();
+
+			// Process open file dialog box results
+			if (result == true)
+			{
+				// Open document
+				_txtRegionFile.Text = dlg.FileName;
+			}
+		}
+
+		private void Button_Click_Subject(object sender, RoutedEventArgs e)
+		{
+			// Configure open file dialog box
+			Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+			dlg.FileName = "Subjects"; // Default file name
+			dlg.DefaultExt = ".txt"; // Default file extension
+			dlg.Filter = "Text documents (.txt)|*.txt"; // Filter files by extension
+
+			if (_txtSubjectFile.Text != "")
+				dlg.InitialDirectory = System.IO.Path.GetFullPath(_txtSubjectFile.Text);
+
+			// Show open file dialog box
+			Nullable<bool> result = dlg.ShowDialog();
+
+			// Process open file dialog box results
+			if (result == true)
+			{
+				// Open document
+				_txtSubjectFile.Text = dlg.FileName;
+			}
+		}
+
+		private void Button_Click_Data(object sender, RoutedEventArgs e)
+		{
+			// Configure open file dialog box
+			var dlg = new System.Windows.Forms.FolderBrowserDialog();
+
+			if (_txtDataFolder.Text != "")
+				dlg.SelectedPath = System.IO.Path.GetFullPath(_txtDataFolder.Text);
+			
+			// Show open file dialog box
+			var result = dlg.ShowDialog();
+
+			// Process open file dialog box results
+			if (result == System.Windows.Forms.DialogResult.OK)
+			{
+				// Open document
+				_txtDataFolder.Text = dlg.SelectedPath;
+			}
+		}
+
+		private void Button_Click_Output(object sender, RoutedEventArgs e)
+		{
+			// Configure open file dialog box
+			var dlg = new System.Windows.Forms.FolderBrowserDialog();
+
+			if (_txtOutputFolder.Text != "")
+				dlg.SelectedPath = System.IO.Path.GetFullPath(_txtOutputFolder.Text);
+
+			// Show open file dialog box
+			var result = dlg.ShowDialog();
+
+			// Process open file dialog box results
+			if (result == System.Windows.Forms.DialogResult.OK)
+			{
+				// Open document
+				_txtOutputFolder.Text = dlg.SelectedPath;
+			}
 		}
 	}
 }

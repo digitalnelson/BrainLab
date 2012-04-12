@@ -20,6 +20,10 @@ namespace BrainLab.Studio
 			_eds.Initialize();
 			_sess = _eds.OpenSession();
 
+			_dataTypes = new Dictionary<string, DataType>();
+			_dataTypes.Add("DTI", new DataType() { Tag = "DTI", Selected = true, Threshold = "2.15" });
+			_dataTypes.Add("fMRI", new DataType() { Tag = "fMRI", Selected = true, Threshold = "3.225" });
+
 			LoadAppPrefs();
 		}
 
@@ -38,6 +42,14 @@ namespace BrainLab.Studio
 			}
 		}
 
+		public static DataType GetDataType(string tag)
+		{
+			if (_dataTypes.ContainsKey(tag))
+				return _dataTypes[tag];
+			else
+				return null;
+		}
+
 		public static void Save()
 		{
 			_sess.SaveChanges();
@@ -52,6 +64,7 @@ namespace BrainLab.Studio
 
 		private static EmbeddableDocumentStore _eds;
 		private static IDocumentSession _sess;
+		private static Dictionary<string, DataType> _dataTypes;
 	}
 
 	public class WindowLocation
@@ -68,6 +81,7 @@ namespace BrainLab.Studio
 		public string RoiFilePath {get; set;}
 		public string SubjectfilePath {get; set;}
 		public string DataFileDir {get; set;}
+		public string OutputDir { get; set; }
 		public WindowLocation WindowLocation { get; set; }
 	}
 }
