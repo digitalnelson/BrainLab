@@ -119,7 +119,6 @@ namespace BrainLab.Studio
 
                 double diff = edge.M2 - edge.M1;
                 double pval = ((double)edge.RightTailCount) / ((double)overlap.Permutations);
-                //string lbl = string.Format("{0} ({1})", diff.ToString("0.000"), pval.ToString("0.0000"));
 
                 IEdge e = ec.Add(v1, v2);
 				e.SetValue("diff", diff);

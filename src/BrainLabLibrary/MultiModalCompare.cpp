@@ -65,7 +65,7 @@ namespace BrainLabLibrary
 		_cmpMulti->Compare(strGroup1, strGroup2, threshes);
 	}
 
-	void MultiModalCompare::Permute(int permutations, int group1Size, Dictionary<String^, double>^ thresholds)
+	void MultiModalCompare::Permute(int permutations, Dictionary<String^, double>^ thresholds)
 	{
 		std::map<std::string, Threshold> threshes;
 
@@ -78,7 +78,7 @@ namespace BrainLabLibrary
 			threshes[thresh.DataType] = thresh;
 		}
 
-		_cmpMulti->Permute(permutations, group1Size, threshes);
+		_cmpMulti->Permute(permutations, threshes);
 		_permutations += permutations;
 	}
 

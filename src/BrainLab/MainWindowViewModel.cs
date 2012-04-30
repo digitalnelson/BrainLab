@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace BrainLab.Studio
 {
@@ -65,17 +66,30 @@ namespace BrainLab.Studio
 					if(dt.Selected)
 						thresholds[dt.Tag] = Double.Parse(dt.Threshold);
 				}
+
+				List<string> grps = new List<string>();
+				foreach (var grp in Groups)
+				{
+					if (grp.Selected)
+						grps.Add(grp.Name);
+				}
+
+				if (grps.Count != 2)
+				{
+					MessageBox.Show("Please select 2 groups.");
+					return;
+				}
 				
 				// Load the graphs into the comparison system
 				_dataManager.LoadComparisons();
 
 				// Calculate our group differences
-				_dataManager.CalculateGroupDifferences("c", "p", thresholds); // TODO: Make the group choosing configurable
+				_dataManager.CalculateGroupDifferences(grps[0], grps[1], thresholds);
 								
 				sw.Start();
 
 				// Run permutations
-				_dataManager.PermuteComparisons(numOfPerms, 29, thresholds);  // TODO: Make the subject size dynamic based on groups chosen
+				_dataManager.PermuteComparisons(numOfPerms, thresholds);
 
 				sw.Stop();
 			});

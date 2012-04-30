@@ -40,7 +40,7 @@ namespace BrainLabLibrary
 		
 		void AddSubject(Subject *itm);
 		void Compare(std::string group1, std::string group2, std::map<std::string, Threshold> threshes);
-		void Permute(int permutations, int group1Size, std::map<std::string, Threshold> threshes);
+		void Permute(int permutations, std::map<std::string, Threshold> threshes);
 
 		Overlap GetOverlapResult();
 
@@ -53,6 +53,8 @@ namespace BrainLabLibrary
 		int _realOverlap;
 		int _rightTailOverlapCount;
 		int _permutations;
+
+		int _group1Count;
 
 		std::vector<std::string> _dataTypes;
 		std::map<std::string, GraphComparison*> _dataByType;

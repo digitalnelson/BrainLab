@@ -130,9 +130,9 @@ namespace BrainLab.Studio
 			_compare.CompareGroups(group1Id, group2Id, thresholds);
 		}
 
-		public void PermuteComparisons(int permutations, int group1Size, Dictionary<string, double> thresholds)
+		public void PermuteComparisons(int permutations, Dictionary<string, double> thresholds)
 		{
-			_compare.Permute(permutations, group1Size, thresholds);
+			_compare.Permute(permutations, thresholds);
 
 			_overlap = _compare.GetResult();
 			foreach (var v in _overlap.Vertices)

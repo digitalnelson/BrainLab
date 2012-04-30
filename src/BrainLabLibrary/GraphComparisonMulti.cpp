@@ -50,6 +50,9 @@ namespace BrainLabLibrary
 		for each(int itm in _subIdxsByGroup[group2])
 			idxs.push_back(itm);
 
+		// Keep track of our group 1 size for the permutation step
+		_group1Count = _subIdxsByGroup[group1].size();
+
 		// Temporary map to hold our node counts
 		std::vector<int> nodeCounts(_vertices);
 
@@ -62,7 +65,7 @@ namespace BrainLabLibrary
 			auto compare = it->second;
 
 			// Run the permutation for this index arrangement
-			compare->CompareGroups(idxs, _subIdxsByGroup[group1].size(), threshes[it->first].Value, vertList);
+			compare->CompareGroups(idxs, _group1Count, threshes[it->first].Value, vertList);
 
 			// Pull out the vertices and store then in our counting map
 			for(auto cv=0; cv<vertList.size(); ++cv)
@@ -84,7 +87,7 @@ namespace BrainLabLibrary
 		}
 	}
 
-	void GraphComparisonMulti::Permute(int permutations, int group1Size, std::map<std::string, Threshold> threshes)
+	void GraphComparisonMulti::Permute(int permutations, std::map<std::string, Threshold> threshes)
 	{
 		// Create a simple index vector
 		std::vector<int> idxs(_subjectCount);
@@ -110,7 +113,7 @@ namespace BrainLabLibrary
 				auto compare = it->second;
 
 				// Run the permutation for this index arrangement
-				compare->Permute(idxs, group1Size, threshes[it->first].Value, vertList);
+				compare->Permute(idxs, _group1Count, threshes[it->first].Value, vertList);
 
 				// Pull out the vertices and store then in our counting map
 				for(auto cv=0; cv<vertList.size(); ++cv)

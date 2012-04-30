@@ -18,11 +18,11 @@
             <ColumnDefinition Width="0.5*" />
         </Grid.ColumnDefinitions>
         
-        <StackPanel Orientation="Horizontal" Grid.Row="0">
-            <Label Content="Modality: " />
-			<Label Content="{Binding DataType}" />
-			<Label Content="   PVal: " />
-			<Label Content="{Binding CmpPValue}" />
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.ColumnSpan="2" Background="#22ffffff" Margin="3,0,3,0">
+			<Label Content="Modality: "  Foreground="{DynamicResource MainWindowText}"/>
+			<Label Content="{Binding DataType}"  Foreground="{DynamicResource MainWindowText}"/>
+			<Label Content="   PVal: "  Foreground="{DynamicResource MainWindowText}"/>
+			<Label Content="{Binding CmpPValue}"  Foreground="{DynamicResource MainWindowText}"/>
 		</StackPanel>
 
         <my:GraphDisplay x:Name="_graphAxXL" Grid.Row="1" Grid.ColumnSpan="2" Margin="3,3,3,3" />
@@ -49,8 +49,8 @@
             </Grid.RowDefinitions>
 
             <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0">
-                <Label Content="Nodes: " />
-                <Label Content="{Binding CmpNodes.Count}" />
+				<Label Content="Nodes: "  Foreground="{DynamicResource MainWindowText}"/>
+				<Label Content="{Binding CmpNodes.Count}" Foreground="{DynamicResource MainWindowText}" />
             </StackPanel>
 
 			<DataGrid Margin="0,0,3,0" Grid.Row="1" BorderBrush="#FF828790" ItemsSource="{Binding CmpNodes}" GridLinesVisibility="None" AutoGenerateColumns="False" BorderThickness="1" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False">
@@ -61,8 +61,8 @@
 			</DataGrid>
 
 			<StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
-                <Label Content="Edges: " />
-                <Label Content="{Binding CmpEdges.Count}" />
+				<Label Content="Edges: "  Foreground="{DynamicResource MainWindowText}"/>
+				<Label Content="{Binding CmpEdges.Count}" Foreground="{DynamicResource MainWindowText}" />
             </StackPanel>
 
 			<DataGrid Margin="3,0,0,0" Grid.Column="1" Grid.Row="1" BorderBrush="#FF828790" ItemsSource="{Binding CmpEdges}" GridLinesVisibility="None" AutoGenerateColumns="False" BorderThickness="1" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False">

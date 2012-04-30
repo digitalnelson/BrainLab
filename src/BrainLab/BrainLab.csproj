@@ -109,6 +109,7 @@
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationFramework.Aero" />
     <Reference Include="Raven.Abstractions">
       <HintPath>..\packages\RavenDB-Embedded.1.0.616\lib\net40\Raven.Abstractions.dll</HintPath>
     </Reference>
@@ -345,6 +346,18 @@
       <ProductName>Windows Installer 4.5</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\folder.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\folder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\Open.png" />
+    <Resource Include="icons\Open.jpg" />
+    <Resource Include="icons\Gray728.png" />
+    <Content Include="icons\Untitled-1.svg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

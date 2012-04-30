@@ -18,9 +18,13 @@
             <ColumnDefinition Width="0.5*" />
         </Grid.ColumnDefinitions>
 
-        <Label Content="Intermodal" Grid.Row="0"/>
+		<StackPanel Orientation="Horizontal" Grid.Row="0" Grid.ColumnSpan="2" Background="#22ffffff" Margin="3,0,3,0">
+			<Label Content="Intermodal" Foreground="{DynamicResource MainWindowText}"/>
+			<Label Content="   PVal: "  Foreground="{DynamicResource MainWindowText}"/>
+			<Label Content="{Binding InterModalPValue}"  Foreground="{DynamicResource MainWindowText}"/>
+		</StackPanel>
 
-        <my:OverlapDisplay x:Name="_graphAxXL" Grid.Row="1" Grid.ColumnSpan="2" Margin="3,3,3,3" />
+		<my:OverlapDisplay x:Name="_graphAxXL" Grid.Row="1" Grid.ColumnSpan="2" Margin="3,3,3,3" />
 
         <Grid Margin="3,3,3,0" Grid.Row="2" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
@@ -42,23 +46,33 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height=".50*" />
             </Grid.RowDefinitions>
-            
-            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0">
-                <Label Content="Intermodal Nodes: " />
-                <Label Content="{Binding InterModalNodes.Count}" />
-                <Label Content="(" />
-                <Label Content="{Binding InterModalPValue}" />
-                <Label Content=")" />
+
+			<StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0">
+				<Label Content="Intermodal Nodes: " Foreground="{DynamicResource MainWindowText}" />
+				<Label Content="{Binding InterModalNodes.Count}" Foreground="{DynamicResource MainWindowText}" />
             </StackPanel>
-            <ListBox Grid.Column="0" Grid.Row="1" ItemsSource="{Binding InterModalNodes}" Margin="0,0,3,0"/>
+            
+			<DataGrid Margin="0,0,3,0" Grid.Row="1" BorderBrush="#FF828790" ItemsSource="{Binding InterModalNodes}" GridLinesVisibility="None" AutoGenerateColumns="False" BorderThickness="1" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False">
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="Id"  Binding="{Binding Id}" />
+					<DataGridTextColumn Width="*" Header="Name" Binding="{Binding Name}" />
+				</DataGrid.Columns>
+			</DataGrid>
             
             <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
-                <Label Content="Intermodal Edges: " />
-                <Label Content="{Binding InterModalEdges.Count}" />
+				<Label Content="Intermodal Edges: "  Foreground="{DynamicResource MainWindowText}"/>
+				<Label Content="{Binding InterModalEdges.Count}"  Foreground="{DynamicResource MainWindowText}"/>
             </StackPanel>
-            <ListBox Grid.Column="1" Grid.Row="1" ItemsSource="{Binding InterModalEdges}" Margin="3,0,0,0"/>
             
-        </Grid>
+			<DataGrid Margin="3,0,0,0" Grid.Column="1" Grid.Row="1" BorderBrush="#FF828790" ItemsSource="{Binding InterModalEdges}" GridLinesVisibility="None" AutoGenerateColumns="False" BorderThickness="1" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False">
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="V1"  Binding="{Binding V1}" Width="*" />
+					<DataGridTextColumn Header="V2"  Binding="{Binding V2}" Width="*" />
+					<DataGridTextColumn Header="Diff"  Binding="{Binding Diff}" Width="*" />
+					<DataGridTextColumn Header="PVal"  Binding="{Binding PVal}" Width="*" />
+				</DataGrid.Columns>
+			</DataGrid>
+		</Grid>
         
     </Grid>
 </UserControl>

@@ -64,6 +64,27 @@ namespace BrainLab.Studio
 			string dataFolder = _txtDataFolder.Text;
 			string outputDir = _txtOutputFolder.Text;
 
+			if (string.IsNullOrEmpty(regionFile))
+			{
+				MessageBox.Show("Please set region file location.");
+				return;
+			}
+			if (string.IsNullOrEmpty(subjectFile))
+			{
+				MessageBox.Show("Please set subject file location.");
+				return;
+			}
+			if (string.IsNullOrEmpty(dataFolder))
+			{
+				MessageBox.Show("Please set data folder location.");
+				return;
+			}
+			if (string.IsNullOrEmpty(outputDir))
+			{
+				MessageBox.Show("Please set output folder location.");
+				return;
+			}
+
 			_btnData.IsEnabled = false;
 			await _viewModel.Load(regionFile, subjectFile, dataFolder, outputDir);
 			_btnPermute.IsEnabled = true;
@@ -79,13 +100,16 @@ namespace BrainLab.Studio
 
             Overlap overlap = _dataManager.GetOverlap();
 
-            oComponents.LoadGraphComponents(overlap);
-            dComponents.LoadGraphComponents(overlap, "DTI", Color.FromArgb(255, 0, 255, 0));
-            fComponents.LoadGraphComponents(overlap, "fMRI", Color.FromArgb(255, 0, 0, 255));
+			if (overlap != null)
+			{
+				oComponents.LoadGraphComponents(overlap);
+				dComponents.LoadGraphComponents(overlap, "DTI", Color.FromArgb(255, 0, 255, 0));
+				fComponents.LoadGraphComponents(overlap, "fMRI", Color.FromArgb(255, 0, 0, 255));
 
-			oComponents.SaveGraphML(_viewModel.OutputFolder, "Overlap");
-			dComponents.SaveGraphML(_viewModel.OutputFolder, "DTI");
-			fComponents.SaveGraphML(_viewModel.OutputFolder, "fMRI");
+				oComponents.SaveGraphML(_viewModel.OutputFolder, "Overlap");
+				dComponents.SaveGraphML(_viewModel.OutputFolder, "DTI");
+				fComponents.SaveGraphML(_viewModel.OutputFolder, "fMRI");
+			}
 
 			//_btnDisplay.IsEnabled = true;
 		}

@@ -17,7 +17,7 @@ namespace BrainLabLibrary
 		MultiModalCompare(int subjectCount, int vertices, int edges, List<String^> ^dataTypes);
 
 		void LoadSubjects(List<SubjectData^>^ itms);
-		void Permute(int permutations, int group1Size, Dictionary<String^, double>^ thresholds);
+		void Permute(int permutations, Dictionary<String^, double>^ thresholds);
 		void CompareGroups(String^ group1, String^ group2, Dictionary<String^, double>^ thresholds);
 		
 		BrainLabStorage::Overlap^ GetResult();

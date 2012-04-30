@@ -35,8 +35,8 @@ namespace BrainLab.Studio
 
 			_ctl.DataContext = this;
 
-			InterModalNodes = new ObservableCollection<string>();
-			InterModalEdges = new ObservableCollection<string>();
+			InterModalNodes = new ObservableCollection<NodeResult>();
+			InterModalEdges = new ObservableCollection<EdgeResult>();
 		}
 
 		public void SetDataManager(DataManager dataManager)
@@ -56,7 +56,8 @@ namespace BrainLab.Studio
 
 		public void LoadGraphComponents(Overlap overlap)
 		{
-			InterModalPValue = ((double)overlap.RightTailOverlapCount) / ((double)overlap.Permutations);
+			double interModalPValue = ((double)overlap.RightTailOverlapCount) / ((double)overlap.Permutations);
+			InterModalPValue = interModalPValue.ToString("0.000");
 
 			List<ROIVertex> nodes = new List<ROIVertex>();
 			List<GraphEdge> edges = new List<GraphEdge>();
@@ -81,31 +82,61 @@ namespace BrainLab.Studio
 				var nd = nodes[node];
 				nd.Highlight = true;
 
-				InterModalNodes.Add(string.Format("{0} ({1})", nd.Roi.Name, nd.Roi.Index));
+				InterModalNodes.Add(new NodeResult(){ Id = nd.Roi.Index, Name = nd.Roi.Name});
 			}
 
-            _graphCrXL.DoSomething(nodes, edges, r => r.XF, xRange, r => r.ZF, zRange, false);
-            _graphSgXL.DoSomething(nodes, edges, r => r.XF, xRange, r => r.YF, yRange, false);
-            _graphAxXL.DoSomething(nodes, edges, r => r.YF, yRange, r => r.ZF, zRange, true);
+			foreach (var cmpList in overlap.Components.Values)
+			{
+				int cmpSize = 0;
+				GraphComponent cmp = null;
+				for (var i = 0; i < cmpList.Count; i++)
+				{
+					if (cmpList[i].Edges.Count > cmpSize)
+					{
+						cmp = cmpList[i];
+						cmpSize = cmp.Edges.Count;
+					}
+				}
+
+				foreach (var edge in cmp.Edges)
+				{
+					if (nodes[edge.V1].Highlight && nodes[edge.V2].Highlight)
+					{
+						edges.Add(edge);
+
+						ROIVertex v1 = nodes[edge.V1];
+						ROIVertex v2 = nodes[edge.V2];
+
+						double diff = edge.M2 - edge.M1;
+						double pval = ((double)edge.RightTailCount) / ((double)overlap.Permutations);
+
+						InterModalEdges.Add(new EdgeResult() { V1 = v1.Roi.Name, V2 = v2.Roi.Name, Diff = diff, TStat = edge.TStat, PVal = pval });
+					}
+				}
+			}
+
+			_graphCrXL.DoSomething(nodes, edges, r => r.XF, xRange, r => r.ZF, zRange, false, overlap);
+			_graphSgXL.DoSomething(nodes, edges, r => r.XF, xRange, r => r.YF, yRange, false, overlap);
+			_graphAxXL.DoSomething(nodes, edges, r => r.YF, yRange, r => r.ZF, zRange, true, overlap);
 		}
 
 		public void SaveGraphML(string folder, string dataType)
 		{
-			//_graphAxXL.SaveGraphML(folder, dataType, "Sagital");
-			//_graphSgXL.SaveGraphML(folder, dataType, "Axial");
-			//_graphCrXL.SaveGraphML(folder, dataType, "Coronal");
+			_graphAxXL.SaveGraphML(folder, dataType, "Sagital");
+			_graphSgXL.SaveGraphML(folder, dataType, "Axial");
+			_graphCrXL.SaveGraphML(folder, dataType, "Coronal");
 		}
 		
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		public double InterModalPValue
+		public string InterModalPValue
 		{
 			get { return _interModalPValue; }
 			set { _interModalPValue = value; NotifyPropertyChanged("InterModalPValue"); }
-		} private double _interModalPValue;
-		
-		public ObservableCollection<string> InterModalNodes { get; private set; }
-		public ObservableCollection<string> InterModalEdges { get; private set; }
+		} private string _interModalPValue;
+
+		public ObservableCollection<NodeResult> InterModalNodes { get; private set; }
+		public ObservableCollection<EdgeResult> InterModalEdges { get; private set; }
 
 		protected void NotifyPropertyChanged(String info)
 		{
