@@ -26,6 +26,9 @@ namespace BrainLab.Studio
 			//_analysisBySource = new Dictionary<string, GroupCompare>();
 
 			_subjectData = new List<SubjectData>();
+
+			FilteredSubjectData = new List<SubjectData>();
+			FilteredSubjectDataByGroup = new Dictionary<string, List<SubjectData>>();
 		}
 
 		#region Data Loading and Cache
@@ -93,6 +96,9 @@ namespace BrainLab.Studio
 
 		#endregion
 
+		public List<SubjectData> FilteredSubjectData { get; set; }
+		public Dictionary<string, List<SubjectData>> FilteredSubjectDataByGroup { get; set; }
+
 		public void LoadComparisons()
 		{
 			List<string> selectedDataTypes = new List<string>();
@@ -102,7 +108,7 @@ namespace BrainLab.Studio
 			}
 
 			// Loop through our subject data and get rid of the ones without complete data based on user selection
-			var data = new List<SubjectData>();
+			FilteredSubjectData = new List<SubjectData>();
 			foreach(var sd in _subjectData)
 			{
 				bool bHasData = true;
@@ -117,13 +123,22 @@ namespace BrainLab.Studio
 				}
 
 				if (bHasData)
-					data.Add(sd);
+				{
+					FilteredSubjectData.Add(sd);
+
+					if (!FilteredSubjectDataByGroup.ContainsKey(sd.GroupId))
+						FilteredSubjectDataByGroup[sd.GroupId] = new List<SubjectData>();
+
+					FilteredSubjectDataByGroup[sd.GroupId].Add(sd);
+				}
 			}
 
 			_edgeCount = (_vertexCount * (_vertexCount - 1)) / 2;
-			_compare = new MultiModalCompare(data.Count, _vertexCount, _edgeCount, selectedDataTypes);
-			_compare.LoadSubjects(data);
+			_compare = new MultiModalCompare(FilteredSubjectData.Count, _vertexCount, _edgeCount, selectedDataTypes);
+			_compare.LoadSubjects(FilteredSubjectData);
 		}
+
+		public Dictionary<string, SubjectData> SubjectsByGroup { get; set; }
 
 		public void CalculateGroupDifferences(string group1Id, string group2Id, Dictionary<string, double> thresholds)
 		{

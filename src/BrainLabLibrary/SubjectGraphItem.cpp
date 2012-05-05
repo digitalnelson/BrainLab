@@ -33,4 +33,9 @@ namespace BrainLabLibrary
 		EdgeValue edgeVal = RawGraph->GetEdge(i, j);
 		return edgeVal.Value;
 	}
+
+	float SubjectGraphItem::GlobalStrength()
+	{
+		return RawGraph->GlobalStrength();
+	}
 }

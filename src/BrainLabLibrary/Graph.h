@@ -44,6 +44,8 @@ namespace BrainLabLibrary
 		void AddEdge(int m, int n, EdgeValue val);
 		EdgeValue GetEdge(int m, int n);
 
+		float GlobalStrength();
+
 		void ComputeComponents();
 		void GetComponents(std::vector<Component> &components);
 		int GetLargestComponentId();

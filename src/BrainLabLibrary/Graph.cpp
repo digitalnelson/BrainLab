@@ -33,6 +33,18 @@ namespace BrainLabLibrary
 		return EdgeValues[idx];
 	}
 
+	float Graph::GlobalStrength()
+	{
+		float gs = 0;
+
+		for (auto i : EdgeValues)
+		{
+			gs += i.Value;
+		}
+
+		return gs / EdgeValues.size();
+	}
+
 	void Graph::ComputeComponents()
 	{
 		using namespace std;

@@ -8,11 +8,11 @@
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
 		<StackPanel Orientation="Horizontal"  Background="LightGray" Margin="5" Grid.Row="0">
-			<Label Content="Group Distributions" FontWeight="Bold" />
+			<Label Content="Global Strength" FontWeight="Bold" />
 			<Label Name="lblPVal" />
 		</StackPanel>
 
@@ -23,9 +23,6 @@
 			</Grid.ColumnDefinitions>
 
 			<WindowsFormsHost Name="chartHost" />
-			<!--<Border Grid.Column="1" Padding="10,20,10,60">
-				<ListBox Name="details" />
-			</Border>-->
 		</Grid>
 	</Grid>
 </UserControl>

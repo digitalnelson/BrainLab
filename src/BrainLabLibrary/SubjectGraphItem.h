@@ -19,6 +19,8 @@ namespace BrainLabLibrary
 		void AddEdge(int i, int j, double val);
 		double GetEdge(int i, int j);
 
+		float GlobalStrength();
+
 	private:
 		GraphLookup* _lu;
 	};

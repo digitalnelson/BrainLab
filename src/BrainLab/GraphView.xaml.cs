@@ -43,6 +43,8 @@ namespace BrainLab.Studio
 		public void SetDataManager(DataManager dataManager)
 		{
 			_dataManager = dataManager;
+
+			_distro.SetDataManager(_dataManager);
 		}
 
         public void Clear()
@@ -58,6 +60,8 @@ namespace BrainLab.Studio
 		public void LoadGraphComponents(Overlap overlap, string dataType, System.Windows.Media.Color componentColor)
 		{
 			DataType = dataType;
+
+			_distro.Load(dataType, "c", "p");
 
 			List<GraphComponent> components = overlap.Components[dataType];
 			List<ROIVertex> nodes = new List<ROIVertex>();
