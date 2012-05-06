@@ -26,7 +26,6 @@ namespace BrainLab.Studio
 	{
 		private MainWindowViewModel _viewModel;
 		private DataManager _dataManager;
-		Dictionary<string, double> _thresholds;
 
 		public MainWindow()
 		{

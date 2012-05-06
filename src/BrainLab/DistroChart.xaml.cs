@@ -13,6 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Forms.DataVisualization.Charting;
 using BrainLabStorage;
+using System.IO;
 
 namespace BrainLab.Studio
 {
@@ -41,7 +42,7 @@ namespace BrainLab.Studio
 			_chart = new Chart();
 
 			var main = new ChartArea(_mainAreaName);
-			main.AxisX.Title = "Global Strength";
+			//main.AxisX.Title = "Global Strength";
 			main.AxisY.IsStartedFromZero = false;
 			_chart.ChartAreas.Add(main);
 
@@ -68,7 +69,8 @@ namespace BrainLab.Studio
 			sBP.ChartArea = _mainAreaName;
 			sBP.ChartType = SeriesChartType.BoxPlot;
 			sBP["BoxPlotSeries"] = "Probands;Controls";
-			sBP["BoxPlotShowUnusualValues"] = "True";
+			sBP["BoxPlotShowUnusualValues"] = "False";
+            sBP["BoxPlotShowMedian"] = "false";
 
 			var grp1 = _dataManager.FilteredSubjectDataByGroup[group1];
 			var grp2 = _dataManager.FilteredSubjectDataByGroup[group2];
@@ -77,11 +79,7 @@ namespace BrainLab.Studio
 			foreach (var sub in grp1)
 			{
 				var data = sub.Graphs[dataType];
-
-				float gs = data.GlobalStrength();
-
-				sCtl.Points.AddXY(idx + 1, gs);
-
+                sCtl.Points.AddXY(idx + 1, data.GlobalStrength());
 				idx++;
 			}
 
@@ -89,39 +87,9 @@ namespace BrainLab.Studio
 			foreach (var sub in grp2)
 			{
 				var data = sub.Graphs[dataType];
-
-				float gs = data.GlobalStrength();
-
-				sPro.Points.AddXY(idx + 1, gs);
-
+                sPro.Points.AddXY(idx + 1, data.GlobalStrength());
 				idx++;
 			}
-		
-			//	var diff = ctls.Average() - pros.Average();
-		//	//var pVal = TTestInd.Test(ctls, pros);
-
-		//	//lblPVal.Content = "ctls-pros: " + diff.ToString("0.0000") +  " pVal: " + pVal.ToString("0.0000##");
-
-		//	// Loop through ROIs
-		//	for (var idx = 0; idx < 29; idx++)
-		//	{
-		//		int item = 0;
-		//		//bool signif = pvals[idx] < 0.0005 ? true : false;
-
-		//		// Process controls
-		//		var dctl = ctls.GetCol(idx);
-		//		foreach (var itm in dctl)
-		//		{
-		//			item = sCtl.Points.AddXY(idx + 1, itm);
-		//		}
-
-		//		// Process probands
-		//		var dpro = pros.GetCol(idx);
-		//		foreach (var itm in dpro)
-		//		{
-		//			item = sPro.Points.AddXY(idx + 1, itm);
-		//		}
-		//	}
 
 			_chart.Series.Add(sCtl);
 			_chart.Series.Add(sPro);
@@ -129,12 +97,23 @@ namespace BrainLab.Studio
 
 			_chart.Customize += new EventHandler(chart_Customize);
 
-			_chart.AntiAliasing = AntiAliasingStyles.All;
+            _chart.AntiAliasing = AntiAliasingStyles.None;
 			_chart.TextAntiAliasingQuality = TextAntiAliasingQuality.High;
 
-			_chart.Size = new System.Drawing.Size(300, 100);
+            int height = (int)((double)_gridRoot.ActualWidth * 0.75);
+            _chart.Size = new System.Drawing.Size((int)_gridRoot.ActualWidth, height);
+            
+            MemoryStream ms = new MemoryStream();
+            _chart.SaveImage(ms, ChartImageFormat.Png);
 
-			chartHost.Child = _chart;
+			//chartHost.Child = _chart;
+
+            BitmapImage bmp = new BitmapImage();
+            bmp.BeginInit();
+            bmp.StreamSource = new MemoryStream(ms.ToArray());
+            bmp.EndInit();
+
+            _chartImage.Source = bmp;
 		}
 
 		void chart_Customize(object sender, EventArgs e)

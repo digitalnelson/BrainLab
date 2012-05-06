@@ -40,6 +40,16 @@ namespace BrainLab.Studio
 			CmpEdges = new ObservableCollection<EdgeResult>();
 		}
 
+        //protected override Size MeasureOverride(Size availableSize)
+        //{
+        //    Size panelDesiredSize = base.MeasureOverride(availableSize);
+
+        //    panelDesiredSize.Width = panelDesiredSize.Height;
+
+        //    return panelDesiredSize;
+        //}
+
+
 		public void SetDataManager(DataManager dataManager)
 		{
 			_dataManager = dataManager;

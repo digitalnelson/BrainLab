@@ -5,24 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-	<Grid>
+	<Grid x:Name="_gridRoot">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<StackPanel Orientation="Horizontal"  Background="LightGray" Margin="5" Grid.Row="0">
+		<StackPanel Orientation="Horizontal"  Background="LightGray" Grid.Row="0">
 			<Label Content="Global Strength" FontWeight="Bold" />
 			<Label Name="lblPVal" />
 		</StackPanel>
 
-		<Grid Grid.Row="1">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="1*" />
-				<!--<ColumnDefinition Width="150" />-->
-			</Grid.ColumnDefinitions>
-
-			<WindowsFormsHost Name="chartHost" />
-		</Grid>
+        <Image x:Name="_chartImage" Stretch="None" Margin="0,2,0,0" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" SnapsToDevicePixels="True" />
 	</Grid>
 </UserControl>

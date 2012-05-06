@@ -35,14 +35,31 @@ namespace BrainLabLibrary
 
 	float Graph::GlobalStrength()
 	{
-		float gs = 0;
+		std::vector<float> roiStrs;
 
-		for (auto i : EdgeValues)
+		for(int vert=0; vert<_nVerts; vert++)
 		{
-			gs += i.Value;
+			float gsRoi = 0;
+			for(int overt=0; overt<_nVerts; overt++)
+			{
+				if(vert != overt)
+				{
+					int idx = _lu->GetEdge(vert, overt);
+					gsRoi += EdgeValues[idx].Value;
+				}
+			}
+
+			roiStrs.push_back(gsRoi / (_nVerts - 1));
 		}
 
-		return gs / EdgeValues.size();
+		float gs = 0;
+
+		for (auto i : roiStrs)
+		{
+			gs += i;
+		}
+
+		return gs / _nVerts;
 	}
 
 	void Graph::ComputeComponents()

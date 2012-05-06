@@ -3,8 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" 
-             d:DesignHeight="500" d:DesignWidth="400">
+             mc:Ignorable="d" Width="{Binding ActualHeight}" >
 	<Grid x:Name="_ctl">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
@@ -23,7 +22,7 @@
 		</StackPanel>
 		
 		<Grid Grid.Row="1" Grid.Column="0">
-			<my:DistroChart Background="AntiqueWhite" x:Name="_distro" d:LayoutOverrides="Width" VerticalAlignment="Top"/>
+			<my:DistroChart x:Name="_distro" Margin="3,3,0,3" d:LayoutOverrides="Width" VerticalAlignment="Top"/>
 		</Grid>
 		
 		<Grid Grid.Row="1" Grid.Column="1">
