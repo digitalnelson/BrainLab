@@ -109,6 +109,12 @@
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="OxyPlot">
+      <HintPath>..\packages\OxyPlot.Wpf.2012.2.1.88\lib\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.Wpf">
+      <HintPath>..\packages\OxyPlot.Wpf.2012.2.1.88\lib\OxyPlot.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="Raven.Abstractions">
       <HintPath>..\packages\RavenDB-Embedded.1.0.616\lib\net40\Raven.Abstractions.dll</HintPath>

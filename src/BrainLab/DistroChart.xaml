@@ -3,12 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
 	<Grid x:Name="_gridRoot">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" MinHeight="250px" />
 		</Grid.RowDefinitions>
 
 		<StackPanel Orientation="Horizontal"  Background="LightGray" Grid.Row="0">
@@ -16,6 +17,6 @@
 			<Label Name="lblPVal" />
 		</StackPanel>
 
-        <Image x:Name="_chartImage" Stretch="None" Margin="0,2,0,0" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" SnapsToDevicePixels="True" />
-	</Grid>
+        <oxy:Plot x:Name="_plot" Model="{Binding PlotModel}" Margin="0,2,0,0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />        
+    </Grid>
 </UserControl>

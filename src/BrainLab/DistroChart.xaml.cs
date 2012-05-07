@@ -14,13 +14,15 @@ using System.Windows.Shapes;
 using System.Windows.Forms.DataVisualization.Charting;
 using BrainLabStorage;
 using System.IO;
+using OxyPlot;
+using System.ComponentModel;
 
 namespace BrainLab.Studio
 {
 	/// <summary>
 	/// Interaction logic for DistroChart.xaml
 	/// </summary>
-	public partial class DistroChart : UserControl
+	public partial class DistroChart : UserControl,  INotifyPropertyChanged
 	{
 		private DataManager _dataManager;
 		private Chart _chart;
@@ -29,99 +31,110 @@ namespace BrainLab.Studio
 		public DistroChart()
 		{
 			InitializeComponent();
+
+			_gridRoot.DataContext = this;
 		}
+
+		public PlotModel PlotModel 
+		{
+			get
+			{
+				return _plotModel;
+			}
+			set
+			{
+				_plotModel = value;
+				RaisePropertyChanged("PlotModel");
+			}
+		}
+		private PlotModel _plotModel;
 
 		public void SetDataManager(DataManager dataManager)
 		{
 			_dataManager = dataManager;
 		}
 
-		public void Load(string dataType, string group1, string group2)
+		private static double GetMedian(IEnumerable<double> values)
 		{
-			// Process the ROI charts
-			_chart = new Chart();
-
-			var main = new ChartArea(_mainAreaName);
-			//main.AxisX.Title = "Global Strength";
-			main.AxisY.IsStartedFromZero = false;
-			_chart.ChartAreas.Add(main);
-
-			var hidden = new ChartArea("hidden");
-			hidden.Visible = false;
-			_chart.ChartAreas.Add(hidden);
-
-			// Build the chart series objects
-			var sCtl = new Series("Probands");
-			sCtl.ChartArea = "hidden";
-			sCtl.ChartType = SeriesChartType.Line;
-			sCtl.MarkerStyle = MarkerStyle.Circle;
-			sCtl.Color = System.Drawing.Color.LightGray;
-			sCtl.MarkerSize = 7;
-
-			var sPro = new Series("Controls");
-			sPro.ChartArea = "hidden";
-			sPro.ChartType = SeriesChartType.Line;
-			sPro.MarkerStyle = MarkerStyle.Cross;
-			sPro.Color = System.Drawing.Color.DarkGray;
-			sPro.MarkerSize = 7;
-
-			var sBP = new Series();
-			sBP.ChartArea = _mainAreaName;
-			sBP.ChartType = SeriesChartType.BoxPlot;
-			sBP["BoxPlotSeries"] = "Probands;Controls";
-			sBP["BoxPlotShowUnusualValues"] = "False";
-            sBP["BoxPlotShowMedian"] = "false";
-
-			var grp1 = _dataManager.FilteredSubjectDataByGroup[group1];
-			var grp2 = _dataManager.FilteredSubjectDataByGroup[group2];
-			
-			int idx = 0;
-			foreach (var sub in grp1)
+			var sortedInterval = new List<double>(values);
+			sortedInterval.Sort();
+			var count = sortedInterval.Count;
+			if (count % 2 == 1)
 			{
-				var data = sub.Graphs[dataType];
-                sCtl.Points.AddXY(idx + 1, data.GlobalStrength());
-				idx++;
+				return sortedInterval[(count - 1) / 2];
 			}
 
-			idx = 0;
-			foreach (var sub in grp2)
-			{
-				var data = sub.Graphs[dataType];
-                sPro.Points.AddXY(idx + 1, data.GlobalStrength());
-				idx++;
-			}
-
-			_chart.Series.Add(sCtl);
-			_chart.Series.Add(sPro);
-			_chart.Series.Add(sBP);
-
-			_chart.Customize += new EventHandler(chart_Customize);
-
-            _chart.AntiAliasing = AntiAliasingStyles.None;
-			_chart.TextAntiAliasingQuality = TextAntiAliasingQuality.High;
-
-            int height = (int)((double)_gridRoot.ActualWidth * 0.75);
-            _chart.Size = new System.Drawing.Size((int)_gridRoot.ActualWidth, height);
-            
-            MemoryStream ms = new MemoryStream();
-            _chart.SaveImage(ms, ChartImageFormat.Png);
-
-			//chartHost.Child = _chart;
-
-            BitmapImage bmp = new BitmapImage();
-            bmp.BeginInit();
-            bmp.StreamSource = new MemoryStream(ms.ToArray());
-            bmp.EndInit();
-
-            _chartImage.Source = bmp;
+			return 0.5 * sortedInterval[count / 2] + 0.5 * sortedInterval[(count / 2) - 1];
 		}
 
-		void chart_Customize(object sender, EventArgs e)
+		public BoxPlotItem MakeBoxPlotItem(int index, List<double> values)
 		{
-			_chart.ChartAreas[_mainAreaName].AxisX.CustomLabels[0].Text = "";
-			_chart.ChartAreas[_mainAreaName].AxisX.CustomLabels[1].Text = "Controls";
-			_chart.ChartAreas[_mainAreaName].AxisX.CustomLabels[2].Text = "Probands";
-			_chart.ChartAreas[_mainAreaName].AxisX.CustomLabels[3].Text = "";
+			values.Sort();
+			var median = GetMedian(values);
+
+			int r = values.Count % 2;
+			double firstQuartil = GetMedian(values.Take((values.Count + r) / 2));
+			double thirdQuartil = GetMedian(values.Skip((values.Count - r) / 2));
+
+			var iqr = thirdQuartil - firstQuartil;
+			var step = iqr * 1.5;
+			
+			var upperWhisker = thirdQuartil + step;
+			upperWhisker = values.Where(v => v <= upperWhisker).Max();
+			
+			var lowerWhisker = firstQuartil - step;
+			lowerWhisker = values.Where(v => v >= lowerWhisker).Min();
+
+			var outliers = values.Where(v => v > upperWhisker || v < lowerWhisker).ToList();
+
+			return new BoxPlotItem(index, lowerWhisker, firstQuartil, median, thirdQuartil, upperWhisker, outliers);
+		}
+
+		public void Load(string dataType, string group1, string group2)
+		{
+			var grp1 = _dataManager.FilteredSubjectDataByGroup[group1];
+			var grp2 = _dataManager.FilteredSubjectDataByGroup[group2];
+
+			List<double> grp1Vals = new List<double>();
+			foreach (var sub in grp1)
+				grp1Vals.Add(sub.Graphs[dataType].GlobalStrength());
+
+			List<double> grp2Vals = new List<double>();
+			foreach (var sub in grp2)
+				grp2Vals.Add(sub.Graphs[dataType].GlobalStrength());
+
+			var model = new PlotModel() { IsLegendVisible = false };
+			model.PlotMargins = new OxyThickness(0, 0, 0, 0);
+
+			model.Axes.Add(new CategoryAxis("", "Probands", "Controls"));
+			model.Axes.Add(new LinearAxis(AxisPosition.Left) { MinimumPadding = 0.1, MaximumPadding = 0.1 });
+
+			var s1 = new BoxPlotSeries
+			{
+				Title = "BoxPlotSeries",
+				Fill = OxyColors.White,
+				Stroke = OxyColors.Blue,
+				StrokeThickness = 2,
+				OutlierSize = 2,
+				BoxWidth = 0.4
+			};
+
+			s1.Items.Add(MakeBoxPlotItem(0, grp1Vals));
+			s1.Items.Add(MakeBoxPlotItem(1, grp2Vals));
+
+			model.Series.Add(s1);			
+			PlotModel = model;
+		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		protected void RaisePropertyChanged(string property)
+		{
+			var handler = PropertyChanged;
+			if (handler != null)
+			{
+				handler(this, new PropertyChangedEventArgs(property));
+			}
 		}
 	}
 }
