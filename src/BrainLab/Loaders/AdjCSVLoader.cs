@@ -30,11 +30,11 @@ namespace BrainLab.Studio.Loaders
 			//Parallel.ForEach(adjFiles, adjFile =>
 			{
 				var fileName = System.IO.Path.GetFileName(adjFile);
-				var fileParts = fileName.Split('_');
+				var fileParts = fileName.Split(new char[]{'_', '.'});
 
 				var subjId = fileParts[0];
-				var adjType = fileParts[1];
-				var desc = fileParts[2];
+				var adjType = fileParts[1] + "-" + fileParts[2];
+				//var desc = fileParts[2];
 
 				if (!DataTypes.ContainsKey(adjType))
 					DataTypes[adjType] = adjType;

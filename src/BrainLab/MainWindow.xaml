@@ -250,10 +250,7 @@
 
             <my:OverlapView x:Name="oComponents" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
             <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Disabled" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <StackPanel Orientation="Horizontal" x:Name="_wrkSpace">
-                    <my:GraphView x:Name="dComponents" VerticalAlignment="Stretch" Width="750"  />
-                    <my:GraphView x:Name="fComponents" VerticalAlignment="Stretch" Width="750" />
-                </StackPanel>
+                <StackPanel Orientation="Horizontal" x:Name="_wrkSpace" />
             </ScrollViewer>
 
         </Grid>

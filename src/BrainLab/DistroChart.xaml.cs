@@ -103,6 +103,12 @@ namespace BrainLab.Studio
 			foreach (var sub in grp2)
 				grp2Vals.Add(sub.Graphs[dataType].GlobalStrength());
 
+			double bt = 0; double lt = 0; double rt = 0;
+			alglib.mannwhitneyutest(grp1Vals.ToArray(), grp1Vals.Count, grp2Vals.ToArray(), grp2Vals.Count, out bt, out lt, out rt);
+
+			double tbt = 0; double tlt = 0; double trt = 0;
+			alglib.studentttest2(grp1Vals.ToArray(), grp1Vals.Count, grp2Vals.ToArray(), grp2Vals.Count, out tbt, out tlt, out trt);
+
 			var model = new PlotModel() { IsLegendVisible = false };
 			model.PlotMargins = new OxyThickness(0, 0, 0, 0);
 

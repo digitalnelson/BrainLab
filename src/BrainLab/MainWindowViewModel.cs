@@ -19,7 +19,7 @@ namespace BrainLab.Studio
 			Groups = new ObservableCollection<Group>();
 			DataTypes = new ObservableCollection<DataType>();
 
-			Permutations = "25000";
+			Permutations = "500";
 		}
 
 		public async Task Load(string regionFile, string subjectFile, string dataFolder, string outputFolder)
@@ -45,6 +45,7 @@ namespace BrainLab.Studio
 
 				if (type==null)
 					type =	new DataType() { Tag = itm, Threshold = "2.15", Selected = true };
+
 				DataTypes.Add(type);
 			}
 		}

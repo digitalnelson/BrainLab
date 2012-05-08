@@ -31,19 +31,19 @@ namespace BrainLabFileConvert
 
 		private void _ConvertFiles(object sender, RoutedEventArgs e)
 		{
-			ConvertTrackerFiles();
+			ConvertMatlabFiles();
 		}
 
 		private void ConvertMatlabFiles()
 		{
-			string[] events = Directory.GetFiles(@"C:\Users\Brent\Desktop\wave_corr_mowb");
+			string[] events = Directory.GetFiles(@"C:\Users\Brent\Desktop\Neuro Imaging\BrentExport\sz_fmri");
 
 			foreach (var evt in events)
 			{
 				var fileName = System.IO.Path.GetFileName(evt);
 				var subjId = fileName.Split('_')[0];
 
-				using (StreamWriter sw = new StreamWriter(@"C:\Users\Brent\Desktop\convert\" + subjId + "_fMRI_mowb-adj-mtx.txt"))
+				using (StreamWriter sw = new StreamWriter(@"C:\Users\Brent\Desktop\tmp\" + subjId + "_fMRI_mo-adj-mtx.txt"))
 				{
 					MatFileReader mtx = new MatFileReader(evt);
 					foreach (var mla in mtx.Data)

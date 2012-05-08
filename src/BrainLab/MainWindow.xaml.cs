@@ -49,8 +49,6 @@ namespace BrainLab.Studio
 			// Create and connect our modules to our data manager
 			_dataManager = new DataManager();
             oComponents.SetDataManager(_dataManager);
-			dComponents.SetDataManager(_dataManager);
-			fComponents.SetDataManager(_dataManager);
 
 			_viewModel = new MainWindowViewModel(_dataManager);
 			this.DataContext = _viewModel;
@@ -89,28 +87,38 @@ namespace BrainLab.Studio
 			_btnPermute.IsEnabled = true;
 		}
 
+		private List<GraphView> _wrkSpaceComponents = new List<GraphView>();
+
 		private async void Permute(object sender, RoutedEventArgs e)
 		{
-            oComponents.Clear();
-            dComponents.Clear();
-            fComponents.Clear();
+			// Clear our workspace
+			oComponents.Clear();
+			foreach (var itm in _wrkSpaceComponents)
+				_wrkSpace.Children.Remove(itm);
 	
 			await _viewModel.Permute();
 
             Overlap overlap = _dataManager.GetOverlap();
-
 			if (overlap != null)
 			{
 				oComponents.LoadGraphComponents(overlap);
-				dComponents.LoadGraphComponents(overlap, "DTI", Color.FromArgb(255, 0, 255, 0));
-				fComponents.LoadGraphComponents(overlap, "fMRI", Color.FromArgb(255, 0, 0, 255));
-
 				oComponents.SaveGraphML(_viewModel.OutputFolder, "Overlap");
-				dComponents.SaveGraphML(_viewModel.OutputFolder, "DTI");
-				fComponents.SaveGraphML(_viewModel.OutputFolder, "fMRI");
-			}
 
-			//_btnDisplay.IsEnabled = true;
+				foreach (var dataType in _viewModel.DataTypes)
+				{
+					if (dataType.Selected)
+					{
+						var cmpView = new GraphView();
+						cmpView.Width = 750;
+						cmpView.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
+						_wrkSpace.Children.Add(cmpView);
+
+						cmpView.SetDataManager(_dataManager);
+						cmpView.LoadGraphComponents(overlap, dataType.Tag, Color.FromArgb(255, 0, 255, 0));
+						cmpView.SaveGraphML(_viewModel.OutputFolder, dataType.Tag);
+					}
+				}
+			}
 		}
 
 		private void Display(object sender, RoutedEventArgs e)
