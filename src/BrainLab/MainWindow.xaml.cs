@@ -93,8 +93,10 @@ namespace BrainLab.Studio
 		{
 			// Clear our workspace
 			oComponents.Clear();
-			foreach (var itm in _wrkSpaceComponents)
-				_wrkSpace.Children.Remove(itm);
+			_wrkSpace.Children.Clear();
+
+			//foreach (var itm in _wrkSpaceComponents)
+			//	_wrkSpace.Children.Remove(itm);
 	
 			await _viewModel.Permute();
 
@@ -109,7 +111,7 @@ namespace BrainLab.Studio
 					if (dataType.Selected)
 					{
 						var cmpView = new GraphView();
-						cmpView.Width = 750;
+						cmpView.Width = 650;
 						cmpView.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
 						_wrkSpace.Children.Add(cmpView);
 

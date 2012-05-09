@@ -105,9 +105,13 @@ namespace BrainLab.Studio
 
 			if (cmp != null)
 			{
-                _graphCrXL.DoSomething(nodes, cmp.Edges, r => r.XF, xRange, r => r.ZF, zRange, false, componentColor, overlap);
-				_graphSgXL.DoSomething(nodes, cmp.Edges, r => r.XF, xRange, r => r.YF, yRange, false, componentColor, overlap);
-				_graphAxXL.DoSomething(nodes, cmp.Edges, r => r.YF, yRange, r => r.ZF, zRange, true, componentColor, overlap);
+                _graphCrXL.SetData(nodes, cmp.Edges, r => r.XF, xRange, r => r.ZF, zRange, false, componentColor, overlap);
+				_graphSgXL.SetData(nodes, cmp.Edges, r => r.XF, xRange, r => r.YF, yRange, false, componentColor, overlap);
+				_graphAxXL.SetData(nodes, cmp.Edges, r => r.YF, yRange, r => r.ZF, zRange, true, componentColor, overlap);
+
+				_graphCrXL.Draw();
+				_graphSgXL.Draw();
+				_graphAxXL.Draw();
 			}
 
             if (cmp != null)

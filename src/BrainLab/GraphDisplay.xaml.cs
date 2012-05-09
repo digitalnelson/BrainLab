@@ -28,8 +28,39 @@ namespace BrainLab.Studio
 		public GraphDisplay()
 		{
 			InitializeComponent();
-
             Clear();
+		}
+
+		protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+		{
+			base.OnRenderSizeChanged(sizeInfo);
+
+			Clear();
+			Draw();
+		}
+
+		private List<ROIVertex> _nodes;
+		private List<GraphEdge> _edges; 
+		private SelectDim _horiz;
+		private double _hRange;
+		private SelectDim _vert; 
+		private double _vRange;
+		private bool _flipX;
+		private System.Windows.Media.Color _componentColor;
+		private Overlap _overlap;
+
+		public void SetData(List<ROIVertex> nodes, List<GraphEdge> edges, SelectDim horiz, double hRange, SelectDim vert, 
+			double vRange, bool flipX, System.Windows.Media.Color componentColor, Overlap overlap)
+		{
+			_nodes = nodes;
+			_edges = edges;
+			_horiz = horiz;
+			_hRange = hRange;
+			_vert = vert;
+			_vRange = vRange;
+			_flipX = flipX;
+			_componentColor = componentColor;
+			_overlap = overlap;
 		}
 
         public void Clear()
@@ -40,7 +71,7 @@ namespace BrainLab.Studio
             _graphXL.Child = _oNodeXLControl;
         }
 
-		public void DoSomething(List<ROIVertex> nodes, List<GraphEdge> edges, SelectDim horiz, double hRange, SelectDim vert, double vRange, bool flipX, System.Windows.Media.Color componentColor, Overlap overlap)
+		public void Draw()
 		{
 			double width = this.ActualWidth - 30;
 			double height = this.ActualHeight - 30;
@@ -48,8 +79,8 @@ namespace BrainLab.Studio
             double hCalc = 0; double hSize = 0; double hOffset = 0;
             double vCalc = 0; double vSize = 0; double vOffset = 0;
 
-            hCalc = (height * hRange) / vRange;
-            vCalc = (width * vRange) / hRange;
+            hCalc = (height * _hRange) / _vRange;
+			vCalc = (width * _vRange) / _hRange;
 
             double hDiff = width - hCalc;
             double vDiff = height - vCalc;
@@ -72,13 +103,13 @@ namespace BrainLab.Studio
 			IEdgeCollection ec = g.Edges;
 
 			List<IVertex> verts = new List<IVertex>();
-			foreach (var node in nodes)
+			foreach (var node in _nodes)
 			{
-				double hf = horiz(node);
-				double vf = vert(node);
+				double hf = _horiz(node);
+				double vf = _vert(node);
 
                 double xCoord = (hf * hSize) + hOffset;
-                if (flipX)
+				if (_flipX)
                     xCoord = width - xCoord;
 
                 double yCoordNative = (vf * vSize) + vOffset;
@@ -101,30 +132,30 @@ namespace BrainLab.Studio
 				verts.Add(vertex);
 			}
 
-			foreach (var edge in edges)
+			foreach (var edge in _edges)
 			{
                 IVertex v1 = verts[edge.V1];
                 IVertex v2 = verts[edge.V2];
-                v1.SetValue(ReservedMetadataKeys.PerColor, componentColor);
+				v1.SetValue(ReservedMetadataKeys.PerColor, _componentColor);
                 v1.SetValue(ReservedMetadataKeys.PerAlpha, 100.0f);
-                v2.SetValue(ReservedMetadataKeys.PerColor, componentColor);
+				v2.SetValue(ReservedMetadataKeys.PerColor, _componentColor);
                 v2.SetValue(ReservedMetadataKeys.PerAlpha, 100.0f);
 
-				v1.SetValue("r", componentColor.R.ToString());
-				v1.SetValue("g", componentColor.G.ToString());
-				v1.SetValue("b", componentColor.B.ToString());
-				v2.SetValue("r", componentColor.R.ToString());
-				v2.SetValue("g", componentColor.G.ToString());
-				v2.SetValue("b", componentColor.B.ToString());
+				v1.SetValue("r", _componentColor.R.ToString());
+				v1.SetValue("g", _componentColor.G.ToString());
+				v1.SetValue("b", _componentColor.B.ToString());
+				v2.SetValue("r", _componentColor.R.ToString());
+				v2.SetValue("g", _componentColor.G.ToString());
+				v2.SetValue("b", _componentColor.B.ToString());
 
                 double diff = edge.M2 - edge.M1;
-                double pval = ((double)edge.RightTailCount) / ((double)overlap.Permutations);
+				double pval = ((double)edge.RightTailCount) / ((double)_overlap.Permutations);
 
                 IEdge e = ec.Add(v1, v2);
 				e.SetValue("diff", diff);
 				e.SetValue("pval", pval);
                 e.SetValue(ReservedMetadataKeys.PerEdgeWidth, 2.0f);
-                e.SetValue(ReservedMetadataKeys.PerColor, componentColor);
+				e.SetValue(ReservedMetadataKeys.PerColor, _componentColor);
 			}
 
 			_oNodeXLControl.DrawGraph(true);

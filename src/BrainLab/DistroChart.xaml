@@ -14,7 +14,7 @@
 
 		<StackPanel Orientation="Horizontal"  Background="LightGray" Grid.Row="0">
 			<Label Content="Global Strength" FontWeight="Bold" />
-			<Label Name="lblPVal" />
+			<Label Name="lblPVal" Content="{Binding PValue}" />
 		</StackPanel>
 
         <oxy:Plot x:Name="_plot" Model="{Binding PlotModel}" Margin="0,2,0,0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />        

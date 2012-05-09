@@ -10,8 +10,8 @@
 			<RowDefinition />
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width=".35*" />
-			<ColumnDefinition Width=".65*" />
+			<ColumnDefinition Width=".45*" />
+			<ColumnDefinition Width=".55*" />
 		</Grid.ColumnDefinitions>
 
 		<StackPanel Orientation="Horizontal" Grid.Row="0" Grid.ColumnSpan="2" Background="#22ffffff" Margin="3,0,3,0">

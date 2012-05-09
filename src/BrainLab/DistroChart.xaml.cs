@@ -19,9 +19,6 @@ using System.ComponentModel;
 
 namespace BrainLab.Studio
 {
-	/// <summary>
-	/// Interaction logic for DistroChart.xaml
-	/// </summary>
 	public partial class DistroChart : UserControl,  INotifyPropertyChanged
 	{
 		private DataManager _dataManager;
@@ -48,6 +45,20 @@ namespace BrainLab.Studio
 			}
 		}
 		private PlotModel _plotModel;
+
+		public string PValue
+		{
+			get
+			{
+				return _pValue;
+			}
+			set
+			{
+				_pValue = value;
+				RaisePropertyChanged("PValue");
+			}
+		}
+		private string _pValue;
 
 		public void SetDataManager(DataManager dataManager)
 		{
@@ -109,10 +120,12 @@ namespace BrainLab.Studio
 			double tbt = 0; double tlt = 0; double trt = 0;
 			alglib.studentttest2(grp1Vals.ToArray(), grp1Vals.Count, grp2Vals.ToArray(), grp2Vals.Count, out tbt, out tlt, out trt);
 
+			PValue = tbt.ToString("0.0000") + " & " + bt.ToString("0.0000");
+
 			var model = new PlotModel() { IsLegendVisible = false };
 			model.PlotMargins = new OxyThickness(0, 0, 0, 0);
 
-			model.Axes.Add(new CategoryAxis("", "Probands", "Controls"));
+			model.Axes.Add(new CategoryAxis("", "Controls", "Probands"));
 			model.Axes.Add(new LinearAxis(AxisPosition.Left) { MinimumPadding = 0.1, MaximumPadding = 0.1 });
 
 			var s1 = new BoxPlotSeries
