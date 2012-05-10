@@ -31,6 +31,36 @@ namespace BrainLab.Studio
 			FilteredSubjectDataByGroup = new Dictionary<string, List<SubjectData>>();
 		}
 
+		public int SubjectCount
+		{
+			get
+			{
+				return _subjectsById.Keys.Count;
+			}
+		}
+
+		public int RegionCount
+		{
+			get
+			{
+				return _regionsOfInterest.Count;
+			}
+		}
+
+		public int AdjCount
+		{
+			get
+			{
+				return _adjCount;
+			}
+			set
+			{
+				_adjCount = value;
+				RaisePropertyChanged("AdjCount");
+			}
+		}
+		private int _adjCount = 0;
+
 		#region Data Loading and Cache
 
 		public void LoadROIFile(string fullPath)
@@ -50,6 +80,8 @@ namespace BrainLab.Studio
 			this.YMax = _roiLoader.YMax;
 			this.ZMin = _roiLoader.ZMin;
 			this.ZMax = _roiLoader.ZMax;
+
+			RaisePropertyChanged("RegionCount");
 		}
 
 		public void LoadSubjectFile(string fullPath)
@@ -73,13 +105,27 @@ namespace BrainLab.Studio
 
 				_subjectsById[sub.Id] = sub;
 			}
+
+			RaisePropertyChanged("SubjectCount");
+		}
+
+		protected void RaisePropertyChanged(string property)
+		{
+			var handler = PropertyChanged;
+			if (handler != null)
+			{
+				handler(this, new PropertyChangedEventArgs(property));
+			}
 		}
 
 		public void LoadAdjFiles(string fullPath)
 		{
             _vertexCount = _regionsOfInterest.Count;
 			_adjLoader = new AdjCSVLoader(fullPath, _vertexCount, _subjectsById);
-			_subjectData = _adjLoader.Load();
+			int count = 0;
+			_subjectData = _adjLoader.Load(out count);
+
+			AdjCount = count;
 
 			DataTypes = _adjLoader.DataTypes.Keys.ToList();
 

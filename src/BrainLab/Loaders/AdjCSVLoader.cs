@@ -19,8 +19,9 @@ namespace BrainLab.Studio.Loaders
 			_sgf = new SubjectGraphFactory(_vertexCount);
 		}
 
-		public List<SubjectData> Load()
+		public List<SubjectData> Load(out int fileCount)
 		{
+			int count = 0;
 			string[] adjFiles = Directory.GetFiles(_fullPath);
 			
 			Dictionary<string, SubjectData> subs = new Dictionary<string, SubjectData>();
@@ -77,8 +78,11 @@ namespace BrainLab.Studio.Loaders
 				}
 
 				sd.Graphs[adjType] = itm;
+
+				count++;
 			}//);
 
+			fileCount = count;
 			return subList;
 		}
 

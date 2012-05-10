@@ -108,6 +108,11 @@ namespace BrainLab.Studio
 
 		public string OutputFolder { get; set; }
 
+		public DataManager DataManager
+		{
+			get { return _dataManager; }
+		}
+
 		private DataManager _dataManager;
 	}
 
