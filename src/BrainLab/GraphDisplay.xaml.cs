@@ -73,92 +73,112 @@ namespace BrainLab.Studio
 
 		public void Draw()
 		{
-			double width = this.ActualWidth - 30;
-			double height = this.ActualHeight - 30;
-
-            double hCalc = 0; double hSize = 0; double hOffset = 0;
-            double vCalc = 0; double vSize = 0; double vOffset = 0;
-
-            hCalc = (height * _hRange) / _vRange;
-			vCalc = (width * _vRange) / _hRange;
-
-            double hDiff = width - hCalc;
-            double vDiff = height - vCalc;
-
-            if (hDiff > 0 && hDiff > vDiff)
-            {
-                hSize = hCalc;
-                hOffset = hDiff / 2;
-                vSize = height;
-            }
-            else
-            {
-                vSize = vCalc;
-                vOffset = vDiff / 2;
-                hSize = width;
-            }
-
-			IGraph g = _oNodeXLControl.Graph;	
-			IVertexCollection vc = g.Vertices;
-			IEdgeCollection ec = g.Edges;
-
-			List<IVertex> verts = new List<IVertex>();
-			foreach (var node in _nodes)
+			if (_nodes != null)
 			{
-				double hf = _horiz(node);
-				double vf = _vert(node);
+				double width = this.ActualWidth - 30;
+				double height = this.ActualHeight - 30;
 
-                double xCoord = (hf * hSize) + hOffset;
-				if (_flipX)
-                    xCoord = width - xCoord;
+				double hCalc = 0; double hSize = 0; double hOffset = 0;
+				double vCalc = 0; double vSize = 0; double vOffset = 0;
 
-                double yCoordNative = (vf * vSize) + vOffset;
-				double yCoord = height - yCoordNative;
+				hCalc = (height * _hRange) / _vRange;
+				vCalc = (width * _vRange) / _hRange;
 
-				IVertex vertex = vc.Add();
+				double hDiff = width - hCalc;
+				double vDiff = height - vCalc;
 
-				vertex.Name = node.Roi.Index.ToString();
-								
-                vertex.SetValue(ReservedMetadataKeys.PerVertexRadius, 8.0f);
-                vertex.SetValue(ReservedMetadataKeys.PerAlpha, 75.0f);
-				vertex.SetValue(ReservedMetadataKeys.LockVertexLocation, true);
+				if (hDiff > 0 && hDiff > vDiff)
+				{
+					hSize = hCalc;
+					hOffset = hDiff / 2;
+					vSize = height;
+				}
+				else
+				{
+					vSize = vCalc;
+					vOffset = vDiff / 2;
+					hSize = width;
+				}
 
-				vertex.Location = new System.Drawing.PointF((float)xCoord + 15, (float)yCoord + 15);
-				
-				vertex.SetValue("x", xCoord.ToString());
-				vertex.SetValue("y", yCoordNative.ToString());
-				vertex.SetValue("name", node.Roi.Name);
-					
-				verts.Add(vertex);
+				IGraph g = _oNodeXLControl.Graph;
+				IVertexCollection vc = g.Vertices;
+				IEdgeCollection ec = g.Edges;
+
+				List<IVertex> verts = new List<IVertex>();
+				foreach (var node in _nodes)
+				{
+					double hf = _horiz(node);
+					double vf = _vert(node);
+
+					double xCoord = (hf * hSize) + hOffset;
+					if (_flipX)
+						xCoord = width - xCoord;
+
+					double yCoordNative = (vf * vSize) + vOffset;
+					double yCoord = height - yCoordNative;
+
+					IVertex vertex = vc.Add();
+
+					vertex.Name = node.Roi.Index.ToString();
+
+					vertex.SetValue(ReservedMetadataKeys.PerVertexRadius, 8.0f);
+					vertex.SetValue(ReservedMetadataKeys.PerAlpha, 75.0f);
+					vertex.SetValue(ReservedMetadataKeys.LockVertexLocation, true);
+
+					vertex.Location = new System.Drawing.PointF((float)xCoord + 15, (float)yCoord + 15);
+
+					vertex.SetValue("x", xCoord.ToString());
+					vertex.SetValue("y", yCoordNative.ToString());
+					vertex.SetValue("name", node.Roi.Name);
+
+					verts.Add(vertex);
+				}
+
+				foreach (var edge in _edges)
+				{
+					IVertex v1 = verts[edge.V1];
+					IVertex v2 = verts[edge.V2];
+					v1.SetValue(ReservedMetadataKeys.PerColor, _componentColor);
+					v1.SetValue(ReservedMetadataKeys.PerAlpha, 100.0f);
+					v2.SetValue(ReservedMetadataKeys.PerColor, _componentColor);
+					v2.SetValue(ReservedMetadataKeys.PerAlpha, 100.0f);
+
+					v1.SetValue("r", _componentColor.R.ToString());
+					v1.SetValue("g", _componentColor.G.ToString());
+					v1.SetValue("b", _componentColor.B.ToString());
+					v2.SetValue("r", _componentColor.R.ToString());
+					v2.SetValue("g", _componentColor.G.ToString());
+					v2.SetValue("b", _componentColor.B.ToString());
+
+					double diff = edge.M2 - edge.M1;
+					double pval = ((double)edge.RightTailCount) / ((double)_overlap.Permutations);
+
+					IEdge e = ec.Add(v1, v2);
+					e.SetValue("diff", diff);
+					e.SetValue("pval", pval);
+					e.SetValue(ReservedMetadataKeys.PerEdgeWidth, 2.0f);
+					e.SetValue(ReservedMetadataKeys.PerColor, _componentColor);
+				}
+
+				_oNodeXLControl.DrawGraph(true);
 			}
+		}
 
-			foreach (var edge in _edges)
+		public void SaveReport(StringBuilder htmlSink, string folderPath, string dataType, string view, int width, int height)
+		{
+			if (_oNodeXLControl.Graph != null)
 			{
-                IVertex v1 = verts[edge.V1];
-                IVertex v2 = verts[edge.V2];
-				v1.SetValue(ReservedMetadataKeys.PerColor, _componentColor);
-                v1.SetValue(ReservedMetadataKeys.PerAlpha, 100.0f);
-				v2.SetValue(ReservedMetadataKeys.PerColor, _componentColor);
-                v2.SetValue(ReservedMetadataKeys.PerAlpha, 100.0f);
+				// TODO: May want to tack on a guid so things don't overwrite
+				string fileName = "NBSm_" + dataType + "_" + view + ".png";
 
-				v1.SetValue("r", _componentColor.R.ToString());
-				v1.SetValue("g", _componentColor.G.ToString());
-				v1.SetValue("b", _componentColor.B.ToString());
-				v2.SetValue("r", _componentColor.R.ToString());
-				v2.SetValue("g", _componentColor.G.ToString());
-				v2.SetValue("b", _componentColor.B.ToString());
+				htmlSink.AppendFormat("<img src=\"{0}\" />\n", fileName);
 
-                double diff = edge.M2 - edge.M1;
-				double pval = ((double)edge.RightTailCount) / ((double)_overlap.Permutations);
+				var bmp = _oNodeXLControl.CopyGraphToBitmap(width, height);
+				bmp.Save(System.IO.Path.Combine(folderPath, fileName), System.Drawing.Imaging.ImageFormat.Png);
 
-                IEdge e = ec.Add(v1, v2);
-				e.SetValue("diff", diff);
-				e.SetValue("pval", pval);
-                e.SetValue(ReservedMetadataKeys.PerEdgeWidth, 2.0f);
-				e.SetValue(ReservedMetadataKeys.PerColor, _componentColor);
+				//Smrf.NodeXL.Visualization.Wpf.
+				//_plot.SaveBitmap(System.IO.Path.Combine(folderPath, fileName));
 			}
-
-			_oNodeXLControl.DrawGraph(true);
 		}
 
 		public void SaveGraphML(string folder, string dataType, string view)

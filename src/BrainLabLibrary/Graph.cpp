@@ -62,6 +62,24 @@ namespace BrainLabLibrary
 		return gs / _nVerts;
 	}
 
+	void Graph::GetMeanVtxStrength(std::vector<float> &meanVtxStr)
+	{
+		for(int vert=0; vert<_nVerts; vert++)
+		{
+			float gsRoi = 0;
+			for(int overt=0; overt<_nVerts; overt++)
+			{
+				if(vert != overt)
+				{
+					int idx = _lu->GetEdge(vert, overt);
+					gsRoi += EdgeValues[idx].Value;
+				}
+			}
+
+			meanVtxStr.push_back(gsRoi / (_nVerts - 1));
+		}
+	}
+
 	void Graph::ComputeComponents()
 	{
 		using namespace std;

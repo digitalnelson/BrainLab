@@ -40,16 +40,6 @@ namespace BrainLab.Studio
 			CmpEdges = new ObservableCollection<EdgeResult>();
 		}
 
-        //protected override Size MeasureOverride(Size availableSize)
-        //{
-        //    Size panelDesiredSize = base.MeasureOverride(availableSize);
-
-        //    panelDesiredSize.Width = panelDesiredSize.Height;
-
-        //    return panelDesiredSize;
-        //}
-
-
 		public void SetDataManager(DataManager dataManager)
 		{
 			_dataManager = dataManager;
@@ -57,14 +47,29 @@ namespace BrainLab.Studio
 			_distro.SetDataManager(_dataManager);
 		}
 
+		public void SaveReport(StringBuilder htmlSink, string folderPath)
+		{
+			htmlSink.AppendFormat("<h1>{0}</h1>", DataType);
+
+			htmlSink.Append("<h3>Global Strength</h3>");
+			_distro.SaveReport(htmlSink, folderPath);
+
+			htmlSink.Append("<h3>NBSm</h3>");
+			htmlSink.AppendFormat("<p>Nodes: {0} Edges: {1} pVal: {2}</p>", CmpNodes.Count, CmpEdges.Count, CmpPValue);
+
+			_graphCrXL.SaveReport(htmlSink, folderPath, DataType, "cr", 250, 250);
+			_graphSgXL.SaveReport(htmlSink, folderPath, DataType, "ax", 250, 250);
+			_graphAxXL.SaveReport(htmlSink, folderPath, DataType, "sg", 500, 250);
+		}
+
         public void Clear()
         {
             CmpNodes.Clear();
             CmpEdges.Clear();
 
-            _graphAxXL.Clear();
-            _graphCrXL.Clear();
-            _graphSgXL.Clear();
+			_graphAxXL.Clear();
+			_graphCrXL.Clear();
+			_graphSgXL.Clear();
         }
 
 		public void LoadGraphComponents(Overlap overlap, string dataType, System.Windows.Media.Color componentColor)
@@ -105,7 +110,7 @@ namespace BrainLab.Studio
 
 			if (cmp != null)
 			{
-                _graphCrXL.SetData(nodes, cmp.Edges, r => r.XF, xRange, r => r.ZF, zRange, false, componentColor, overlap);
+				_graphCrXL.SetData(nodes, cmp.Edges, r => r.XF, xRange, r => r.ZF, zRange, false, componentColor, overlap);
 				_graphSgXL.SetData(nodes, cmp.Edges, r => r.XF, xRange, r => r.YF, yRange, false, componentColor, overlap);
 				_graphAxXL.SetData(nodes, cmp.Edges, r => r.YF, yRange, r => r.ZF, zRange, true, componentColor, overlap);
 
@@ -116,7 +121,7 @@ namespace BrainLab.Studio
 
             if (cmp != null)
             {
-                CmpPValue = ((double)cmp.RightTailExtentCount) / ((double)overlap.Permutations);
+				CmpPValue = "p" + (((double)cmp.RightTailExtentCount) / ((double)overlap.Permutations)).ToString("0.0000");
                 Dictionary<int, ROIVertex> cmpVerts = new Dictionary<int, ROIVertex>();
 
                 foreach (var edge in cmp.Edges)
@@ -143,9 +148,9 @@ namespace BrainLab.Studio
 
 		public void SaveGraphML(string folder, string dataType)
 		{
-			_graphAxXL.SaveGraphML(folder, dataType, "Sagital");
-			_graphSgXL.SaveGraphML(folder, dataType, "Axial");
-			_graphCrXL.SaveGraphML(folder, dataType, "Coronal");
+			//_graphAxXL.SaveGraphML(folder, dataType, "Sagital");
+			//_graphSgXL.SaveGraphML(folder, dataType, "Axial");
+			//_graphCrXL.SaveGraphML(folder, dataType, "Coronal");
 		}
 
 		#region Edge stuff
@@ -179,11 +184,11 @@ namespace BrainLab.Studio
 			set { _dataType = value; NotifyPropertyChanged("DataType"); }
 		} private string _dataType;
 		
-		public double CmpPValue
+		public string CmpPValue
 		{
 			get { return _cmpPValue; }
 			set { _cmpPValue = value; NotifyPropertyChanged("CmpPValue"); }
-		} private double _cmpPValue;
+		} private string _cmpPValue;
 
 		public ObservableCollection<NodeResult> CmpNodes { get; private set; }
 		public ObservableCollection<EdgeResult> CmpEdges { get; private set; }

@@ -20,6 +20,7 @@ namespace BrainLabLibrary
 		double GetEdge(int i, int j);
 
 		float GlobalStrength();
+		System::Collections::Generic::List<float>^ MeanVtxStrength();
 
 	private:
 		GraphLookup* _lu;

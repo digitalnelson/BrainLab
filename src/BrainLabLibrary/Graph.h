@@ -45,6 +45,7 @@ namespace BrainLabLibrary
 		EdgeValue GetEdge(int m, int n);
 
 		float GlobalStrength();
+		void GetMeanVtxStrength(std::vector<float> &meanVtxStr);
 
 		void ComputeComponents();
 		void GetComponents(std::vector<Component> &components);

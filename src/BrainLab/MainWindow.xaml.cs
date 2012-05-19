@@ -111,9 +111,10 @@ namespace BrainLab.Studio
 					if (dataType.Selected)
 					{
 						var cmpView = new GraphView();
-						cmpView.Width = 650;
+						cmpView.Width = 600;
 						cmpView.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
 						_wrkSpace.Children.Add(cmpView);
+						_wrkSpaceComponents.Add(cmpView);
 
 						cmpView.SetDataManager(_dataManager);
 						cmpView.LoadGraphComponents(overlap, dataType.Tag, Color.FromArgb(255, 0, 255, 0));
@@ -121,6 +122,8 @@ namespace BrainLab.Studio
 					}
 				}
 			}
+
+			_btnSave.IsEnabled = true;
 		}
 
 		protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
@@ -221,6 +224,11 @@ namespace BrainLab.Studio
 				// Open document
 				_txtOutputFolder.Text = dlg.SelectedPath;
 			}
+		}
+
+		private void Button_Click_SaveReport(object sender, RoutedEventArgs e)
+		{
+			_viewModel.Save(_wrkSpaceComponents);
 		}
 	}
 }

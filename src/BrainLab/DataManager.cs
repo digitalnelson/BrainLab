@@ -145,16 +145,13 @@ namespace BrainLab.Studio
 		public List<SubjectData> FilteredSubjectData { get; set; }
 		public Dictionary<string, List<SubjectData>> FilteredSubjectDataByGroup { get; set; }
 
-		public void LoadComparisons()
+		public void LoadComparisons(Dictionary<string, double> thresholds)
 		{
-			List<string> selectedDataTypes = new List<string>();
-			foreach (var dt in DataTypes)
-			{
-				selectedDataTypes.Add(dt);
-			}
+			List<string> selectedDataTypes = thresholds.Keys.ToList();
 
 			// Loop through our subject data and get rid of the ones without complete data based on user selection
 			FilteredSubjectData = new List<SubjectData>();
+			FilteredSubjectDataByGroup = new Dictionary<string, List<SubjectData>>();
 			foreach(var sd in _subjectData)
 			{
 				bool bHasData = true;

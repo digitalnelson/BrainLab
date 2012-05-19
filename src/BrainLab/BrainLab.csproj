@@ -237,6 +237,9 @@
     <Compile Include="Report.xaml.cs">
       <DependentUpon>Report.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SpatialPlot.xaml.cs">
+      <DependentUpon>SpatialPlot.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Stats.cs" />
     <Page Include="OverlapDisplay.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -292,6 +295,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Report.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SpatialPlot.xaml">
+      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

@@ -38,4 +38,21 @@ namespace BrainLabLibrary
 	{
 		return RawGraph->GlobalStrength();
 	}
+
+	System::Collections::Generic::List<float>^ SubjectGraphItem::MeanVtxStrength()
+	{
+		// get unmanaged values
+		std::vector<float> values; 
+		RawGraph->GetMeanVtxStrength(values);
+
+		array<float>^ managedValues = gcnew array<float>(values.size());
+
+		// cast to managed object type IntPtr representing an object pointer.
+		System::IntPtr ptr = (System::IntPtr)&values[0];
+
+		// copy data to managed array using System::Runtime::Interopservices namespace
+		System::Runtime::InteropServices::Marshal::Copy(ptr, managedValues, 0, values.size());
+
+		return gcnew System::Collections::Generic::List<float>(managedValues);
+	}
 }

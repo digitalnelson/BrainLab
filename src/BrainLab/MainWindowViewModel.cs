@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -82,7 +83,7 @@ namespace BrainLab.Studio
 				}
 				
 				// Load the graphs into the comparison system
-				_dataManager.LoadComparisons();
+				_dataManager.LoadComparisons(thresholds);
 
 				// Calculate our group differences
 				_dataManager.CalculateGroupDifferences(grps[0], grps[1], thresholds);
@@ -96,6 +97,33 @@ namespace BrainLab.Studio
 			});
 
 			PermutationDuration = sw.ElapsedMilliseconds;
+		}
+
+		public void Save(List<GraphView> wrkSpaceComponents)
+		{
+			StringBuilder htmlSink = new StringBuilder("<html><body>");
+
+			htmlSink.Append("<h1>BrainLab Report</h1>");
+			htmlSink.Append("<ul>");
+			htmlSink.AppendFormat("<li><b>Permutations:</b> {0}</li>", Permutations);
+			foreach (var dt in DataTypes)
+			{
+				if(dt.Selected)
+					htmlSink.AppendFormat("<li><b>DataType:</b>  {0} <b>Threshold:</b>  {1}</li>", dt.Tag, dt.Threshold);
+			}
+			htmlSink.Append("</ul>");
+
+			foreach (var cmp in wrkSpaceComponents)
+			{
+				cmp.SaveReport(htmlSink, OutputFolder);
+			}
+
+			htmlSink.Append("</body></html>");
+
+			using (StreamWriter sw = new StreamWriter(System.IO.Path.Combine(OutputFolder, "index.html")))
+			{
+				sw.Write(htmlSink.ToString());
+			}
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
