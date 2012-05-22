@@ -43,25 +43,9 @@ namespace BrainLab.Studio
 		public void SetDataManager(DataManager dataManager)
 		{
 			_dataManager = dataManager;
-
 			_distro.SetDataManager(_dataManager);
 		}
-
-		public void SaveReport(StringBuilder htmlSink, string folderPath)
-		{
-			htmlSink.AppendFormat("<h1>{0}</h1>", DataType);
-
-			htmlSink.Append("<h3>Global Strength</h3>");
-			_distro.SaveReport(htmlSink, folderPath);
-
-			htmlSink.Append("<h3>NBSm</h3>");
-			htmlSink.AppendFormat("<p>Nodes: {0} Edges: {1} pVal: {2}</p>", CmpNodes.Count, CmpEdges.Count, CmpPValue);
-
-			_graphCrXL.SaveReport(htmlSink, folderPath, DataType, "cr", 250, 250);
-			_graphSgXL.SaveReport(htmlSink, folderPath, DataType, "ax", 250, 250);
-			_graphAxXL.SaveReport(htmlSink, folderPath, DataType, "sg", 500, 250);
-		}
-
+        
         public void Clear()
         {
             CmpNodes.Clear();
@@ -76,6 +60,7 @@ namespace BrainLab.Studio
 		{
 			DataType = dataType;
 
+            // TODO: Hack fest - fix this!
 			_distro.Load(dataType, "c", "p");
 
 			List<GraphComponent> components = overlap.Components[dataType];
@@ -146,11 +131,26 @@ namespace BrainLab.Studio
             }		
 		}
 
-		public void SaveGraphML(string folder, string dataType)
+        public void SaveReport(StringBuilder htmlSink, string folderPath)
+        {
+            htmlSink.AppendFormat("<h1>{0}</h1>", DataType);
+
+            htmlSink.Append("<h3>Global Strength</h3>");
+            _distro.SaveReport(htmlSink, folderPath);
+
+            htmlSink.Append("<h3>NBSm</h3>");
+            htmlSink.AppendFormat("<p>Nodes: {0} Edges: {1} pVal: {2}</p>", CmpNodes.Count, CmpEdges.Count, CmpPValue);
+
+            _graphCrXL.SaveReport(htmlSink, folderPath, DataType, "cr", 250, 250);
+            _graphSgXL.SaveReport(htmlSink, folderPath, DataType, "ax", 250, 250);
+            _graphAxXL.SaveReport(htmlSink, folderPath, DataType, "sg", 500, 250);
+        }
+
+		public void SaveGraphML(string folder)
 		{
-			//_graphAxXL.SaveGraphML(folder, dataType, "Sagital");
-			//_graphSgXL.SaveGraphML(folder, dataType, "Axial");
-			//_graphCrXL.SaveGraphML(folder, dataType, "Coronal");
+			_graphAxXL.SaveGraphML(folder, this.DataType, "Sagital");
+            _graphSgXL.SaveGraphML(folder, this.DataType, "Axial");
+            _graphCrXL.SaveGraphML(folder, this.DataType, "Coronal");
 		}
 
 		#region Edge stuff

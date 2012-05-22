@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -71,6 +72,23 @@ namespace BrainLab.Studio
             _graphXL.Child = _oNodeXLControl;
         }
 
+        class MyVert
+        {
+            public double X;
+            public double Y;
+            public Color Color;
+            public string StrokeWidth;
+        }
+
+        class MyEdge
+        {
+            public int V1;
+            public int V2;
+        }
+
+        private List<MyVert> myVerts = new List<MyVert>();
+        private List<MyEdge> myEdges = new List<MyEdge>();
+
 		public void Draw()
 		{
 			if (_nodes != null)
@@ -104,11 +122,19 @@ namespace BrainLab.Studio
 				IVertexCollection vc = g.Vertices;
 				IEdgeCollection ec = g.Edges;
 
+                myVerts = new List<MyVert>();
 				List<IVertex> verts = new List<IVertex>();
 				foreach (var node in _nodes)
 				{
 					double hf = _horiz(node);
 					double vf = _vert(node);
+
+                    MyVert mv = new MyVert();
+                    if(_flipX)
+                        mv = new MyVert(){ X = (1 - hf) * 100, Y = (1 - vf) * 100};
+                    else
+                        mv = new MyVert(){ X = hf * 100, Y = (1 - vf) * 100};
+                    myVerts.Add(mv);
 
 					double xCoord = (hf * hSize) + hOffset;
 					if (_flipX)
@@ -134,8 +160,19 @@ namespace BrainLab.Studio
 					verts.Add(vertex);
 				}
 
+                myEdges = new List<MyEdge>();
 				foreach (var edge in _edges)
 				{
+                    MyVert mv1 = myVerts[edge.V1];
+                    MyVert mv2 = myVerts[edge.V2];
+                    mv1.Color = _componentColor;
+                    mv1.StrokeWidth = "1";
+                    mv2.Color = _componentColor;
+                    mv2.StrokeWidth = "1";
+
+                    MyEdge me = new MyEdge() { V1 = edge.V1, V2 = edge.V2 };
+                    myEdges.Add(me);
+
 					IVertex v1 = verts[edge.V1];
 					IVertex v2 = verts[edge.V2];
 					v1.SetValue(ReservedMetadataKeys.PerColor, _componentColor);
@@ -166,15 +203,57 @@ namespace BrainLab.Studio
 
 		public void SaveReport(StringBuilder htmlSink, string folderPath, string dataType, string view, int width, int height)
 		{
-			if (_oNodeXLControl.Graph != null)
+			if (myEdges.Count > 0)
 			{
-				// TODO: May want to tack on a guid so things don't overwrite
-				string fileName = "NBSm_" + dataType + "_" + view + ".png";
+                StringBuilder sb = new StringBuilder();
 
-				htmlSink.AppendFormat("<img src=\"{0}\" />\n", fileName);
+                sb.Append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                sb.Append("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\" >");
+                sb.Append("<svg contentScriptType=\"text/ecmascript\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" zoomAndPan=\"magnify\" contentStyleType=\"text/css\" viewBox=\"-10 -10 120 120\" preserveAspectRatio=\"xMidYMid meet\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">");
+                sb.Append("<g id=\"edges\">");
 
-				var bmp = _oNodeXLControl.CopyGraphToBitmap(width, height);
-				bmp.Save(System.IO.Path.Combine(folderPath, fileName), System.Drawing.Imaging.ImageFormat.Png);
+                foreach (var e in myEdges)
+                {
+                    var v1 = myVerts[e.V1];
+                    var v2 = myVerts[e.V2];
+                    
+                    sb.AppendFormat("\t<path fill=\"none\" stroke-width=\"1.0\" d=\"M {0},{1} L {2},{3}\" stroke-opacity=\"1.0\" stroke=\"#{4}\"/>\n",
+                            v1.X, v1.Y, v2.X, v2.Y, _componentColor.ToString().Substring(3));    
+                }
+
+                sb.Append("</g>");
+                sb.Append("<g id=\"nodes\">");
+
+                foreach (var n in myVerts)
+                {
+                    if (String.IsNullOrEmpty(n.StrokeWidth))
+                    {
+                        sb.AppendFormat("\t<circle fill=\"#999999\" fill-opacity=\"0.5\" r=\"5.0\" class=\"0\" cx=\"{0}\" cy=\"{1}\"/>\n",
+                            n.X, n.Y);
+                    }
+                    else
+                    {
+                        sb.AppendFormat("\t<circle fill=\"{2}\" stroke=\"black\" stroke-width=\"0.5\" fill-opacity=\"0.75\" r=\"5.0\" class=\"0\" cx=\"{0}\" cy=\"{1}\"/>\n",
+                            n.X, n.Y,
+                            n.Color.ToString().Substring(3));
+                    }
+                }
+
+                sb.Append("</g>");
+                sb.Append("</svg>");
+
+                // TODO: May want to tack on a guid so things don't overwrite
+				string fileName = "NBSm_" + dataType + "_" + view + ".svg";
+
+				htmlSink.AppendFormat("<img src=\"{0}\" width=\"{1}px\" />\n", fileName, width);
+
+                using(StreamWriter sw = new StreamWriter(System.IO.Path.Combine(folderPath, fileName)))
+                {
+                    sw.WriteLine(sb.ToString());
+                }
+
+                //var bmp = _oNodeXLControl.CopyGraphToBitmap(width, height);
+                //bmp.Save(System.IO.Path.Combine(folderPath, fileName), System.Drawing.Imaging.ImageFormat.Png);
 
 				//Smrf.NodeXL.Visualization.Wpf.
 				//_plot.SaveBitmap(System.IO.Path.Combine(folderPath, fileName));

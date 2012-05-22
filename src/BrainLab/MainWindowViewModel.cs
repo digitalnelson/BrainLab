@@ -108,14 +108,17 @@ namespace BrainLab.Studio
 			htmlSink.AppendFormat("<li><b>Permutations:</b> {0}</li>", Permutations);
 			foreach (var dt in DataTypes)
 			{
-				if(dt.Selected)
-					htmlSink.AppendFormat("<li><b>DataType:</b>  {0} <b>Threshold:</b>  {1}</li>", dt.Tag, dt.Threshold);
+                if (dt.Selected)
+                {
+                    htmlSink.AppendFormat("<li><b>DataType:</b>  {0} <b>Threshold:</b>  {1}</li>", dt.Tag, dt.Threshold);
+                }
 			}
 			htmlSink.Append("</ul>");
 
 			foreach (var cmp in wrkSpaceComponents)
 			{
 				cmp.SaveReport(htmlSink, OutputFolder);
+                cmp.SaveGraphML(OutputFolder);
 			}
 
 			htmlSink.Append("</body></html>");

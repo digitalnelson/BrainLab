@@ -89,36 +89,43 @@ namespace BrainLab.Studio
 
 		private List<GraphView> _wrkSpaceComponents = new List<GraphView>();
 
+        private Color[] NBSmColors = new Color[] { 
+            Color.FromRgb(0, 255, 0),
+            Colors.Blue,
+            Colors.Purple,
+            Colors.Orange,
+        };
+
 		private async void Permute(object sender, RoutedEventArgs e)
 		{
 			// Clear our workspace
 			oComponents.Clear();
 			_wrkSpace.Children.Clear();
 
-			//foreach (var itm in _wrkSpaceComponents)
-			//	_wrkSpace.Children.Remove(itm);
-	
 			await _viewModel.Permute();
 
             Overlap overlap = _dataManager.GetOverlap();
 			if (overlap != null)
 			{
 				oComponents.LoadGraphComponents(overlap);
-				//oComponents.SaveGraphML(_viewModel.OutputFolder, "Overlap");
 
+                int idx = 0;
 				foreach (var dataType in _viewModel.DataTypes)
 				{
 					if (dataType.Selected)
 					{
 						var cmpView = new GraphView();
-						cmpView.Width = 600;
+						cmpView.Width = 600;  // TODO: Make this dynamic and stretchy
 						cmpView.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
 						_wrkSpace.Children.Add(cmpView);
 						_wrkSpaceComponents.Add(cmpView);
 
 						cmpView.SetDataManager(_dataManager);
-						cmpView.LoadGraphComponents(overlap, dataType.Tag, Color.FromArgb(255, 0, 255, 0));
-						//cmpView.SaveGraphML(_viewModel.OutputFolder, dataType.Tag);
+                        
+                        // TODO: Make this user settable and not blow up
+                        cmpView.LoadGraphComponents(overlap, dataType.Tag, NBSmColors[idx]);
+
+                        idx++;
 					}
 				}
 			}
