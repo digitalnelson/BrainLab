@@ -99,7 +99,7 @@ namespace BrainLab.Studio
 			PermutationDuration = sw.ElapsedMilliseconds;
 		}
 
-		public void Save(List<GraphView> wrkSpaceComponents)
+		public void Save(OverlapView overlap, List<GraphView> wrkSpaceComponents)
 		{
 			StringBuilder htmlSink = new StringBuilder("<html><body>");
 
@@ -115,11 +115,9 @@ namespace BrainLab.Studio
 			}
 			htmlSink.Append("</ul>");
 
+            overlap.Save(htmlSink, OutputFolder);
 			foreach (var cmp in wrkSpaceComponents)
-			{
-				cmp.SaveReport(htmlSink, OutputFolder);
-                cmp.SaveGraphML(OutputFolder);
-			}
+				cmp.Save(htmlSink, OutputFolder);
 
 			htmlSink.Append("</body></html>");
 

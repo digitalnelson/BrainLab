@@ -107,15 +107,15 @@ namespace BrainLabLibrary
 
 				for(int i=0; i<ces.size(); ++i)
 				{
-					GraphEdge ge(ces[i].Edge.first, ces[i].Edge.second);
+					GraphEdge ^ge = gcnew GraphEdge(ces[i].Edge.first, ces[i].Edge.second);
 				
-					ge.Value = ces[i].EdgeValue.Value;
-					ge.M1 = ces[i].EdgeValue.M1;
-					ge.M2 = ces[i].EdgeValue.M2;
-					ge.Var1 = ces[i].EdgeValue.V1;
-					ge.Var2 = ces[i].EdgeValue.V2;
-					ge.TStat = ces[i].EdgeValue.TStat;
-					ge.RightTailCount = ces[i].EdgeValue.RightTailCount;
+					ge->Value = ces[i].EdgeValue.Value;
+					ge->M1 = ces[i].EdgeValue.M1;
+					ge->M2 = ces[i].EdgeValue.M2;
+					ge->Var1 = ces[i].EdgeValue.V1;
+					ge->Var2 = ces[i].EdgeValue.V2;
+					ge->TStat = ces[i].EdgeValue.TStat;
+					ge->RightTailCount = ces[i].EdgeValue.RightTailCount;
 
 					gc->Edges->Add(ge);
 				}

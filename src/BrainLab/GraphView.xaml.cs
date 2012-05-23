@@ -64,6 +64,8 @@ namespace BrainLab.Studio
 			_distro.Load(dataType, "c", "p");
 
 			List<GraphComponent> components = overlap.Components[dataType];
+            overlap.Colors[dataType] = componentColor;
+
 			List<ROIVertex> nodes = new List<ROIVertex>();
 			List<GraphEdge> edges = new List<GraphEdge>();
 
@@ -90,22 +92,37 @@ namespace BrainLab.Studio
 				{
 					cmp = components[i];
 					cmpSize = cmp.Edges.Count;
+
+                    cmp.DataType = dataType;
 				}
 			}
 
 			if (cmp != null)
 			{
-				_graphCrXL.SetData(nodes, cmp.Edges, r => r.XF, xRange, r => r.ZF, zRange, false, componentColor, overlap);
-				_graphSgXL.SetData(nodes, cmp.Edges, r => r.XF, xRange, r => r.YF, yRange, false, componentColor, overlap);
-				_graphAxXL.SetData(nodes, cmp.Edges, r => r.YF, yRange, r => r.ZF, zRange, true, componentColor, overlap);
+                for (var i = 0; i < cmp.Edges.Count; i++)
+                    cmp.Edges[i].Color = overlap.Colors[cmp.DataType];    
+                    
+                //cmp.Edges[i].Color = overlap.Colors[cmp.DataType];
+
+                _graphCrXL.SetData(nodes, cmp.Edges, 
+                    r => new ROIDim() { Raw = r.Roi.X, Factor = r.XF }, xRange, _dataManager.XMin, _dataManager.XMax,
+                    r => new ROIDim() { Raw = r.Roi.Z, Factor = r.ZF }, zRange, _dataManager.ZMin, _dataManager.ZMax,
+                    false, componentColor, overlap);
+                
+                _graphSgXL.SetData(nodes, cmp.Edges,
+                    r => new ROIDim() { Raw = r.Roi.X, Factor = r.XF }, xRange, _dataManager.XMin, _dataManager.XMax,
+                    r => new ROIDim() { Raw = r.Roi.Y, Factor = r.YF }, yRange, _dataManager.YMin, _dataManager.YMax,
+                    false, componentColor, overlap);
+                
+                _graphAxXL.SetData(nodes, cmp.Edges,
+                    r => new ROIDim() { Raw = r.Roi.Y, Factor = r.YF }, yRange, _dataManager.YMin, _dataManager.YMax,
+                    r => new ROIDim() { Raw = r.Roi.Z, Factor = r.ZF }, zRange, _dataManager.ZMin, _dataManager.ZMax,
+                    true, componentColor, overlap);
 
 				_graphCrXL.Draw();
 				_graphSgXL.Draw();
 				_graphAxXL.Draw();
-			}
 
-            if (cmp != null)
-            {
 				CmpPValue = "p" + (((double)cmp.RightTailExtentCount) / ((double)overlap.Permutations)).ToString("0.0000");
                 Dictionary<int, ROIVertex> cmpVerts = new Dictionary<int, ROIVertex>();
 
@@ -131,7 +148,7 @@ namespace BrainLab.Studio
             }		
 		}
 
-        public void SaveReport(StringBuilder htmlSink, string folderPath)
+        public void Save(StringBuilder htmlSink, string folderPath)
         {
             htmlSink.AppendFormat("<h1>{0}</h1>", DataType);
 
@@ -141,17 +158,14 @@ namespace BrainLab.Studio
             htmlSink.Append("<h3>NBSm</h3>");
             htmlSink.AppendFormat("<p>Nodes: {0} Edges: {1} pVal: {2}</p>", CmpNodes.Count, CmpEdges.Count, CmpPValue);
 
-            _graphCrXL.SaveReport(htmlSink, folderPath, DataType, "cr", 250, 250);
-            _graphSgXL.SaveReport(htmlSink, folderPath, DataType, "ax", 250, 250);
-            _graphAxXL.SaveReport(htmlSink, folderPath, DataType, "sg", 500, 250);
-        }
+            _graphCrXL.Save(htmlSink, folderPath, DataType, "cr", 300, 250);
+            _graphSgXL.Save(htmlSink, folderPath, DataType, "ax", 250, 250);
+            _graphAxXL.Save(htmlSink, folderPath, DataType, "sg", 350, 250);
 
-		public void SaveGraphML(string folder)
-		{
-			_graphAxXL.SaveGraphML(folder, this.DataType, "Sagital");
-            _graphSgXL.SaveGraphML(folder, this.DataType, "Axial");
-            _graphCrXL.SaveGraphML(folder, this.DataType, "Coronal");
-		}
+            _graphAxXL.SaveGraphML(folderPath, this.DataType, "sg");
+            _graphSgXL.SaveGraphML(folderPath, this.DataType, "ax");
+            _graphCrXL.SaveGraphML(folderPath, this.DataType, "cr");
+        }
 
 		#region Edge stuff
 		// Calc corr for this edge
@@ -229,4 +243,10 @@ namespace BrainLab.Studio
 
 		public bool Highlight;
 	}
+
+    public class ROIDim
+    {
+        public double Factor;
+        public double Raw;
+    }
 }

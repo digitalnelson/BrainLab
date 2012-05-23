@@ -107,8 +107,6 @@ namespace BrainLab.Studio
             Overlap overlap = _dataManager.GetOverlap();
 			if (overlap != null)
 			{
-				oComponents.LoadGraphComponents(overlap);
-
                 int idx = 0;
 				foreach (var dataType in _viewModel.DataTypes)
 				{
@@ -128,6 +126,8 @@ namespace BrainLab.Studio
                         idx++;
 					}
 				}
+
+                oComponents.LoadGraphComponents(overlap);
 			}
 
 			_btnSave.IsEnabled = true;
@@ -235,7 +235,7 @@ namespace BrainLab.Studio
 
 		private void Button_Click_SaveReport(object sender, RoutedEventArgs e)
 		{
-			_viewModel.Save(_wrkSpaceComponents);
+			_viewModel.Save(oComponents, _wrkSpaceComponents);
 		}
 	}
 }

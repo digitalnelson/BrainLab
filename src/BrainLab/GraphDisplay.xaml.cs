@@ -19,11 +19,8 @@ using Smrf.NodeXL.Visualization.Wpf;
 
 namespace BrainLab.Studio
 {
-	public delegate double SelectDim(ROIVertex v);
+	public delegate ROIDim SelectDim(ROIVertex v);
 
-	/// <summary>
-	/// Interaction logic for GraphDisplay.xaml
-	/// </summary>
 	public partial class GraphDisplay : UserControl
 	{
 		public GraphDisplay()
@@ -40,25 +37,19 @@ namespace BrainLab.Studio
 			Draw();
 		}
 
-		private List<ROIVertex> _nodes;
-		private List<GraphEdge> _edges; 
-		private SelectDim _horiz;
-		private double _hRange;
-		private SelectDim _vert; 
-		private double _vRange;
-		private bool _flipX;
-		private System.Windows.Media.Color _componentColor;
-		private Overlap _overlap;
-
-		public void SetData(List<ROIVertex> nodes, List<GraphEdge> edges, SelectDim horiz, double hRange, SelectDim vert, 
-			double vRange, bool flipX, System.Windows.Media.Color componentColor, Overlap overlap)
+		public void SetData(List<ROIVertex> nodes, List<GraphEdge> edges, SelectDim horiz, double hRange, double hMin, double hMax, SelectDim vert, 
+			double vRange, double vMin, double vMax, bool flipX, System.Windows.Media.Color componentColor, Overlap overlap)
 		{
 			_nodes = nodes;
 			_edges = edges;
 			_horiz = horiz;
 			_hRange = hRange;
+            _hMin = hMin;
+            _hMax = hMax;
 			_vert = vert;
 			_vRange = vRange;
+            _vMin = vMin;
+            _vMax = vMax;
 			_flipX = flipX;
 			_componentColor = componentColor;
 			_overlap = overlap;
@@ -84,6 +75,7 @@ namespace BrainLab.Studio
         {
             public int V1;
             public int V2;
+            public Color Color;
         }
 
         private List<MyVert> myVerts = new List<MyVert>();
@@ -126,14 +118,17 @@ namespace BrainLab.Studio
 				List<IVertex> verts = new List<IVertex>();
 				foreach (var node in _nodes)
 				{
-					double hf = _horiz(node);
-					double vf = _vert(node);
+                    ROIDim hd = _horiz(node);
+                    ROIDim vd = _vert(node);
+
+					double hf = hd.Factor;
+					double vf = vd.Factor;
 
                     MyVert mv = new MyVert();
-                    if(_flipX)
-                        mv = new MyVert(){ X = (1 - hf) * 100, Y = (1 - vf) * 100};
+                    if (_flipX)
+                        mv = new MyVert() { X = _hMax - hd.Raw, Y = _vMax - vd.Raw };
                     else
-                        mv = new MyVert(){ X = hf * 100, Y = (1 - vf) * 100};
+                        mv = new MyVert() { X = hd.Raw, Y = _vMax - vd.Raw };
                     myVerts.Add(mv);
 
 					double xCoord = (hf * hSize) + hOffset;
@@ -170,7 +165,7 @@ namespace BrainLab.Studio
                     mv2.Color = _componentColor;
                     mv2.StrokeWidth = "1";
 
-                    MyEdge me = new MyEdge() { V1 = edge.V1, V2 = edge.V2 };
+                    MyEdge me = new MyEdge() { V1 = edge.V1, V2 = edge.V2, Color = edge.Color };
                     myEdges.Add(me);
 
 					IVertex v1 = verts[edge.V1];
@@ -201,44 +196,58 @@ namespace BrainLab.Studio
 			}
 		}
 
-		public void SaveReport(StringBuilder htmlSink, string folderPath, string dataType, string view, int width, int height)
+		public void Save(StringBuilder htmlSink, string folderPath, string dataType, string view, int width, int height)
 		{
 			if (myEdges.Count > 0)
 			{
+                // TODO: Get rid of stringbuilder and use XmlBuilder instead
                 StringBuilder sb = new StringBuilder();
 
-                sb.Append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-                sb.Append("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\" >");
-                sb.Append("<svg contentScriptType=\"text/ecmascript\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" zoomAndPan=\"magnify\" contentStyleType=\"text/css\" viewBox=\"-10 -10 120 120\" preserveAspectRatio=\"xMidYMid meet\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">");
-                sb.Append("<g id=\"edges\">");
-
-                foreach (var e in myEdges)
-                {
-                    var v1 = myVerts[e.V1];
-                    var v2 = myVerts[e.V2];
-                    
-                    sb.AppendFormat("\t<path fill=\"none\" stroke-width=\"1.0\" d=\"M {0},{1} L {2},{3}\" stroke-opacity=\"1.0\" stroke=\"#{4}\"/>\n",
-                            v1.X, v1.Y, v2.X, v2.Y, _componentColor.ToString().Substring(3));    
-                }
-
-                sb.Append("</g>");
-                sb.Append("<g id=\"nodes\">");
+                var sbCmpNodes = new StringBuilder();
+                var sbCmpEdges = new StringBuilder();
+                var sbNodes = new StringBuilder();
 
                 foreach (var n in myVerts)
                 {
                     if (String.IsNullOrEmpty(n.StrokeWidth))
                     {
-                        sb.AppendFormat("\t<circle fill=\"#999999\" fill-opacity=\"0.5\" r=\"5.0\" class=\"0\" cx=\"{0}\" cy=\"{1}\"/>\n",
+                        sbNodes.AppendFormat("\t<circle fill=\"#999999\" fill-opacity=\"0.5\" r=\"3.0\" class=\"0\" cx=\"{0}\" cy=\"{1}\"/>\n",
                             n.X, n.Y);
                     }
                     else
                     {
-                        sb.AppendFormat("\t<circle fill=\"{2}\" stroke=\"black\" stroke-width=\"0.5\" fill-opacity=\"0.75\" r=\"5.0\" class=\"0\" cx=\"{0}\" cy=\"{1}\"/>\n",
+                        sbCmpNodes.AppendFormat("\t<circle fill=\"{2}\" stroke=\"black\" stroke-width=\"0.5\" fill-opacity=\"0.75\" r=\"3.0\" class=\"0\" cx=\"{0}\" cy=\"{1}\"/>\n",
                             n.X, n.Y,
                             n.Color.ToString().Substring(3));
                     }
                 }
 
+                foreach (var e in myEdges)
+                {
+                    var v1 = myVerts[e.V1];
+                    var v2 = myVerts[e.V2];
+
+                    sbCmpEdges.AppendFormat("\t<path fill=\"none\" stroke-width=\"0.7\" d=\"M {0},{1} L {2},{3}\" stroke-opacity=\"1.0\" stroke=\"#{4}\"/>\n",
+                            v1.X, v1.Y, v2.X, v2.Y, e.Color.ToString().Substring(3));    
+                }
+                
+                sb.Append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                sb.Append("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\" >");
+
+                if (_flipX)
+                    sb.AppendFormat("<svg contentScriptType=\"text/ecmascript\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" zoomAndPan=\"magnify\" contentStyleType=\"text/css\" viewBox=\"{0} {1} {2} {3}\" preserveAspectRatio=\"xMidYMid meet\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">",
+                        -10, -10, _hMax, _vMax);  // TODO: Super hack - figure out actual ranges
+                else
+                    sb.AppendFormat("<svg contentScriptType=\"text/ecmascript\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" zoomAndPan=\"magnify\" contentStyleType=\"text/css\" viewBox=\"{0} {1} {2} {3}\" preserveAspectRatio=\"xMidYMid meet\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">",
+                        10, -10, _hMax, _vMax);  // TODO: Super hack - figure out actual ranges
+                sb.Append("<g id=\"backNodes\">");
+                sb.Append(sbNodes.ToString());
+                sb.Append("</g>");
+                sb.Append("<g id=\"cmpEdges\">");
+                sb.Append(sbCmpEdges.ToString());
+                sb.Append("</g>");
+                sb.Append("<g id=\"cmpNodes\">");
+                sb.Append(sbCmpNodes.ToString());
                 sb.Append("</g>");
                 sb.Append("</svg>");
 
@@ -251,12 +260,6 @@ namespace BrainLab.Studio
                 {
                     sw.WriteLine(sb.ToString());
                 }
-
-                //var bmp = _oNodeXLControl.CopyGraphToBitmap(width, height);
-                //bmp.Save(System.IO.Path.Combine(folderPath, fileName), System.Drawing.Imaging.ImageFormat.Png);
-
-				//Smrf.NodeXL.Visualization.Wpf.
-				//_plot.SaveBitmap(System.IO.Path.Combine(folderPath, fileName));
 			}
 		}
 
@@ -271,7 +274,20 @@ namespace BrainLab.Studio
 			ga.SaveGraph(_oNodeXLControl.Graph, System.IO.Path.Combine(folder, fileName));
 		}
 
-		//private NodeXLWithAxesControl m_oNodeXLWithAxesControl;
+        private List<ROIVertex> _nodes;
+        private List<GraphEdge> _edges;
+        private SelectDim _horiz;
+        private double _hRange;
+        private double _hMin;
+        private double _hMax;
+        private SelectDim _vert;
+        private double _vRange;
+        private double _vMin;
+        private double _vMax;
+        private bool _flipX;
+        private System.Windows.Media.Color _componentColor;
+        private Overlap _overlap;
+
 		private NodeXLControl _oNodeXLControl;
 	}
 }

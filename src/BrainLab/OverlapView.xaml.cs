@@ -24,9 +24,6 @@ using System.ComponentModel;
 
 namespace BrainLab.Studio
 {
-	/// <summary>
-	/// Interaction logic for GraphView.xaml
-	/// </summary>
 	public partial class OverlapView : UserControl, INotifyPropertyChanged
 	{
 		public OverlapView()
@@ -43,16 +40,6 @@ namespace BrainLab.Studio
 		{
 			_dataManager = dataManager;
 		}
-
-        public void Clear()
-        {
-            InterModalNodes.Clear();
-            InterModalEdges.Clear();
-
-            _graphAxXL.Clear();
-            _graphCrXL.Clear();
-            _graphSgXL.Clear();
-        }
 
 		public void LoadGraphComponents(Overlap overlap)
 		{
@@ -98,10 +85,13 @@ namespace BrainLab.Studio
 					}
 				}
 
-				foreach (var edge in cmp.Edges)
+				for (var i=0; i<cmp.Edges.Count; i++)
 				{
+                    var edge = cmp.Edges[i];
+
 					if (nodes[edge.V1].Highlight && nodes[edge.V2].Highlight)
 					{
+                        edge.Color = overlap.Colors[cmp.DataType];
 						edges.Add(edge);
 
 						ROIVertex v1 = nodes[edge.V1];
@@ -115,17 +105,55 @@ namespace BrainLab.Studio
 				}
 			}
 
-			_graphCrXL.DoSomething(nodes, edges, r => r.XF, xRange, r => r.ZF, zRange, false, overlap);
-			_graphSgXL.DoSomething(nodes, edges, r => r.XF, xRange, r => r.YF, yRange, false, overlap);
-			_graphAxXL.DoSomething(nodes, edges, r => r.YF, yRange, r => r.ZF, zRange, true, overlap);
+            _graphCrXL.SetData(nodes, edges,
+                    r => new ROIDim() { Raw = r.Roi.X, Factor = r.XF }, xRange, _dataManager.XMin, _dataManager.XMax,
+                    r => new ROIDim() { Raw = r.Roi.Z, Factor = r.ZF }, zRange, _dataManager.ZMin, _dataManager.ZMax,
+                    false, ComponentColor, overlap);
+
+            _graphSgXL.SetData(nodes, edges,
+                r => new ROIDim() { Raw = r.Roi.X, Factor = r.XF }, xRange, _dataManager.XMin, _dataManager.XMax,
+                r => new ROIDim() { Raw = r.Roi.Y, Factor = r.YF }, yRange, _dataManager.YMin, _dataManager.YMax,
+                false, ComponentColor, overlap);
+
+            _graphAxXL.SetData(nodes, edges,
+                r => new ROIDim() { Raw = r.Roi.Y, Factor = r.YF }, yRange, _dataManager.YMin, _dataManager.YMax,
+                r => new ROIDim() { Raw = r.Roi.Z, Factor = r.ZF }, zRange, _dataManager.ZMin, _dataManager.ZMax,
+                true, ComponentColor, overlap);
+
+            _graphCrXL.Draw();
+            _graphSgXL.Draw();
+            _graphAxXL.Draw();
 		}
 
-		public void SaveGraphML(string folder, string dataType)
-		{
-			_graphAxXL.SaveGraphML(folder, dataType, "Sagital");
-			_graphSgXL.SaveGraphML(folder, dataType, "Axial");
-			_graphCrXL.SaveGraphML(folder, dataType, "Coronal");
-		}
+        public void Save(StringBuilder htmlSink, string folderPath)
+        {
+            htmlSink.AppendFormat("<h1>{0}</h1>", DataType);
+
+            htmlSink.Append("<h3>Global Strength</h3>");
+
+            htmlSink.Append("<h3>NBSm</h3>");
+            htmlSink.AppendFormat("<p>Nodes: {0} Edges: {1} pVal: {2}</p>", InterModalNodes.Count, InterModalEdges.Count, InterModalPValue);
+
+            _graphCrXL.Save(htmlSink, folderPath, DataType, "cr", 300, 250);
+            _graphSgXL.Save(htmlSink, folderPath, DataType, "ax", 250, 250);
+            _graphAxXL.Save(htmlSink, folderPath, DataType, "sg", 350, 250);
+
+            _graphAxXL.SaveGraphML(folderPath, DataType, "sg");
+            _graphSgXL.SaveGraphML(folderPath, DataType, "ax");
+            _graphCrXL.SaveGraphML(folderPath, DataType, "cr");
+
+
+        }
+
+        public void Clear()
+        {
+            InterModalNodes.Clear();
+            InterModalEdges.Clear();
+
+            _graphAxXL.Clear();
+            _graphCrXL.Clear();
+            _graphSgXL.Clear();
+        }
 		
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -147,5 +175,8 @@ namespace BrainLab.Studio
 		}
 
 		private DataManager _dataManager;
+
+        private string DataType = "Overlap";
+        private Color ComponentColor = Colors.Red;
 	}
 }

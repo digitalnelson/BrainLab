@@ -83,11 +83,11 @@ namespace BrainLab.Studio
 			if (_plot != null)
 			{
 				// TODO: May want to tack on a guid so things don't overwrite
-				string fileName = "GlobalStrength_" + _dataType + ".png";
+				string fileName = "GlobalStrength_" + _dataType + ".svg";
 				htmlSink.AppendFormat("<span>Diff: {0} Tests: {1}</span><br/>", GrpDiff, PValue);
 				htmlSink.AppendFormat("<img src=\"{0}\" />\n", fileName);
 				
-				_plot.SaveBitmap(System.IO.Path.Combine(folderPath, fileName));
+				_plotModel.SaveSvg(System.IO.Path.Combine(folderPath, fileName), 300, 250);
 			}
 		}
 
@@ -196,13 +196,13 @@ namespace BrainLab.Studio
 			model.PlotMargins = new OxyThickness(0, 0, 0, 0);
 
 			model.Axes.Add(new CategoryAxis("", "Controls", "Probands"));
-			model.Axes.Add(new LinearAxis(AxisPosition.Left) { MinimumPadding = 0.1, MaximumPadding = 0.1 });
+            model.Axes.Add(new LinearAxis(AxisPosition.Left) { MinimumPadding = 0.1, MaximumPadding = 0.1, IntervalLength = 20 });
 
 			var s1 = new BoxPlotSeries
 			{
 				Title = "BoxPlotSeries",
 				Fill = OxyColors.White,
-				Stroke = OxyColors.Blue,
+				Stroke = OxyColors.DarkBlue,
 				StrokeThickness = 2,
 				OutlierSize = 2,
 				BoxWidth = 0.4
