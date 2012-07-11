@@ -31,7 +31,9 @@ namespace BrainLab.Studio
 			_gridRoot.DataContext = this;
 		}
 
-		public PlotModel PlotModel 
+        #region View Properties
+
+        public PlotModel PlotModel 
 		{
 			get
 			{
@@ -44,6 +46,34 @@ namespace BrainLab.Studio
 			}
 		}
 		private PlotModel _plotModel;
+
+        public PlotModel SGPlotModel
+        {
+            get
+            {
+                return _pSG;
+            }
+            set
+            {
+                _pSG = value;
+                RaisePropertyChanged("SGPlotModel");
+            }
+        }
+        private PlotModel _pSG;
+
+        public PlotModel AXPlotModel
+        {
+            get
+            {
+                return _pAX;
+            }
+            set
+            {
+                _pAX = value;
+                RaisePropertyChanged("AXPlotModel");
+            }
+        }
+        private PlotModel _pAX;
 
 		public string GrpDiff
 		{
@@ -73,25 +103,14 @@ namespace BrainLab.Studio
 		}
 		private string _pValue;
 
-		public void SetDataManager(DataManager dataManager)
+        #endregion
+
+        public void SetDataManager(DataManager dataManager)
 		{
 			_dataManager = dataManager;
 		}
 
-		public void SaveReport(StringBuilder htmlSink, string folderPath)
-		{
-			if (_plot != null)
-			{
-				// TODO: May want to tack on a guid so things don't overwrite
-				string fileName = "GlobalStrength_" + _dataType + ".svg";
-				htmlSink.AppendFormat("<span>Diff: {0} Tests: {1}</span><br/>", GrpDiff, PValue);
-				htmlSink.AppendFormat("<img src=\"{0}\" />\n", fileName);
-				
-				_plotModel.SaveSvg(System.IO.Path.Combine(folderPath, fileName), 300, 250);
-			}
-		}
-
-		private static double GetMedian(IEnumerable<double> values)
+        private static double GetMedian(IEnumerable<double> values)
 		{
 			var sortedInterval = new List<double>(values);
 			sortedInterval.Sort();
@@ -214,6 +233,19 @@ namespace BrainLab.Studio
 			model.Series.Add(s1);			
 			PlotModel = model;
 		}
+
+        public void SaveReport(StringBuilder htmlSink, string folderPath)
+        {
+            if (_plot != null)
+            {
+                // TODO: May want to tack on a guid so things don't overwrite
+                string fileName = "GlobalStrength_" + _dataType + ".svg";
+                htmlSink.AppendFormat("<span>Diff: {0} Tests: {1}</span><br/>", GrpDiff, PValue);
+                htmlSink.AppendFormat("<img src=\"{0}\" />\n", fileName);
+
+                _plotModel.SaveSvg(System.IO.Path.Combine(folderPath, fileName), 300, 250);
+            }
+        }
 
 		public event PropertyChangedEventHandler PropertyChanged;
 

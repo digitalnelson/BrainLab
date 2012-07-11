@@ -1,6 +1,7 @@
-﻿<Window
+﻿<Controls:MetroWindow
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:my="clr-namespace:BrainLab.Studio" xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="BrainLab.Studio.MainWindow"
         Title="BrainLab Studio" Height="1088.5" Width="1676" Background="#222233">
     <Window.Resources>
@@ -389,4 +390,4 @@
 		</ScrollViewer>-->
 
     </Grid>
-</Window>
+</Controls:MetroWindow>

@@ -19,10 +19,11 @@ using System.Diagnostics;
 using BrainLabStorage;
 using BrainLabLibrary;
 using System.Threading.Tasks;
+using MahApps.Metro.Controls;
 
 namespace BrainLab.Studio
 {
-	public partial class MainWindow : Window
+	public partial class MainWindow : MetroWindow
 	{
 		private MainWindowViewModel _viewModel;
 		private DataManager _dataManager;
