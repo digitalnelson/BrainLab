@@ -17,7 +17,7 @@ using BrainLabStorage;
 using Smrf.NodeXL.Core;
 using Smrf.NodeXL.Visualization.Wpf;
 
-namespace BrainLab.Studio
+namespace BrainLab
 {
 	public delegate ROIDim SelectDim(ROIVertex v);
 

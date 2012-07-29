@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace BrainLab.Studio
+namespace BrainLab
 {
 	/// <summary>
 	/// Interaction logic for SpatialPlot.xaml

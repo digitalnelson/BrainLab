@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BrainLab.Studio
+namespace BrainLab
 {
 	public class Stats
 	{

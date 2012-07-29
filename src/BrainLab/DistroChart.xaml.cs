@@ -17,7 +17,7 @@ using System.IO;
 using OxyPlot;
 using System.ComponentModel;
 
-namespace BrainLab.Studio
+namespace BrainLab
 {
 	public partial class DistroChart : UserControl,  INotifyPropertyChanged
 	{

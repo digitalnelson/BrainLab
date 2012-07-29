@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BrainLabStorage;
 
-namespace BrainLab.Studio.Loaders
+namespace BrainLab.Loaders
 {
 	class SubjectCSVLoader
 	{

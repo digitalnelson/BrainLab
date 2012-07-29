@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace BrainLab.Studio
+namespace BrainLab
 {
 	class MainWindowViewModel : INotifyPropertyChanged
 	{
@@ -23,80 +23,80 @@ namespace BrainLab.Studio
 			Permutations = "500";
 		}
 
-		public async Task Load(string regionFile, string subjectFile, string dataFolder, string outputFolder)
+		public void Load(string regionFile, string subjectFile, string dataFolder, string outputFolder)
 		{
-			// Load the data files into the data manager
-			await Task.Run(delegate
-			{
-				_dataManager.LoadROIFile(regionFile);
-				_dataManager.LoadSubjectFile(subjectFile);
-				_dataManager.LoadAdjFiles(dataFolder);
-				OutputFolder = outputFolder;
-			});
+            //// Load the data files into the data manager
+            //await Task.Run(delegate
+            //{
+            //    _dataManager.LoadROIFile(regionFile);
+            //    _dataManager.LoadSubjectFile(subjectFile);
+            //    _dataManager.LoadAdjFiles(dataFolder);
+            //    OutputFolder = outputFolder;
+            //});
 
-			foreach (var itm in _dataManager.Groups)
-			{
-				var grp = new Group() { Name = itm, Selected = true };
-				Groups.Add(grp);
-			}
+            //foreach (var itm in _dataManager.Groups)
+            //{
+            //    var grp = new Group() { Name = itm, Selected = true };
+            //    Groups.Add(grp);
+            //}
 
-			foreach (var itm in _dataManager.DataTypes)
-			{
-				DataType type = DataStore.GetDataType(itm);
+            //foreach (var itm in _dataManager.DataTypes)
+            //{
+            //    DataType type = DataStore.GetDataType(itm);
 
-				if (type==null)
-					type =	new DataType() { Tag = itm, Threshold = "2.15", Selected = true };
+            //    if (type==null)
+            //        type =	new DataType() { Tag = itm, Threshold = "2.15", Selected = true };
 
-				DataTypes.Add(type);
-			}
+            //    DataTypes.Add(type);
+            //}
 		}
 
-		public async Task Permute()
+		public void Permute()
 		{
-			Stopwatch sw = new Stopwatch();
+            //Stopwatch sw = new Stopwatch();
 
-			// TODO: Make this a task with the notify interface so we can update UI
-			// with progress towards permutations
-			await Task.Run(delegate
-			{
-				int numOfPerms = Int32.Parse(Permutations);
-				Dictionary<string, double> thresholds = new Dictionary<string, double>();
+            //// TODO: Make this a task with the notify interface so we can update UI
+            //// with progress towards permutations
+            //await Task.Run(delegate
+            //{
+            //    int numOfPerms = Int32.Parse(Permutations);
+            //    Dictionary<string, double> thresholds = new Dictionary<string, double>();
 
-				// Allow each data source to be NBS thresholded at a different level
-				foreach (var dt in DataTypes)
-				{
-					if(dt.Selected)
-						thresholds[dt.Tag] = Double.Parse(dt.Threshold);
-				}
+            //    // Allow each data source to be NBS thresholded at a different level
+            //    foreach (var dt in DataTypes)
+            //    {
+            //        if(dt.Selected)
+            //            thresholds[dt.Tag] = Double.Parse(dt.Threshold);
+            //    }
 
-				List<string> grps = new List<string>();
-				foreach (var grp in Groups)
-				{
-					if (grp.Selected)
-						grps.Add(grp.Name);
-				}
+            //    List<string> grps = new List<string>();
+            //    foreach (var grp in Groups)
+            //    {
+            //        if (grp.Selected)
+            //            grps.Add(grp.Name);
+            //    }
 
-				if (grps.Count != 2)
-				{
-					MessageBox.Show("Please select 2 groups.");
-					return;
-				}
+            //    if (grps.Count != 2)
+            //    {
+            //        MessageBox.Show("Please select 2 groups.");
+            //        return;
+            //    }
 				
-				// Load the graphs into the comparison system
-				_dataManager.LoadComparisons(thresholds);
+            //    // Load the graphs into the comparison system
+            //    _dataManager.LoadComparisons(thresholds);
 
-				// Calculate our group differences
-				_dataManager.CalculateGroupDifferences(grps[0], grps[1], thresholds);
+            //    // Calculate our group differences
+            //    _dataManager.CalculateGroupDifferences(grps[0], grps[1], thresholds);
 								
-				sw.Start();
+            //    sw.Start();
 
-				// Run permutations
-				_dataManager.PermuteComparisons(numOfPerms, thresholds);
+            //    // Run permutations
+            //    _dataManager.PermuteComparisons(numOfPerms, thresholds);
 
-				sw.Stop();
-			});
+            //    sw.Stop();
+            //});
 
-			PermutationDuration = sw.ElapsedMilliseconds;
+            //PermutationDuration = sw.ElapsedMilliseconds;
 		}
 
 		public void Save(OverlapView overlap, List<GraphView> wrkSpaceComponents)

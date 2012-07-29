@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Raven.Client;
 using Raven.Client.Embedded;
 
-namespace BrainLab.Studio
+namespace BrainLab
 {
 	public class DataStore
 	{
@@ -15,10 +15,13 @@ namespace BrainLab.Studio
 		{
 			//if (!Directory.Exists("Data"))
 			//	Directory.CreateDirectory("Data");
-
+			long ticks = DateTime.Now.Ticks;
 			_eds = new EmbeddableDocumentStore() { DataDirectory = "Data" };
 			_eds.Initialize();
 			_sess = _eds.OpenSession();
+
+			long ticks2 = DateTime.Now.Ticks;
+			TimeSpan ts = new TimeSpan(ticks2 - ticks);
 
 			_dataTypes = new Dictionary<string, DataType>();
 			_dataTypes.Add("DTI", new DataType() { Tag = "DTI", Selected = true, Threshold = "2.15" });

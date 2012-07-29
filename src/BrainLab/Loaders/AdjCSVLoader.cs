@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using BrainLabLibrary;
 using BrainLabStorage;
 
-namespace BrainLab.Studio.Loaders
+namespace BrainLab.Loaders
 {
 	class AdjCSVLoader
 	{

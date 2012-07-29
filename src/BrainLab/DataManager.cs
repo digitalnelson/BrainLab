@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 using BrainLabStorage;
 using BrainLabLibrary;
 using System.Diagnostics;
-using BrainLab.Studio.Loaders;
+using BrainLab.Loaders;
 using System.ComponentModel;
 
-namespace BrainLab.Studio
+namespace BrainLab
 {
 	public class DataManager : INotifyPropertyChanged
 	{

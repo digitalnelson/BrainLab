@@ -19,7 +19,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using BrainLabStorage;
 
-namespace BrainLab.Studio
+namespace BrainLab
 {
 	public partial class PermDist : UserControl
 	{

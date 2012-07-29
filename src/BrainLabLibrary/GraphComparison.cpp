@@ -102,7 +102,7 @@ namespace BrainLabLibrary
 		});
 	}
 
-	void GraphComparison::CalcEdgeTStatsAmpedWorker(int subjectCount, int szGroup1, array_view<EdgeValue, 1> &tstatView, array_view<int, 1> &subjectIdxs, array<float, 2> &subjectEdgesView)
+	void GraphComparison::CalcEdgeTStatsAmpedWorker(int subjectCount, int szGroup1, array_view<EdgeValue, 1> &tstatView, array_view<int, 1> &subjectIdxs, Concurrency::array<float, 2> &subjectEdgesView)
 	{
 		// Run code on the GPU
 		//parallel_for_each(tstatView.extent, [&subjectEdgesView, subjectCount, subjectIdxs, szGroup1, tstatView] (index<1> idx) restrict(amp)

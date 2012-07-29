@@ -13,7 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.ComponentModel;
 
-namespace BrainLab.Studio
+namespace BrainLab
 {
 	/// <summary>
 	/// Interaction logic for DoubleArrayHeatMap.xaml

@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="BrainLab.Studio.GroupEdgeOverview"
+﻿<UserControl x:Class="BrainLab.GroupEdgeOverview"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" xmlns:my="clr-namespace:BrainLab.Studio"
+             mc:Ignorable="d" xmlns:my="clr-namespace:BrainLab"
              d:DesignHeight="400" d:DesignWidth="600">
     <Grid>
 		<Grid.RowDefinitions>

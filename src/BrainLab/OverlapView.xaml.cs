@@ -22,7 +22,7 @@ using System.Diagnostics;
 using System.IO;
 using System.ComponentModel;
 
-namespace BrainLab.Studio
+namespace BrainLab
 {
 	public partial class OverlapView : UserControl, INotifyPropertyChanged
 	{

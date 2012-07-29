@@ -14,7 +14,7 @@ using System.Windows.Shapes;
 using System.Windows.Forms.DataVisualization.Charting;
 using BrainLabStorage;
 
-namespace BrainLab.Studio
+namespace BrainLab
 {
 	/// <summary>
 	/// Interaction logic for GroupComparisonChart.xaml
