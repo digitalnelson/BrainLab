@@ -99,33 +99,33 @@ namespace BrainLab
             //PermutationDuration = sw.ElapsedMilliseconds;
 		}
 
-		public void Save(OverlapView overlap, List<GraphView> wrkSpaceComponents)
-		{
-			StringBuilder htmlSink = new StringBuilder("<html><body>");
+		//public void Save(OverlapView overlap, List<GraphView> wrkSpaceComponents)
+		//{
+		//	StringBuilder htmlSink = new StringBuilder("<html><body>");
 
-			htmlSink.Append("<h1>BrainLab Report</h1>");
-			htmlSink.Append("<ul>");
-			htmlSink.AppendFormat("<li><b>Permutations:</b> {0}</li>", Permutations);
-			foreach (var dt in DataTypes)
-			{
-                if (dt.Selected)
-                {
-                    htmlSink.AppendFormat("<li><b>DataType:</b>  {0} <b>Threshold:</b>  {1}</li>", dt.Tag, dt.Threshold);
-                }
-			}
-			htmlSink.Append("</ul>");
+		//	htmlSink.Append("<h1>BrainLab Report</h1>");
+		//	htmlSink.Append("<ul>");
+		//	htmlSink.AppendFormat("<li><b>Permutations:</b> {0}</li>", Permutations);
+		//	foreach (var dt in DataTypes)
+		//	{
+		//		if (dt.Selected)
+		//		{
+		//			htmlSink.AppendFormat("<li><b>DataType:</b>  {0} <b>Threshold:</b>  {1}</li>", dt.Tag, dt.Threshold);
+		//		}
+		//	}
+		//	htmlSink.Append("</ul>");
 
-            overlap.Save(htmlSink, OutputFolder);
-			foreach (var cmp in wrkSpaceComponents)
-				cmp.Save(htmlSink, OutputFolder);
+		//	overlap.Save(htmlSink, OutputFolder);
+		//	foreach (var cmp in wrkSpaceComponents)
+		//		cmp.Save(htmlSink, OutputFolder);
 
-			htmlSink.Append("</body></html>");
+		//	htmlSink.Append("</body></html>");
 
-			using (StreamWriter sw = new StreamWriter(System.IO.Path.Combine(OutputFolder, "index.html")))
-			{
-				sw.Write(htmlSink.ToString());
-			}
-		}
+		//	using (StreamWriter sw = new StreamWriter(System.IO.Path.Combine(OutputFolder, "index.html")))
+		//	{
+		//		sw.Write(htmlSink.ToString());
+		//	}
+		//}
 
 		public event PropertyChangedEventHandler PropertyChanged;
 

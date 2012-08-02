@@ -17,16 +17,14 @@ namespace BrainLabLibrary
 		_permutations = 0;
 	}
 
-	void MultiModalCompare::LoadSubjects(List<SubjectData^>^ itms)
+	void MultiModalCompare::LoadSubjects(List<Subject^>^ itms)
 	{
 		// Loop through subject data items
-		for(int idx=0; idx<itms->Count; ++idx)
+		//for(int idx=0; idx<itms->Count; ++idx)
+		for each(Subject^ subj in itms)
 		{
-			// Pull this subject out of the list
-			SubjectData ^subj = itms[idx];
-
 			// Create an unmanaged subject
-			Subject s;
+			SubjectMarshal s;
 			s.GroupId = msclr::interop::marshal_as<std::string>(subj->GroupId);
 
 			// Loop through the graphs for this subject
@@ -35,10 +33,8 @@ namespace BrainLabLibrary
 				// Convert our CLR string to a STL string
 				std::string dataKey = msclr::interop::marshal_as<std::string>(itm->Key);
 
-				auto graph = itm->Value->RawGraph;
-
 				// Add the graph to the unmanaged subject
-				s.Graphs[dataKey] = graph;
+				s.Graphs[dataKey] = itm->Value->RawGraph;
 			}
 
 			// Add subject to our comparison multi

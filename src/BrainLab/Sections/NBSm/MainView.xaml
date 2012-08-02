@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="BrainLab.Sections.NBSm.MainView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+			 xmlns:my="clr-namespace:BrainLab"
+             mc:Ignorable="d" 
+             d:DesignHeight="768" d:DesignWidth="1024">
+    <Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="0.25*" />
+			<ColumnDefinition Width="0.75*"/>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="1*" />
+		</Grid.RowDefinitions>
+		<DockPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+			<Grid Height="17" Background="LightGray" DockPanel.Dock="Bottom"></Grid>
+			<ContentControl Name="OverlapComponent" />
+		</DockPanel>
+		<ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Disabled" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+			<ItemsControl Name="ModalityComponents">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" />
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+			</ItemsControl>
+		</ScrollViewer>
+    </Grid>
+</UserControl>

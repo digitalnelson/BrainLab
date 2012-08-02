@@ -82,41 +82,17 @@
     <StartupObject>BrainLab.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AsyncCtpLibrary">
-      <HintPath>..\packages\RavenDB-Embedded.1.0.616\lib\net40\AsyncCtpLibrary.dll</HintPath>
-    </Reference>
-    <Reference Include="BouncyCastle.Crypto">
-      <HintPath>..\packages\RavenDB-Embedded.1.0.616\lib\net40\BouncyCastle.Crypto.dll</HintPath>
-    </Reference>
     <Reference Include="Caliburn.Micro">
       <HintPath>..\packages\Caliburn.Micro.1.3.1\lib\net40\Caliburn.Micro.dll</HintPath>
     </Reference>
-    <Reference Include="Esent.Interop">
-      <HintPath>..\packages\RavenDB-Embedded.1.0.616\lib\net40\Esent.Interop.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.NRefactory">
-      <HintPath>..\packages\RavenDB-Embedded.1.0.616\lib\net40\ICSharpCode.NRefactory.dll</HintPath>
-    </Reference>
-    <Reference Include="Lucene.Net">
-      <HintPath>..\packages\RavenDB-Embedded.1.0.616\lib\net40\Lucene.Net.dll</HintPath>
-    </Reference>
-    <Reference Include="Lucene.Net.Contrib.Spatial">
-      <HintPath>..\packages\RavenDB-Embedded.1.0.616\lib\net40\Lucene.Net.Contrib.Spatial.dll</HintPath>
-    </Reference>
-    <Reference Include="Lucene.Net.Contrib.SpellChecker">
-      <HintPath>..\packages\RavenDB-Embedded.1.0.616\lib\net40\Lucene.Net.Contrib.SpellChecker.dll</HintPath>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.5.0.0-rc\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro">
       <HintPath>..\packages\MahApps.Metro.0.8.0.0\lib\net40\MahApps.Metro.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.4.0.5\lib\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="Ninject">
       <HintPath>..\packages\Ninject.3.0.1.10\lib\net45-full\Ninject.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog">
-      <HintPath>..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
     </Reference>
     <Reference Include="OxyPlot">
       <HintPath>..\packages\OxyPlot.Wpf.2012.2.1.88\lib\OxyPlot.dll</HintPath>
@@ -125,30 +101,6 @@
       <HintPath>..\packages\OxyPlot.Wpf.2012.2.1.88\lib\OxyPlot.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero" />
-    <Reference Include="Raven.Abstractions">
-      <HintPath>..\packages\RavenDB-Embedded.1.0.616\lib\net40\Raven.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Raven.Client.Embedded">
-      <HintPath>..\packages\RavenDB-Embedded.1.0.616\lib\net40\Raven.Client.Embedded.dll</HintPath>
-    </Reference>
-    <Reference Include="Raven.Client.Lightweight">
-      <HintPath>..\packages\RavenDB-Embedded.1.0.616\lib\net40\Raven.Client.Lightweight.dll</HintPath>
-    </Reference>
-    <Reference Include="Raven.Client.MvcIntegration">
-      <HintPath>..\packages\RavenDB-Embedded.1.0.616\lib\net40\Raven.Client.MvcIntegration.dll</HintPath>
-    </Reference>
-    <Reference Include="Raven.Database">
-      <HintPath>..\packages\RavenDB-Embedded.1.0.616\lib\net40\Raven.Database.dll</HintPath>
-    </Reference>
-    <Reference Include="Raven.Munin">
-      <HintPath>..\packages\RavenDB-Embedded.1.0.616\lib\net40\Raven.Munin.dll</HintPath>
-    </Reference>
-    <Reference Include="Raven.Storage.Esent">
-      <HintPath>..\packages\RavenDB-Embedded.1.0.616\lib\net40\Raven.Storage.Esent.dll</HintPath>
-    </Reference>
-    <Reference Include="Raven.Storage.Managed">
-      <HintPath>..\packages\RavenDB-Embedded.1.0.616\lib\net40\Raven.Storage.Managed.dll</HintPath>
-    </Reference>
     <Reference Include="Smrf.NodeXL.Adapters">
       <HintPath>..\packages\NodeXL.1.0.1.196\Smrf.NodeXL.Adapters.dll</HintPath>
     </Reference>
@@ -171,7 +123,17 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.SqlServer.Compact.4.0.8854.2\lib\net40\System.Data.SqlServerCe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SqlServerCe.Entity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\EntityFramework.SqlServerCompact.4.3.3\lib\net40\System.Data.SqlServerCe.Entity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Windows.Forms" />
@@ -213,23 +175,36 @@
     <Compile Include="alg\specialfunctions.cs" />
     <Compile Include="alg\statistics.cs" />
     <Compile Include="Convert.cs" />
+    <Compile Include="Events\DataTypeSelection.cs" />
+    <Compile Include="Events\GroupAssignment.cs" />
     <Compile Include="IShell.cs" />
+    <Compile Include="LiveTilesView.xaml.cs">
+      <DependentUpon>LiveTilesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LiveTilesViewModel.cs" />
     <Compile Include="MainWindowViewModel.cs" />
     <Compile Include="NinjectBootstrapper.cs" />
-    <Compile Include="OverlapView.xaml.cs">
-      <DependentUpon>OverlapView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="DataManager.cs" />
-    <Compile Include="DataStore.cs" />
-    <Compile Include="GraphDisplay.xaml.cs">
+    <Compile Include="Sections\Groups\MainViewModel.cs" />
+    <Compile Include="Sections\NBSm\GraphViewModel.cs" />
+    <Compile Include="Sections\NBSm\MainViewModel.cs" />
+    <Compile Include="Sections\NBSm\OverlapViewModel.cs" />
+    <Compile Include="Sections\Setup\DataFileViewModel.cs" />
+    <Compile Include="Sections\Setup\DataTypeViewModel.cs" />
+    <Compile Include="Sections\Setup\RegionViewModel.cs" />
+    <Compile Include="Sections\Setup\ExperimentViewModel.cs" />
+    <Compile Include="Sections\Setup\GroupViewModel.cs" />
+    <Compile Include="Sections\Setup\SubjectViewModel.cs" />
+    <Compile Include="Sections\Simple\MainViewModel.cs" />
+    <Compile Include="Services\DataStore.cs" />
+    <Compile Include="Sections\NBSm\GraphDisplay.xaml.cs">
       <DependentUpon>GraphDisplay.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GraphView.xaml.cs">
-      <DependentUpon>GraphView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Loaders\AdjCSVLoader.cs" />
-    <Compile Include="Loaders\ROILoader.cs" />
-    <Compile Include="Loaders\SubjectCSVLoader.cs" />
+    <Compile Include="Services\IComputeService.cs" />
+    <Compile Include="Services\IRegionService.cs" />
+    <Compile Include="Services\Loaders\AdjCSVLoader.cs" />
+    <Compile Include="Services\Loaders\ROILoader.cs" />
+    <Compile Include="Services\Loaders\SubjectCSVLoader.cs" />
     <Compile Include="PermDist.xaml.cs">
       <DependentUpon>PermDist.xaml</DependentUpon>
     </Compile>
@@ -242,7 +217,7 @@
     <Compile Include="GroupComparisonDetails.xaml.cs">
       <DependentUpon>GroupComparisonDetails.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DistroChart.xaml.cs">
+    <Compile Include="Sections\NBSm\DistroChart.xaml.cs">
       <DependentUpon>DistroChart.xaml</DependentUpon>
     </Compile>
     <Compile Include="Graph.cs" />
@@ -254,14 +229,23 @@
       <DependentUpon>SpatialPlot.xaml</DependentUpon>
     </Compile>
     <Compile Include="Stats.cs" />
-    <Page Include="OverlapView.xaml">
+    <Compile Include="Services\IAppPreferences.cs" />
+    <Compile Include="Services\ILocalStorage.cs" />
+    <Compile Include="Services\ISubjectService.cs" />
+    <Compile Include="Services\LocalStorageContext.cs" />
+    <Compile Include="Services\LocalStorageServiceSqlCompact.cs" />
+    <Page Include="LiveTilesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Sections\NBSm\OverlapView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="GraphDisplay.xaml">
+    <Page Include="Sections\NBSm\GraphDisplay.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GraphView.xaml">
+    <Page Include="Sections\NBSm\GraphView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PermDist.xaml">
@@ -280,7 +264,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="DistroChart.xaml">
+    <Page Include="Sections\NBSm\DistroChart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -302,7 +286,47 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Sections\Groups\MainView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sections\NBSm\MainView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Sections\Setup\DataFileView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Sections\Setup\DataTypeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Sections\Setup\RegionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Sections\Setup\ExperimentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Sections\Setup\GroupView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Sections\Setup\SubjectView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Sections\Simple\MainView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ShellView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ShellViewOld.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -383,7 +407,15 @@
     <Resource Include="icons\Gray728.png" />
     <Content Include="icons\Untitled-1.svg" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    if not exist "$(TargetDir)x86" md "$(TargetDir)x86"
+    xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8854.2\NativeBinaries\x86\*.*" "$(TargetDir)x86"
+    if not exist "$(TargetDir)amd64" md "$(TargetDir)amd64"
+    xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8854.2\NativeBinaries\amd64\*.*" "$(TargetDir)amd64"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

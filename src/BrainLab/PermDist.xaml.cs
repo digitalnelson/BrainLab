@@ -17,7 +17,7 @@ using System.Xml;
 using System.IO;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using BrainLabStorage;
+using BrainLabLibrary;
 
 namespace BrainLab
 {
@@ -88,15 +88,15 @@ namespace BrainLab
 					ctls.Add(i);
 				_indexLabels.Add(i);
 
-				foreach (string key in s.Graphs.Keys)
-				{
-					if(!_flatByMod.ContainsKey(key))
-					{
-						_flatByMod[key] = new double[4005,58];
-						_tDistByMod[key] = new List<double>();
-						_netCmpByMod[key] = new List<int>();
-					}
-				}
+				//foreach (string key in s.Graphs.Keys)
+				//{
+				//	if(!_flatByMod.ContainsKey(key))
+				//	{
+				//		_flatByMod[key] = new double[4005,58];
+				//		_tDistByMod[key] = new List<double>();
+				//		_netCmpByMod[key] = new List<int>();
+				//	}
+				//}
 			}
 
 			_actualLabels = new List<int>();

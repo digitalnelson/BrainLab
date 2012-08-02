@@ -106,6 +106,7 @@
     <ClInclude Include="GraphLookup.h" />
     <ClInclude Include="MultiModalCompare.h" />
     <ClInclude Include="Stats.h" />
+    <ClInclude Include="Subject.h" />
     <ClInclude Include="SubjectData.h" />
     <ClInclude Include="SubjectGraphFactory.h" />
     <ClInclude Include="SubjectGraphItem.h" />
@@ -139,6 +140,7 @@
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsManaged>
     </ClCompile>
+    <ClCompile Include="Subject.cpp" />
     <ClCompile Include="SubjectData.cpp" />
     <ClCompile Include="SubjectGraphFactory.cpp" />
     <ClCompile Include="SubjectGraphItem.cpp" />

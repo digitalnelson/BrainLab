@@ -2,40 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BrainLab.Services;
 using Caliburn.Micro;
 using Ninject;
 
 namespace BrainLab
 {
-	public class ShellViewModel : Screen, IShell
+	public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, IShell
 	{
 		[Inject]
 		public ShellViewModel()
 		{
 			this.DisplayName = "BRAINLAB";
 
-            //// Set up user prefs for file locations 
-            var file = DataStore.AppPrefs.RoiFilePath;
-            //_txtSubjectFile.Text = DataStore.AppPrefs.SubjectfilePath;
-            //_txtDataFolder.Text = DataStore.AppPrefs.DataFileDir;
-            //_txtOutputFolder.Text = DataStore.AppPrefs.OutputDir;
+			LiveTiles = IoC.Get<LiveTilesViewModel>();
 
-            //// Set up last window location and size
-            //if (DataStore.AppPrefs.WindowLocation != null &&  DataStore.AppPrefs.WindowLocation.Width != 0.0d && DataStore.AppPrefs.WindowLocation.Height != 0.0d)
-            //{
-            //    this.Left = DataStore.AppPrefs.WindowLocation.X;
-            //    this.Top = DataStore.AppPrefs.WindowLocation.Y;
-            //    this.Width = DataStore.AppPrefs.WindowLocation.Width;
-            //    this.Height = DataStore.AppPrefs.WindowLocation.Height;
-            //}
-
-            //// Create and connect our modules to our data manager
-            //_dataManager = new DataManager();
-            //oComponents.SetDataManager(_dataManager);
-
-            //_viewModel = new MainWindowViewModel(_dataManager);
-            //this.DataContext = _viewModel;
+			Items.Add(IoC.Get<BrainLab.Sections.Setup.ExperimentViewModel>());
+			Items.Add(IoC.Get<BrainLab.Sections.Groups.MainViewModel>());
+			Items.Add(IoC.Get<BrainLab.Sections.Simple.MainViewModel>());
+			Items.Add(IoC.Get<BrainLab.Sections.NBSm.MainViewModel>());
 		}
+
+		public LiveTilesViewModel LiveTiles { get; set; }
 
         private void Load()
         {
@@ -153,47 +141,6 @@ namespace BrainLab
             //{
             //    // Open document
             //    _txtRegionFile.Text = dlg.FileName;
-            //}
-        }
-
-        private void Button_Click_Subject()
-        {
-            //// Configure open file dialog box
-            //Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-            //dlg.FileName = "Subjects"; // Default file name
-            //dlg.DefaultExt = ".txt"; // Default file extension
-            //dlg.Filter = "Text documents (.txt)|*.txt"; // Filter files by extension
-
-            //if (_txtSubjectFile.Text != "")
-            //    dlg.InitialDirectory = System.IO.Path.GetFullPath(_txtSubjectFile.Text);
-
-            //// Show open file dialog box
-            //Nullable<bool> result = dlg.ShowDialog();
-
-            //// Process open file dialog box results
-            //if (result == true)
-            //{
-            //    // Open document
-            //    _txtSubjectFile.Text = dlg.FileName;
-            //}
-        }
-
-        private void Button_Click_Data()
-        {
-            //// Configure open file dialog box
-            //var dlg = new System.Windows.Forms.FolderBrowserDialog();
-
-            //if (_txtDataFolder.Text != "")
-            //    dlg.SelectedPath = System.IO.Path.GetFullPath(_txtDataFolder.Text);
-
-            //// Show open file dialog box
-            //var result = dlg.ShowDialog();
-
-            //// Process open file dialog box results
-            //if (result == System.Windows.Forms.DialogResult.OK)
-            //{
-            //    // Open document
-            //    _txtDataFolder.Text = dlg.SelectedPath;
             //}
         }
 

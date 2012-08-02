@@ -28,7 +28,7 @@ namespace BrainLabLibrary
 			delete _dataByType[*it];
 	}
 
-	void GraphComparisonMulti::AddSubject(Subject *itm)
+	void GraphComparisonMulti::AddSubject(SubjectMarshal *itm)
 	{
 		// Loop through the graphs for this subject
 		for(auto it=_dataTypes.begin(); it<_dataTypes.end(); ++it)

@@ -7,7 +7,7 @@ namespace BrainLabLibrary
 {
 	class GraphComparison;
 
-	struct Subject
+	struct SubjectMarshal
 	{
 		std::string SubjectId;
 		std::string GroupId;
@@ -38,7 +38,7 @@ namespace BrainLabLibrary
 
 		typedef std::map<std::string, std::vector<Component>> ComponentByTypeCollection;
 		
-		void AddSubject(Subject *itm);
+		void AddSubject(SubjectMarshal *itm);
 		void Compare(std::string group1, std::string group2, std::map<std::string, Threshold> threshes);
 		void Permute(int permutations, std::map<std::string, Threshold> threshes);
 

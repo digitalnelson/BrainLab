@@ -2,7 +2,7 @@
 #include <msclr\marshal.h>
 #include <msclr\marshal_cppstd.h>
 #include <map>
-#include "SubjectData.h"
+#include "Subject.h"
 #include "SubjectGraphItem.h"
 #include "GraphComparisonMulti.h"
 
@@ -16,9 +16,9 @@ namespace BrainLabLibrary
 	public:
 		MultiModalCompare(int subjectCount, int vertices, int edges, List<String^> ^dataTypes);
 
-		void LoadSubjects(List<SubjectData^>^ itms);
-		void Permute(int permutations, Dictionary<String^, double>^ thresholds);
+		void LoadSubjects(List<Subject^>^ itms);
 		void CompareGroups(String^ group1, String^ group2, Dictionary<String^, double>^ thresholds);
+		void Permute(int permutations, Dictionary<String^, double>^ thresholds);
 		
 		BrainLabStorage::Overlap^ GetResult();
 

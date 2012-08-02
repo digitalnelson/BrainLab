@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using BrainLab.Services;
 using Caliburn.Micro;
 using Ninject;
 
@@ -16,16 +17,10 @@ namespace BrainLab
 			_kernel.Bind<IWindowManager>().To<WindowManager>().InSingletonScope();
 			_kernel.Bind<IEventAggregator>().To<EventAggregator>().InSingletonScope();
 			_kernel.Bind<IShell>().To<ShellViewModel>().InSingletonScope();
-            //_kernel.Bind<LocalStorageService>().To<LocalStorageService>().InSingletonScope();
-
-			//_kernel.Load(Assembly.GetExecutingAssembly());
-			//_kernel.Load("*.dll");
-			//var assemblies
-			//	= _kernel.GetModules()
-			//		.Select(m => m.GetType().Assembly)
-			//		.Distinct()
-			//		.ToList();
-			//AssemblySource.Instance.AddRange(assemblies);
+			_kernel.Bind<IAppPreferences>().To<AppPreferencesIS>().InSingletonScope();
+			_kernel.Bind<ISubjectService>().To<SubjectService>().InSingletonScope();
+			_kernel.Bind<IRegionService>().To<RegionService>().InSingletonScope();
+			_kernel.Bind<IComputeService>().To<ComputeService>().InSingletonScope();
 		}
 
 		protected override object GetInstance(Type serviceType, string key)
