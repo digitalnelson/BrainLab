@@ -6,7 +6,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="20" d:DesignWidth="100">
     <StackPanel Orientation="Horizontal">
-		<Label Name="SubjectId" />
-		<Label Name="GroupId" Margin="4,0,0,0" />
+		<Label Name="SubjectId" Foreground="White"/>
+		<Label Name="GroupId" Margin="4,0,0,0" Foreground="White" />
 	</StackPanel>
 </UserControl>

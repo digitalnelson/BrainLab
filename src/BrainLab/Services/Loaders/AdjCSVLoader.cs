@@ -25,8 +25,10 @@ namespace BrainLab.Services.Loaders
 			Dictionary<string, SubjectData> subs = new Dictionary<string, SubjectData>();
 			List<SubjectData> subList = new List<SubjectData>();
 
-			foreach (var adjFile in adjFiles)
-			//Parallel.ForEach(adjFiles, adjFile =>
+			int filesLoadedCount = 0;
+
+			//foreach (var adjFile in adjFiles)
+			Parallel.ForEach(adjFiles, adjFile =>
 			{
 				var fileName = System.IO.Path.GetFileName(adjFile);
 				var fileParts = fileName.Split(new char[]{'-'});
@@ -48,7 +50,7 @@ namespace BrainLab.Services.Loaders
 
 				Subject subject = null;
 				if (!subjectsByEventId.ContainsKey(eventId))
-					continue; //return; //continue;
+					return; //return; //continue;
 				else
 					subject = subjectsByEventId[eventId];
 
@@ -77,9 +79,14 @@ namespace BrainLab.Services.Loaders
 				lock (subject.Graphs)
 				{
 					subject.Graphs[adjType] = itm;
+					filesLoadedCount++;
 				}
-			}//);
+			});
+
+			FilesLoaded = filesLoadedCount;
 		}
+
+		public int FilesLoaded { get; set; }
 
 		public Dictionary<string, string> DataTypes = new Dictionary<string, string>();
 

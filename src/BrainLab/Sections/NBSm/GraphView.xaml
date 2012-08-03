@@ -22,7 +22,7 @@
 		</StackPanel>
 		
 		<Grid Grid.Row="1" Grid.Column="0">
-			<my:DistroChart x:Name="_distro" Margin="3,3,0,3" VerticalAlignment="Top"/>
+			<!--<my:DistroChart x:Name="_distro" Margin="3,3,0,3" VerticalAlignment="Top"/>-->
 		</Grid>
 
 		<Grid Grid.Row="1" Grid.Column="1">

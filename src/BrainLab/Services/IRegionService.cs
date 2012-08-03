@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BrainLab.Events;
 using BrainLab.Services.Loaders;
 using BrainLabStorage;
+using Caliburn.Micro;
 
 namespace BrainLab.Services
 {
@@ -20,11 +22,15 @@ namespace BrainLab.Services
 
 	public class RegionService : IRegionService
 	{
+		private readonly IEventAggregator _eventAggregator;
+
 		private List<ROI> _regionsOfInterest;
 		private Dictionary<int, ROI> _regionsOfInterestByIndex;
 
-		public RegionService()
+		public RegionService(IEventAggregator eventAggregator)
 		{
+			_eventAggregator = eventAggregator;
+
 			_regionsOfInterest = new List<ROI>();
 			_regionsOfInterestByIndex = new Dictionary<int, ROI>();
 		}
@@ -46,6 +52,8 @@ namespace BrainLab.Services
 			this.YMax = roiLoader.YMax;
 			this.ZMin = roiLoader.ZMin;
 			this.ZMax = roiLoader.ZMax;
+
+			_eventAggregator.Publish(new RegionsLoadedEvent());
 		}
 
 		public List<ROI> GetRegionsByIndex()

@@ -3,41 +3,59 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BrainLab.Events;
 using BrainLabLibrary;
+using Caliburn.Micro;
 
 namespace BrainLab.Services
 {
+	public enum ComputeGroup
+	{
+		GroupOne,
+		GroupTwo
+	}
+
 	public interface IComputeService
 	{
 		void SetDataTypes(Dictionary<string, double> dataTypes);
+		Dictionary<string, double> GetDataTypes();
+
 		void SetGroups(List<string> group1Idents, List<string> group2Idents);
 
 		void FilterSubjects();
-		Dictionary<string, int> GetFilteredSubjectCounts();
+		Dictionary<ComputeGroup, List<Subject>> GetFilteredSubjectsByComputeGroup();
+		Dictionary<ComputeGroup, int> GetFilteredSubjectCountsByComputeGroup();
 
+		// Graph
+
+
+		// NBS
 		void LoadSubjects();
 		void CompareGroups();
 		void PermuteGroups(int permutations);
+		void GetResults();
 	}
 
 	public class ComputeService : IComputeService
 	{
 		private readonly ISubjectService _subjectService;
 		private readonly IRegionService _regionService;
+		private readonly IEventAggregator _eventAggregator;
 
 		private Dictionary<string, double> _dataTypes;
 		private List<string> _group1Idents;
 		private List<string> _group2Idents;
 
 		private List<Subject> _filteredSubjectData;
-		private Dictionary<string, List<Subject>> _filteredSubjectDataByGroup;
+		private Dictionary<ComputeGroup, List<Subject>> _filteredSubjectDataByGroup;
 
 		private MultiModalCompare _compare;
 
-		public ComputeService(ISubjectService subjectService, IRegionService regionService)
+		public ComputeService(ISubjectService subjectService, IRegionService regionService, IEventAggregator eventAggregator)
 		{
 			_subjectService = subjectService;
 			_regionService = regionService;
+			_eventAggregator = eventAggregator;
 		}
 
 		public void SetGroups(List<string> group1Idents, List<string> group2Idents)
@@ -51,11 +69,19 @@ namespace BrainLab.Services
 			_dataTypes = dataTypes;
 		}
 
+		public Dictionary<string, double> GetDataTypes()
+		{
+			return _dataTypes;
+		}
+
 		public void FilterSubjects()
 		{
 			// Loop through our subject data and get rid of the ones without complete data based on user selection
 			_filteredSubjectData = new List<Subject>();
-			_filteredSubjectDataByGroup = new Dictionary<string, List<Subject>>();
+			_filteredSubjectDataByGroup = new Dictionary<ComputeGroup, List<Subject>>();
+
+			_filteredSubjectDataByGroup[ComputeGroup.GroupOne] = new List<Subject>();
+			_filteredSubjectDataByGroup[ComputeGroup.GroupTwo] = new List<Subject>();
 
 			List<Subject> subjects = _subjectService.GetSubjects();
 
@@ -76,17 +102,25 @@ namespace BrainLab.Services
 				{
 					_filteredSubjectData.Add(subject);
 
-					if (!_filteredSubjectDataByGroup.ContainsKey(subject.GroupId))
-						_filteredSubjectDataByGroup[subject.GroupId] = new List<Subject>();
+					var computeGrp = ComputeGroup.GroupOne;
+					if (_group2Idents.Contains(subject.GroupId))
+						computeGrp = ComputeGroup.GroupTwo;
 
-					_filteredSubjectDataByGroup[subject.GroupId].Add(subject);
+					_filteredSubjectDataByGroup[computeGrp].Add(subject);
 				}
 			}
+
+			_eventAggregator.Publish(new SubjectsFilteredEvent());
 		}
 
-		public Dictionary<string, int> GetFilteredSubjectCounts()
+		public Dictionary<ComputeGroup, List<Subject>> GetFilteredSubjectsByComputeGroup()
 		{
-			Dictionary<string, int> counts = new Dictionary<string, int>();
+			return _filteredSubjectDataByGroup;
+		}
+
+		public Dictionary<ComputeGroup, int> GetFilteredSubjectCountsByComputeGroup()
+		{
+			Dictionary<ComputeGroup, int> counts = new Dictionary<ComputeGroup, int>();
 			foreach (var itm in _filteredSubjectDataByGroup)
 			{
 				counts[itm.Key] = itm.Value.Count;
@@ -95,6 +129,7 @@ namespace BrainLab.Services
 			return counts;
 		}
 
+		#region NBSm
 		public void LoadSubjects()
 		{
 			_compare = new MultiModalCompare(_filteredSubjectData.Count, _regionService.GetNodeCount(), _regionService.GetEdgeCount(), _dataTypes.Keys.ToList());
@@ -112,5 +147,11 @@ namespace BrainLab.Services
 			if (_compare != null)
 				_compare.Permute(permutations, _dataTypes);
 		}
+
+		public void GetResults()
+		{
+			var overlap = _compare.GetResult();
+		}
+		#endregion
 	}
 }

@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BrainLab.Events;
 using BrainLab.Services.Loaders;
 using BrainLabLibrary;
 using BrainLabStorage;
+using Caliburn.Micro;
 
 namespace BrainLab.Services
 {
@@ -18,18 +20,25 @@ namespace BrainLab.Services
 
 		List<string> GetGroups();
 		List<string> GetDataTypes();
+
+		int GetFilesLoadedCount();
 	}
 
 	public class SubjectService : ISubjectService
 	{
+		private readonly IEventAggregator _eventAggregator;
+
 		private List<Subject> _subjects;
 		private Dictionary<string, List<Subject>> _subjectsByGroup;
 		private Dictionary<string, Subject> _subjectsByEventId;
 
 		private List<string> _dataTypes;
-		
-		public SubjectService()
+		private int _filesLoadedCount;
+
+		public SubjectService(IEventAggregator eventAggregator)
 		{
+			_eventAggregator = eventAggregator;
+
 			_subjects = new List<Subject>();
 			_subjectsByGroup = new Dictionary<string, List<Subject>>();
 			_subjectsByEventId = new Dictionary<string, Subject>();
@@ -51,6 +60,8 @@ namespace BrainLab.Services
 				foreach(var eventId in sub.EventIds)
 					_subjectsByEventId[eventId] = sub;
 			}
+
+			_eventAggregator.Publish(new SubjectsLoadedEvent());
 		}
 
 		public void LoadSubjectData(string fullPath, int limit)
@@ -67,6 +78,10 @@ namespace BrainLab.Services
 						_dataTypes.Add(graph.Value.DataSource);
 				}
 			}
+
+			_filesLoadedCount = adjLoader.FilesLoaded;
+
+			_eventAggregator.Publish(new AdjsLoadedEvent());
 		}
 
 		public List<Subject> GetSubjects()
@@ -82,6 +97,11 @@ namespace BrainLab.Services
 		public List<string> GetDataTypes()
 		{
 			return _dataTypes;
+		}
+
+		public int GetFilesLoadedCount()
+		{
+			return _filesLoadedCount;
 		}
 	}
 }

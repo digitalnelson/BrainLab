@@ -10,7 +10,7 @@ using Ninject;
 
 namespace BrainLab.Sections.Setup
 {
-	public class ExperimentViewModel : Screen, IHandle<DataTypeSelection>, IHandle<GroupAssignment>
+	public class ExperimentViewModel : Screen
 	{
 		readonly IRegionService _regionService;
 		readonly ISubjectService _subjectService;

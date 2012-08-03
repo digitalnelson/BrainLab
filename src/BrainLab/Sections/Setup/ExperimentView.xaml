@@ -147,7 +147,9 @@
 			<ItemsControl Name="Groups" Grid.Row="3" Grid.ColumnSpan="2"  />
 			
 			<Label Content="Subjects" Grid.Row="4" Foreground="{DynamicResource MainWindowText}" Padding="5,2"/>
-			<ListBox Name="Subjects" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"/>
+			<ScrollViewer  Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2">
+				<ItemsControl Name="Subjects"/>
+			</ScrollViewer>
 			
 			<Label Grid.Column="2" Grid.Row="0" Content="Data" Foreground="{DynamicResource MainWindowText}" Padding="5,2" />
 			<TextBox Name="DataFolder" Grid.Column="2" Grid.Row="1" VerticalAlignment="Center" />

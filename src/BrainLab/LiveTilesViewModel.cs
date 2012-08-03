@@ -9,20 +9,48 @@ using Caliburn.Micro;
 
 namespace BrainLab
 {
-	public class LiveTilesViewModel : Screen, IHandle<DataTypeSelection>, IHandle<GroupAssignment>
+	public class LiveTilesViewModel : Screen, IHandle<DataTypeSelection>, IHandle<GroupAssignment>, IHandle<RegionsLoadedEvent>, IHandle<SubjectsLoadedEvent>, IHandle<AdjsLoadedEvent>
 	{
 		private readonly IEventAggregator _eventAggregator;
 		private readonly IComputeService _computeService;
+		private readonly IRegionService _regionService;
+		private readonly ISubjectService _subjectService;
 
 		public int DataTypeCount { get { return _inlDataTypeCount; } set { _inlDataTypeCount = value; NotifyOfPropertyChange(() => DataTypeCount); } } private int _inlDataTypeCount;
 		public string Groups { get { return _inlGroups; } set { _inlGroups = value; NotifyOfPropertyChange(() => Groups); } } private string _inlGroups;
+		
+		public int Regions { get { return _inlRegions; } set { _inlRegions = value; NotifyOfPropertyChange(() => Regions); } } private int _inlRegions;
+		public int Subjects { get { return _inlSubjects; } set { _inlSubjects = value; NotifyOfPropertyChange(() => Subjects); } } private int _inlSubjects;			
+		public int Adjs { get { return _inlAdjs; } set { _inlAdjs = value; NotifyOfPropertyChange(() => Adjs); } } private int _inlAdjs;
 
-		public LiveTilesViewModel(IEventAggregator eventAggregator, IComputeService computeService)
+		public int Permutations { get { return _inlPermutations; } set { _inlPermutations = value; NotifyOfPropertyChange(() => Permutations); } } private int _inlPermutations;
+
+		public LiveTilesViewModel(IEventAggregator eventAggregator, IComputeService computeService, IRegionService regionService, ISubjectService subjectService)
 		{
 			_eventAggregator = eventAggregator;
 			_computeService = computeService;
+			_regionService = regionService;
+			_subjectService = subjectService;
+
+			Groups = "None";
+			Permutations = 500;
 
 			_eventAggregator.Subscribe(this);
+		}
+
+		public void Handle(RegionsLoadedEvent message)
+		{
+			Regions = _regionService.GetNodeCount();
+		}
+
+		public void Handle(SubjectsLoadedEvent message)
+		{
+			Subjects = _subjectService.GetSubjects().Count;
+		}
+
+		public void Handle(AdjsLoadedEvent message)
+		{
+			Adjs = _subjectService.GetFilesLoadedCount();
 		}
 
 		public void Handle(DataTypeSelection message)
@@ -66,5 +94,20 @@ namespace BrainLab
 		}
 		private List<string> _group1Members = new List<string>();
 		private List<string> _group2Members = new List<string>();
+
+		public void FilterSubjects()
+		{
+			_computeService.FilterSubjects();
+
+			var counts = _computeService.GetFilteredSubjectCountsByComputeGroup();
+		}
+
+		public void Run()
+		{
+			_computeService.LoadSubjects();
+			_computeService.CompareGroups();
+			_computeService.PermuteGroups(Permutations);
+			_computeService.GetResults();
+		}
 	}
 }
