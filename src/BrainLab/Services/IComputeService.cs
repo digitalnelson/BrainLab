@@ -76,41 +76,44 @@ namespace BrainLab.Services
 
 		public void FilterSubjects()
 		{
-			// Loop through our subject data and get rid of the ones without complete data based on user selection
-			_filteredSubjectData = new List<Subject>();
-			_filteredSubjectDataByGroup = new Dictionary<ComputeGroup, List<Subject>>();
-
-			_filteredSubjectDataByGroup[ComputeGroup.GroupOne] = new List<Subject>();
-			_filteredSubjectDataByGroup[ComputeGroup.GroupTwo] = new List<Subject>();
-
-			List<Subject> subjects = _subjectService.GetSubjects();
-
-			foreach (var subject in subjects)
+			if (_dataTypes != null && _group1Idents != null && _group2Idents != null)
 			{
-				bool bHasData = true;
+				// Loop through our subject data and get rid of the ones without complete data based on user selection
+				_filteredSubjectData = new List<Subject>();
+				_filteredSubjectDataByGroup = new Dictionary<ComputeGroup, List<Subject>>();
 
-				foreach (var dt in _dataTypes)
+				_filteredSubjectDataByGroup[ComputeGroup.GroupOne] = new List<Subject>();
+				_filteredSubjectDataByGroup[ComputeGroup.GroupTwo] = new List<Subject>();
+
+				List<Subject> subjects = _subjectService.GetSubjects();
+
+				foreach (var subject in subjects)
 				{
-					if (!subject.Graphs.ContainsKey(dt.Key))
+					bool bHasData = true;
+
+					foreach (var dt in _dataTypes)
 					{
-						bHasData = false;
-						break;
+						if (!subject.Graphs.ContainsKey(dt.Key))
+						{
+							bHasData = false;
+							break;
+						}
+					}
+
+					if (bHasData)
+					{
+						_filteredSubjectData.Add(subject);
+
+						var computeGrp = ComputeGroup.GroupOne;
+						if (_group2Idents.Contains(subject.GroupId))
+							computeGrp = ComputeGroup.GroupTwo;
+
+						_filteredSubjectDataByGroup[computeGrp].Add(subject);
 					}
 				}
 
-				if (bHasData)
-				{
-					_filteredSubjectData.Add(subject);
-
-					var computeGrp = ComputeGroup.GroupOne;
-					if (_group2Idents.Contains(subject.GroupId))
-						computeGrp = ComputeGroup.GroupTwo;
-
-					_filteredSubjectDataByGroup[computeGrp].Add(subject);
-				}
+				_eventAggregator.Publish(new SubjectsFilteredEvent());
 			}
-
-			_eventAggregator.Publish(new SubjectsFilteredEvent());
 		}
 
 		public Dictionary<ComputeGroup, List<Subject>> GetFilteredSubjectsByComputeGroup()

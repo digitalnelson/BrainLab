@@ -9,7 +9,8 @@ using Caliburn.Micro;
 
 namespace BrainLab
 {
-	public class LiveTilesViewModel : Screen, IHandle<DataTypeSelection>, IHandle<GroupAssignment>, IHandle<RegionsLoadedEvent>, IHandle<SubjectsLoadedEvent>, IHandle<AdjsLoadedEvent>
+	public class LiveTilesViewModel : Screen, 
+		IHandle<DataTypeSelection>, IHandle<GroupAssignment>, IHandle<RegionsLoadedEvent>, IHandle<SubjectsLoadedEvent>, IHandle<DataLoadedEvent>, IHandle<SubjectsFilteredEvent>
 	{
 		private readonly IEventAggregator _eventAggregator;
 		private readonly IComputeService _computeService;
@@ -22,6 +23,8 @@ namespace BrainLab
 		public int Regions { get { return _inlRegions; } set { _inlRegions = value; NotifyOfPropertyChange(() => Regions); } } private int _inlRegions;
 		public int Subjects { get { return _inlSubjects; } set { _inlSubjects = value; NotifyOfPropertyChange(() => Subjects); } } private int _inlSubjects;			
 		public int Adjs { get { return _inlAdjs; } set { _inlAdjs = value; NotifyOfPropertyChange(() => Adjs); } } private int _inlAdjs;
+
+		public int FilteredSubjects { get { return _inlFilteredSubjects; } set { _inlFilteredSubjects = value; NotifyOfPropertyChange(() => FilteredSubjects); } } private int _inlFilteredSubjects;
 
 		public int Permutations { get { return _inlPermutations; } set { _inlPermutations = value; NotifyOfPropertyChange(() => Permutations); } } private int _inlPermutations;
 
@@ -48,7 +51,7 @@ namespace BrainLab
 			Subjects = _subjectService.GetSubjects().Count;
 		}
 
-		public void Handle(AdjsLoadedEvent message)
+		public void Handle(DataLoadedEvent message)
 		{
 			Adjs = _subjectService.GetFilesLoadedCount();
 		}
@@ -100,6 +103,17 @@ namespace BrainLab
 			_computeService.FilterSubjects();
 
 			var counts = _computeService.GetFilteredSubjectCountsByComputeGroup();
+		}
+
+		public void Handle(SubjectsFilteredEvent message)
+		{
+			var subs = _computeService.GetFilteredSubjectCountsByComputeGroup();
+
+			var count = 0;
+			foreach (var itm in subs)
+				count += itm.Value;
+
+			FilteredSubjects = count;
 		}
 
 		public void Run()

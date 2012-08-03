@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Caliburn.Micro;
 
-namespace BrainLab.Sections.Setup
+namespace BrainLab.Sections.Inputs
 {
 	public class DataFileViewModel : Screen
 	{

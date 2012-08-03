@@ -12,6 +12,9 @@ namespace BrainLab.Services
 	public interface IAppPreferences
 	{
 		string DataStorePath {get; set;}
+		string RegionPath { get; set; }
+		string SubjectPath { get; set; }
+		string DataPath { get; set; }
 
 		void Load();
 		void Save();
@@ -22,6 +25,9 @@ namespace BrainLab.Services
 		private string _fileName = "AppPrefs.txt";
 
 		public string DataStorePath { get; set; }
+		public string RegionPath { get; set; }
+		public string SubjectPath { get; set; }
+		public string DataPath { get; set; }
 
 		public void Load()
 		{
@@ -37,10 +43,24 @@ namespace BrainLab.Services
 					{
 						string[] keyValue = reader.ReadLine().Split(new char[] { ',' });
 
-						if (keyValue[0] == "DataStorePath")
-							DataStorePath = keyValue[1];
-						else
-							Application.Current.Properties[keyValue[0]] = keyValue[1];
+						switch (keyValue[0])
+						{
+							case "DataStorePath":
+								DataStorePath = keyValue[1];
+								break;
+							case "RegionPath":
+								RegionPath = keyValue[1];
+								break;
+							case "SubjectPath":
+								SubjectPath = keyValue[1];
+								break;
+							case "DataPath":
+								DataPath = keyValue[1];
+								break;
+							default:
+								Application.Current.Properties[keyValue[0]] = keyValue[1];
+								break;
+						}
 					}
 				}
 			}
@@ -56,6 +76,9 @@ namespace BrainLab.Services
 			using (StreamWriter writer = new StreamWriter(stream))
 			{
 				writer.WriteLine("{0},{1}", "DataStorePath", DataStorePath);
+				writer.WriteLine("{0},{1}", "RegionPath", RegionPath);
+				writer.WriteLine("{0},{1}", "SubjectPath", SubjectPath);
+				writer.WriteLine("{0},{1}", "DataPath", DataPath);
 
 				// Persist each application-scope property individually
 				foreach (string key in Application.Current.Properties.Keys)

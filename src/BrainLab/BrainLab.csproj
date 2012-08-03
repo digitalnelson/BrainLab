@@ -175,31 +175,29 @@
     <Compile Include="alg\specialfunctions.cs" />
     <Compile Include="alg\statistics.cs" />
     <Compile Include="Convert.cs" />
-    <Compile Include="Events\AdjsLoadedEvent.cs" />
+    <Compile Include="Data\Preference.cs" />
+    <Compile Include="Events\DataLoadedEvent.cs" />
     <Compile Include="Events\DataTypeSelection.cs" />
     <Compile Include="Events\GroupAssignment.cs" />
     <Compile Include="Events\RegionsLoadedEvent.cs" />
     <Compile Include="Events\SubjectsFilteredEvent.cs" />
     <Compile Include="Events\SubjectsLoadedEvent.cs" />
     <Compile Include="IShell.cs" />
-    <Compile Include="LiveTilesView.xaml.cs">
-      <DependentUpon>LiveTilesView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="LiveTilesViewModel.cs" />
     <Compile Include="MainWindowViewModel.cs" />
     <Compile Include="NinjectBootstrapper.cs" />
     <Compile Include="DataManager.cs" />
     <Compile Include="Sections\Graph\StrengthViewModel.cs" />
-    <Compile Include="Sections\Groups\MainViewModel.cs" />
+    <Compile Include="Sections\Filters\MainViewModel.cs" />
     <Compile Include="Sections\NBSm\GraphViewModel.cs" />
     <Compile Include="Sections\NBSm\MainViewModel.cs" />
     <Compile Include="Sections\NBSm\OverlapViewModel.cs" />
-    <Compile Include="Sections\Setup\DataFileViewModel.cs" />
-    <Compile Include="Sections\Setup\DataTypeViewModel.cs" />
-    <Compile Include="Sections\Setup\RegionViewModel.cs" />
-    <Compile Include="Sections\Setup\ExperimentViewModel.cs" />
-    <Compile Include="Sections\Setup\GroupViewModel.cs" />
-    <Compile Include="Sections\Setup\SubjectViewModel.cs" />
+    <Compile Include="Sections\Inputs\DataFileViewModel.cs" />
+    <Compile Include="Sections\Filters\DataTypeViewModel.cs" />
+    <Compile Include="Sections\Inputs\RegionViewModel.cs" />
+    <Compile Include="Sections\Inputs\MainViewModel.cs" />
+    <Compile Include="Sections\Filters\GroupViewModel.cs" />
+    <Compile Include="Sections\Inputs\SubjectViewModel.cs" />
     <Compile Include="Sections\Graph\MainViewModel.cs" />
     <Compile Include="Services\DataStore.cs" />
     <Compile Include="Sections\NBSm\GraphDisplay.xaml.cs">
@@ -235,7 +233,6 @@
     <Compile Include="Services\ILocalStorage.cs" />
     <Compile Include="Services\ISubjectService.cs" />
     <Compile Include="Services\LocalStorageContext.cs" />
-    <Compile Include="Services\LocalStorageServiceSqlCompact.cs" />
     <Page Include="LiveTilesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -288,7 +285,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sections\Groups\MainView.xaml">
+    <Page Include="Sections\Filters\MainView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -296,27 +293,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Sections\Setup\DataFileView.xaml">
+    <Page Include="Sections\Inputs\DataFileView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Sections\Setup\DataTypeView.xaml">
+    <Page Include="Sections\Filters\DataTypeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Sections\Setup\RegionView.xaml">
+    <Page Include="Sections\Inputs\RegionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Sections\Setup\ExperimentView.xaml">
+    <Page Include="Sections\Inputs\MainView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Sections\Setup\GroupView.xaml">
+    <Page Include="Sections\Filters\GroupView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Sections\Setup\SubjectView.xaml">
+    <Page Include="Sections\Inputs\SubjectView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

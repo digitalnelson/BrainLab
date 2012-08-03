@@ -18,6 +18,7 @@ namespace BrainLab
 			_kernel.Bind<IEventAggregator>().To<EventAggregator>().InSingletonScope();
 			_kernel.Bind<IShell>().To<ShellViewModel>().InSingletonScope();
 			_kernel.Bind<IAppPreferences>().To<AppPreferencesIS>().InSingletonScope();
+			_kernel.Bind<ILocalStorage>().To<LocalStorageServiceSqlCompact>().InSingletonScope();
 			_kernel.Bind<ISubjectService>().To<SubjectService>().InSingletonScope();
 			_kernel.Bind<IRegionService>().To<RegionService>().InSingletonScope();
 			_kernel.Bind<IComputeService>().To<ComputeService>().InSingletonScope();

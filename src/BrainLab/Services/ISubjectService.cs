@@ -81,7 +81,7 @@ namespace BrainLab.Services
 
 			_filesLoadedCount = adjLoader.FilesLoaded;
 
-			_eventAggregator.Publish(new AdjsLoadedEvent());
+			_eventAggregator.Publish(new DataLoadedEvent());
 		}
 
 		public List<Subject> GetSubjects()

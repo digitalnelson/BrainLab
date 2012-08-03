@@ -6,7 +6,7 @@ using BrainLab.Events;
 using Caliburn.Micro;
 using Ninject;
 
-namespace BrainLab.Sections.Setup
+namespace BrainLab.Sections.Filters
 {
 	public class DataTypeViewModel : Screen
 	{

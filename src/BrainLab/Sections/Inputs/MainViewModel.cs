@@ -3,39 +3,62 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BrainLab.Data;
 using BrainLab.Events;
 using BrainLab.Services;
 using Caliburn.Micro;
 using Ninject;
 
-namespace BrainLab.Sections.Setup
+namespace BrainLab.Sections.Inputs
 {
-	public class ExperimentViewModel : Screen
+	public class MainViewModel : Screen
 	{
+		readonly IAppPreferences _appPreferences;
 		readonly IRegionService _regionService;
 		readonly ISubjectService _subjectService;
 		readonly IComputeService _computeService;
 		readonly IEventAggregator _eventAggregator;
 
+		private string _regionPref;
+		private string _subjectPref;
+		private string _dataPref;
+
 		[Inject]
-		public ExperimentViewModel(IRegionService regionService, ISubjectService subjectService, IComputeService computeService, IEventAggregator eventAggregator)
+		public MainViewModel(IAppPreferences appPreferences, IRegionService regionService, ISubjectService subjectService, IComputeService computeService, IEventAggregator eventAggregator)
 		{
+			_appPreferences = appPreferences;
 			_regionService = regionService;
 			_subjectService = subjectService;
 			_computeService = computeService;
 			_eventAggregator = eventAggregator;
 
-			this.DisplayName = "SOURCES";
+			this.DisplayName = "INPUTS";
 
 			Regions = new BindableCollection<RegionViewModel>();
-			Groups = new BindableCollection<GroupViewModel>();
 			Subjects = new BindableCollection<SubjectViewModel>();
-			DataTypes = new BindableCollection<DataTypeViewModel>();
 			DataFiles = new BindableCollection<DataFileViewModel>();
 
 			_eventAggregator.Subscribe(this);
+		}
 
-			// TODO: Load prefs
+		protected override async void OnActivate()
+		{
+			if (RegionFile == null)
+			{
+				await Task.Run(delegate
+				{
+					if (RegionFile != _appPreferences.RegionPath)
+						RegionFile = _appPreferences.RegionPath;
+
+					if (SubjectFile != _appPreferences.SubjectPath)
+						SubjectFile = _appPreferences.SubjectPath;
+
+					if (DataFolder != _appPreferences.DataPath)
+						DataFolder = _appPreferences.DataPath;
+				});
+			}
+
+			base.OnActivate();
 		}
 
 		public void OpenRegionFile()
@@ -62,15 +85,23 @@ namespace BrainLab.Sections.Setup
 
 		public void LoadRegions()
 		{
-			_regionService.Load(RegionFile);
+			Regions.Clear();
 
-			var regions = _regionService.GetRegionsByIndex();
-			foreach (var region in regions)
+			try
 			{
-				var rgn = IoC.Get<RegionViewModel>();
-				rgn.Region = region;
+				_regionService.Load(RegionFile);
 
-				Regions.Add(rgn);
+				var regions = _regionService.GetRegionsByIndex();
+				foreach (var region in regions)
+				{
+					var rgn = IoC.Get<RegionViewModel>();
+					rgn.Region = region;
+
+					Regions.Add(rgn);
+				}
+			}
+			catch (Exception)
+			{
 			}
 		}
 
@@ -99,27 +130,22 @@ namespace BrainLab.Sections.Setup
 		public void LoadSubjects()
 		{
 			Subjects.Clear();
-			Groups.Clear();
 
-			_subjectService.LoadSubjectFile(SubjectFile);
-
-			var subjects = _subjectService.GetSubjects();
-			foreach (var subject in subjects)
+			try
 			{
-				var svm = IoC.Get<SubjectViewModel>();
-				svm.Subject = subject;
+				_subjectService.LoadSubjectFile(SubjectFile);
 
-				Subjects.Add(svm);
+				var subjects = _subjectService.GetSubjects();
+				foreach (var subject in subjects)
+				{
+					var svm = IoC.Get<SubjectViewModel>();
+					svm.Subject = subject;
+
+					Subjects.Add(svm);
+				}
 			}
-
-			var groups = _subjectService.GetGroups();
-			foreach (var group in groups)
-			{
-				var grp = IoC.Get<GroupViewModel>();
-				grp.Title = group;
-
-				Groups.Add(grp);
-			}
+			catch (Exception)
+			{ }
 		}
 
 		public void OpenDataFolder()
@@ -146,45 +172,43 @@ namespace BrainLab.Sections.Setup
 		public async void LoadData()
 		{
 			DataFiles.Clear();
-			DataTypes.Clear();
 
 			await Task.Run(delegate
             {
-				_subjectService.LoadSubjectData(DataFolder, Regions.Count);  // TODO: Get the ROI number from somewhere else?!?
-
-				var dataTypes = _subjectService.GetDataTypes();
-				foreach (var dataType in dataTypes)
+				try
 				{
-					var dt = IoC.Get<DataTypeViewModel>();
-					dt.Title = dataType;
+					_subjectService.LoadSubjectData(DataFolder, Regions.Count);  // TODO: Get the ROI number from somewhere else?!?
 
-					DataTypes.Add(dt);
-				}
-
-				var subjects = _subjectService.GetSubjects();
-				foreach (var subject in subjects)
-				{
-					foreach (var graph in subject.Graphs)
+					var subjects = _subjectService.GetSubjects();
+					foreach (var subject in subjects)
 					{
-						var df = IoC.Get<DataFileViewModel>();
-						df.Title = graph.Value.DataSource;
-						df.SubjectId = subject.SubjectId;
+						foreach (var graph in subject.Graphs)
+						{
+							var df = IoC.Get<DataFileViewModel>();
+							df.Title = graph.Value.DataSource;
+							df.SubjectId = subject.SubjectId;
 
-						DataFiles.Add(df);
+							DataFiles.Add(df);
+						}
 					}
 				}
+				catch (Exception)
+				{ }
 			});
 		}
 
-		public string RegionFile { get { return _regionFile; } set { _regionFile = value; NotifyOfPropertyChange(() => RegionFile); LoadRegions(); } } private string _regionFile;
+		protected override void OnDeactivate(bool close)
+		{
+			base.OnDeactivate(close);
+		}
+
+		public string RegionFile { get { return _regionFile; } set { _regionFile = value; NotifyOfPropertyChange(() => RegionFile); LoadRegions(); _appPreferences.RegionPath = _regionFile; } } private string _regionFile;
 		public BindableCollection<RegionViewModel> Regions { get; private set; }
 
-		public string SubjectFile { get { return _subjectFile; } set { _subjectFile = value; NotifyOfPropertyChange(() => SubjectFile); LoadSubjects(); } } private string _subjectFile;
-		public BindableCollection<GroupViewModel> Groups { get; private set; }
+		public string SubjectFile { get { return _subjectFile; } set { _subjectFile = value; NotifyOfPropertyChange(() => SubjectFile); LoadSubjects(); _appPreferences.SubjectPath = _subjectFile; } } private string _subjectFile;
 		public BindableCollection<SubjectViewModel> Subjects { get; private set; }
 
-		public string DataFolder { get { return _dataFolder; } set { _dataFolder = value; NotifyOfPropertyChange(() => DataFolder); LoadData(); } } private string _dataFolder;
-		public BindableCollection<DataTypeViewModel> DataTypes { get; private set; }
+		public string DataFolder { get { return _dataFolder; } set { _dataFolder = value; NotifyOfPropertyChange(() => DataFolder); LoadData(); _appPreferences.DataPath = _dataFolder; } } private string _dataFolder;
 		public BindableCollection<DataFileViewModel> DataFiles { get; private set; }
 	}
 }

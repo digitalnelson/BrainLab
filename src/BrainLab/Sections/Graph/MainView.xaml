@@ -4,13 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="660" Background="Red">
- 
-		<ItemsControl Name="StrengthByDataType" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+             d:DesignHeight="300" d:DesignWidth="660">
+	 <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Disabled">
+		<ItemsControl Name="StrengthByDataType" Padding="2">
 			<ItemsControl.ItemsPanel>
 				<ItemsPanelTemplate>
-					<StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+					<StackPanel Orientation="Horizontal" VerticalAlignment="Stretch"/>
 				</ItemsPanelTemplate>
 			</ItemsControl.ItemsPanel>
 		</ItemsControl>
+	</ScrollViewer>
 </UserControl>

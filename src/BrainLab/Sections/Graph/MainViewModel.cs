@@ -21,7 +21,7 @@ namespace BrainLab.Sections.Graph
 
 			StrengthByDataType = new BindableCollection<StrengthViewModel>();
 
-			this.DisplayName = "GRAPH";
+			this.DisplayName = "GRAPHS";
 			_eventAggregator.Subscribe(this);
 		}
 
@@ -32,12 +32,16 @@ namespace BrainLab.Sections.Graph
 			StrengthByDataType.Clear();
 
 			var dataTypes = _computeService.GetDataTypes();
-			foreach (var itm in dataTypes)
-			{
-				var svm = IoC.Get<StrengthViewModel>();
-				svm.Load(itm.Key);
 
-				StrengthByDataType.Add(svm);
+			if (dataTypes != null)
+			{
+				foreach (var itm in dataTypes)
+				{
+					var svm = IoC.Get<StrengthViewModel>();
+					svm.Load(itm.Key);
+
+					StrengthByDataType.Add(svm);
+				}
 			}
 		}
 

@@ -86,7 +86,7 @@
 			</Setter>
 		</Style>
 	</UserControl.Resources>
-	<Grid>
+	<Grid Margin="0,4,0,0">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition />
 			<ColumnDefinition Width="Auto" />
@@ -119,44 +119,84 @@
 		</Grid>
 
 		<StackPanel Grid.Column="0"  Orientation="Horizontal" VerticalAlignment="Stretch">
-			<Button Margin="10,0,10,0" Style="{StaticResource FolderButton}" Width="80" Height="80" HorizontalAlignment="Left">
+			<Button Margin="10,0,10,0" Style="{StaticResource FolderButton}" Width="260" Height="80" HorizontalAlignment="Left">
 				<Grid Margin="1">
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto" />
 						<RowDefinition />
 					</Grid.RowDefinitions>
-					<Label Content="Regions" FontSize="12" Foreground="{DynamicResource MainWindowText}" Grid.Row="0" Padding="0" VerticalAlignment="Top" HorizontalAlignment="Center"/>
-					<Viewbox Grid.Row="1" ScrollViewer.CanContentScroll="False">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition />
+						<ColumnDefinition />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
+					
+					<Border VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#99666666" Grid.Row="0" Grid.RowSpan="2"  Margin="0,0,8,0" >
+						<Label Content="All" FontSize="12" Foreground="{DynamicResource MainWindowText}" Padding="0" VerticalAlignment="Center">
+							<Label.LayoutTransform>
+								<RotateTransform Angle="-90"/>
+							</Label.LayoutTransform>
+						</Label>
+					</Border>
+
+					<Label Content="Regions" FontSize="12" Foreground="{DynamicResource MainWindowText}" Grid.Column="1" Padding="0" VerticalAlignment="Top" HorizontalAlignment="Center"/>
+					<Viewbox Grid.Column="1" Grid.Row="1" ScrollViewer.CanContentScroll="False">
 						<Label Name="Regions" Foreground="{DynamicResource MainWindowText}"  FontWeight="ExtraBold" Padding="0" />
 					</Viewbox>
-				</Grid>
-			</Button>
-			<Button Margin="10,0,10,0" Style="{StaticResource FolderButton}" Width="80" Height="80" HorizontalAlignment="Left">
-				<Grid Margin="1">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition />
-					</Grid.RowDefinitions>
-					<Label Content="Subjects" FontSize="12" Foreground="{DynamicResource MainWindowText}" Grid.Row="0" Padding="0" VerticalAlignment="Top" HorizontalAlignment="Center"/>
-					<Viewbox Grid.Row="1" ScrollViewer.CanContentScroll="False">
+					
+					<Label Content="Subjects" FontSize="12" Foreground="{DynamicResource MainWindowText}" Grid.Row="0" Grid.Column="2" Padding="0" VerticalAlignment="Top" HorizontalAlignment="Center"/>
+					<Viewbox Grid.Row="1" Grid.Column="2" ScrollViewer.CanContentScroll="False">
 						<Label Name="Subjects" Foreground="{DynamicResource MainWindowText}"  FontWeight="ExtraBold" Padding="0" />
 					</Viewbox>
-				</Grid>
-			</Button>
-			<Button Margin="10,0,10,0" Style="{StaticResource FolderButton}" Width="80" Height="80" HorizontalAlignment="Left">
-				<Grid Margin="1">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition />
-					</Grid.RowDefinitions>
-					<Label Content="Adjs" FontSize="12" Foreground="{DynamicResource MainWindowText}" Grid.Row="0" Padding="0" VerticalAlignment="Top" HorizontalAlignment="Center"/>
-					<Viewbox Grid.Row="1" ScrollViewer.CanContentScroll="False">
+					
+					<Label Content="Adjs" FontSize="12" Foreground="{DynamicResource MainWindowText}" Grid.Row="0" Grid.Column="3" Padding="0" VerticalAlignment="Top" HorizontalAlignment="Center"/>
+					<Viewbox Grid.Row="1" Grid.Column="3" ScrollViewer.CanContentScroll="False">
 						<Label Name="Adjs"  Foreground="{DynamicResource MainWindowText}"  FontWeight="ExtraBold" Padding="0" />
 					</Viewbox>
 				</Grid>
 			</Button>
+			
+			<Button Margin="10,0,10,0" Style="{StaticResource FolderButton}" Width="340" Height="80" HorizontalAlignment="Left">
+				<Grid Margin="1">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition />
+					</Grid.RowDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition />
+						<ColumnDefinition />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
 
-			<Button Margin="10,0,10,0" Style="{StaticResource FolderButton}" Width="80" Height="80" HorizontalAlignment="Left">
+					<Border VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#99666666" Grid.Row="0" Grid.RowSpan="2" Margin="0,0,8,0">
+						<Label Content="Filtered" FontSize="12" Foreground="{DynamicResource MainWindowText}" Padding="0" VerticalAlignment="Center">
+							<Label.LayoutTransform>
+								<RotateTransform Angle="-90"/>
+							</Label.LayoutTransform>
+						</Label>
+					</Border>
+
+					<Label Content="Groups" FontSize="12" Foreground="{DynamicResource MainWindowText}" Grid.Column="1" Padding="0" VerticalAlignment="Top" HorizontalAlignment="Center"/>
+					<Viewbox Grid.Column="1" Grid.Row="1" ScrollViewer.CanContentScroll="False">
+						<Label Name="Groups" Foreground="{DynamicResource MainWindowText}"  FontWeight="ExtraBold" Padding="0" />
+					</Viewbox>
+					
+					<Label Content="Types" FontSize="12" Foreground="{DynamicResource MainWindowText}" Grid.Column="2" Padding="0" VerticalAlignment="Top" HorizontalAlignment="Center"/>
+					<Viewbox Grid.Column="2" Grid.Row="1" ScrollViewer.CanContentScroll="False">
+						<Label Name="DataTypeCount" Foreground="{DynamicResource MainWindowText}"  FontWeight="ExtraBold" Padding="0" />
+					</Viewbox>
+
+					<Label Content="Subjects" FontSize="12" Foreground="{DynamicResource MainWindowText}" Grid.Row="0" Grid.Column="3" Padding="0" VerticalAlignment="Top" HorizontalAlignment="Center"/>
+					<Viewbox Grid.Row="1" Grid.Column="3" ScrollViewer.CanContentScroll="False">
+						<Label Name="FilteredSubjects"  Foreground="{DynamicResource MainWindowText}"  FontWeight="ExtraBold" Padding="0" />
+					</Viewbox>
+					
+				</Grid>
+			</Button>
+
+			<!--<Button Margin="10,0,10,0" Style="{StaticResource FolderButton}" Width="80" Height="80" HorizontalAlignment="Left">
 				<Grid Margin="1">
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto" />
@@ -190,10 +230,10 @@
 					</Grid.RowDefinitions>
 					<Label Content="Filter" FontSize="12" Foreground="{DynamicResource MainWindowText}" Grid.Row="0" Padding="0" VerticalAlignment="Top" HorizontalAlignment="Center"/>
 					<Viewbox Grid.Row="1" ScrollViewer.CanContentScroll="False">
-						<Path Margin="15" Stretch="Uniform" Fill="#ffffffff" Data="M 365.481,174.098L 365.095,174.098L 365.09,174.098C 364.342,174.099 363.659,174.406 363.166,174.9L 363.165,174.9C 362.67,175.395 362.362,176.078 362.362,176.83L 362.361,176.83L 362.361,176.832L 362.361,198.682L 362.361,198.688L 362.362,198.688C 362.363,199.438 362.67,200.12 363.163,200.614L 363.165,200.614C 363.659,201.108 364.342,201.416 365.093,201.418L 365.095,201.418L 365.481,201.418M 365.481,223.464C 359.013,223.422 353.158,220.783 348.913,216.535C 344.633,212.255 341.983,206.342 341.982,199.812L 341.982,199.806L 341.982,199.8L 341.982,199.8C 341.983,196.395 342.705,193.155 344.003,190.23L 344.003,190.23C 344.215,189.75 344.442,189.282 344.683,188.824C 345.922,186.464 347.55,184.339 349.479,182.531L 349.481,182.528L 349.486,182.524L 349.709,182.319L 349.71,182.318L 349.937,182.115C 350.333,181.763 350.735,181.428 351.143,181.112C 351.427,180.891 351.645,180.731 351.894,180.622C 352.145,180.512 352.415,180.459 352.801,180.459L 352.807,180.459L 352.807,180.46C 353.289,180.46 353.765,180.558 354.203,180.736L 354.203,180.736C 354.277,180.766 354.347,180.798 354.417,180.831C 354.773,181.003 355.105,181.234 355.393,181.514L 355.395,181.515L 355.399,181.52C 355.494,181.614 355.586,181.715 355.673,181.819L 355.673,181.819C 355.757,181.92 355.837,182.03 355.913,182.146C 356.293,182.73 356.514,183.426 356.514,184.174C 356.514,184.679 356.463,185.019 356.317,185.31C 356.171,185.6 355.933,185.828 355.558,186.106L 355.555,186.107L 355.554,186.108C 354.954,186.551 354.386,187.034 353.854,187.548C 353.322,188.063 352.823,188.614 352.362,189.192C 349.998,192.167 348.63,195.911 348.63,199.806L 348.63,199.808L 348.63,199.808C 348.63,204.506 350.535,208.758 353.614,211.838C 356.658,214.88 360.849,216.776 365.481,216.818M 365.481,201.418L 365.866,201.418L 365.871,201.418C 366.619,201.415 367.302,201.108 367.797,200.615C 368.291,200.12 368.599,199.436 368.601,198.684L 368.601,198.682L 368.601,176.832L 368.601,176.827L 368.601,176.827C 368.599,176.078 368.291,175.396 367.798,174.903C 367.303,174.406 366.619,174.098 365.869,174.098L 365.866,174.098L 365.481,174.098M 381.679,182.415L 381.683,182.418L 381.685,182.419C 382.341,183.024 382.962,183.667 383.546,184.343C 384.129,185.016 384.675,185.727 385.182,186.464C 387.781,190.262 389.302,194.856 389.302,199.806L 389.302,199.808C 389.301,206.342 386.651,212.256 382.37,216.536C 378.09,220.816 372.177,223.464 365.647,223.466L 365.647,223.467L 365.642,223.467L 365.639,223.467L 365.639,223.466L 365.481,223.464L 365.481,216.818L 365.637,216.82L 365.637,216.819L 365.642,216.819L 365.645,216.819L 365.645,216.82C 370.341,216.819 374.594,214.914 377.673,211.836C 380.749,208.758 382.654,204.507 382.654,199.812L 382.654,199.806L 382.654,199.8C 382.654,197.456 382.178,195.22 381.319,193.188C 381.179,192.856 381.029,192.531 380.87,192.212C 380.047,190.57 378.967,189.075 377.681,187.788L 377.678,187.786L 377.509,187.616L 377.334,187.45L 377.334,187.448C 377.039,187.171 376.731,186.899 376.407,186.634L 376.407,186.634C 376.206,186.47 376.027,186.34 375.865,186.222C 375.153,185.703 374.705,185.378 374.705,184.174L 374.705,184.171L 374.706,184.171C 374.706,183.146 375.123,182.218 375.794,181.547L 375.794,181.547C 376.465,180.878 377.391,180.462 378.413,180.46L 378.413,180.459L 378.419,180.459C 378.863,180.459 379.182,180.534 379.475,180.674L 379.475,180.674C 379.761,180.81 380.013,181.01 380.337,181.266L 380.341,181.268L 380.343,181.271L 380.535,181.424L 380.537,181.426L 380.726,181.582L 380.727,181.582C 381.049,181.848 381.367,182.127 381.679,182.415 Z "/>
+						<Path Margin="10" Stretch="Uniform" Fill="#ffffffff" Data="F1 M 19.25,17.25L 35.7499,17.2501C 36.5784,17.2501 37.2499,17.6716 37.2499,18.5001C 37.2499,19.3285 36.5784,19.7501 35.7499,19.7501L 19.25,19.75C 18.4216,19.75 17.75,19.3285 17.75,18.5C 17.75,17.6716 18.4216,17.25 19.25,17.25 Z M 19.25,23.25L 38.4999,23.2501C 39.3283,23.2501 39.9999,23.6716 39.9999,24.5001C 39.9999,25.3285 39.0838,25.6981 38.2554,25.6981L 19.0055,25.698C 18.177,25.698 17.75,25.3284 17.75,24.5C 17.75,23.6716 18.4216,23.25 19.25,23.25 Z M 19.25,29.25L 33.4999,29.2501C 34.3283,29.2501 34.9999,29.6716 34.9999,30.5001C 34.9999,31.3285 34.3283,31.7501 33.4999,31.7501L 19.25,31.75C 18.4216,31.75 17.75,31.3284 17.75,30.5C 17.75,29.6716 18.4216,29.25 19.25,29.25 Z M 10.4919,29.2742L 12.2016,30.7823L 15.25,27L 16.6129,28.5081L 12.8064,33L 11.75,33L 9.33064,30.6231L 9.33064,29.2742L 10.4919,29.2742 Z M 10.629,23.2742L 12.3387,24.7823L 15.3871,21L 16.75,22.5081L 12.9436,27L 11.8871,27L 9.46775,24.6231L 9.46775,23.2742L 10.629,23.2742 Z M 10.629,17.2742L 12.3387,18.7822L 15.3871,15L 16.75,16.5081L 12.9436,21L 11.8871,21L 9.46775,18.6231L 9.46775,17.2742L 10.629,17.2742 Z "/>
 					</Viewbox>
 				</Grid>
-			</Button>
+			</Button>-->
 			
 			<Button Margin="10,0,10,0" Style="{StaticResource FolderButton}" Width="80" Height="80" HorizontalAlignment="Left">
 				<Grid Margin="1">

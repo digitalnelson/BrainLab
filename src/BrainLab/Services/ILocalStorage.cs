@@ -1,31 +1,58 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+using System.Linq;
+using BrainLab.Data;
+using Caliburn.Micro;
 
 namespace BrainLab.Services
 {
 	public interface ILocalStorage
 	{
-		//Study[] LoadStudies();
-		//Study NewStudy();
-		//void DeleteStudy(Study study);
-
-		//Subject[] LoadSubjects();
-		//Subject[] LoadSubjects(Study study);
-		//Subject NewSubject(Study study);
-		//void DeleteSubject(Subject subj);
-
-		//Group NewGroup(Study study);
-		//Group[] LoadGroups(Study study);
-		//void DeleteGroup(Group grp);
-
-		//Task NewTask(Study study);
-		//Task[] LoadTasks(Study study);
-		//void DeleteTask(Task tsk);
-
-		//Collection NewCollection(Subject subject);
-		//Collection[] LoadCollections(Subject subject);
-		//void DeleteCollection(Collection collection);
+		List<Preference> GetPreferences();
+		Preference NewPreference(string Name, string Value);
 
 		void Save();
 		void Close();
+	}
+
+	public class LocalStorageServiceSqlCompact : ILocalStorage
+	{
+		private readonly LocalStorageContext _context;
+
+		public LocalStorageServiceSqlCompact()
+		{
+			var prefs = IoC.Get<IAppPreferences>();
+
+			Database.DefaultConnectionFactory = new SqlCeConnectionFactory("System.Data.SqlServerCe.4.0", prefs.DataStorePath, "");
+			Database.SetInitializer(new LocalStorageContextInitializer());
+
+			_context = new LocalStorageContext();
+		}
+
+		// PREFERENCES
+
+		public List<Preference> GetPreferences()
+		{
+			return _context.Preferences.ToList();
+		}
+
+		public Preference NewPreference(string name, string value)
+		{
+			return _context.Preferences.Add(new Preference { Name = name, Value = value });
+		}
+
+		// COMMON
+
+		public void Save()
+		{
+			_context.SaveChanges();
+		}
+
+		public void Close()
+		{
+			_context.Dispose();
+		}
 	}
 }

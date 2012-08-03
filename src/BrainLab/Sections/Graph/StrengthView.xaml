@@ -3,32 +3,34 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf" Background="green"
+             xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
              mc:Ignorable="d" 
-             d:DesignWidth="900">
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition MinHeight="200px" />
-			<RowDefinition MinHeight="200px" />
-		</Grid.RowDefinitions>
+             >
+	<Viewbox Margin="2" Stretch="UniformToFill" StretchDirection="Both" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+		<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="600" Height="600">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition MinHeight="200px" />
+				<RowDefinition MinHeight="200px" />
+			</Grid.RowDefinitions>
 			
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="0.5*" />
-			<ColumnDefinition Width="0.5*" />
-		</Grid.ColumnDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition />
+				<ColumnDefinition  />
+			</Grid.ColumnDefinitions>
 
-		<StackPanel Orientation="Horizontal"  Background="LightGray" Grid.Row="0" Grid.ColumnSpan="2">
-			<Label Content="Global Strength - " FontWeight="Bold" />
-			<Label Name="DataType" />
-			<Label Content=" - " FontWeight="Bold" />
-			<Label Name="PVal" />
-		</StackPanel>
+			<StackPanel Orientation="Horizontal"  Background="LightGray" Grid.Row="0" Grid.ColumnSpan="2">
+				<Label Content="Global Strength - " FontWeight="Bold" />
+				<Label Name="DataType" />
+				<Label Content=" - " FontWeight="Bold" />
+				<Label Name="PVal" />
+			</StackPanel>
 
-		<oxy:Plot Model="{Binding GlobalPlotModel}" Margin="0,2,0,0" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-		<oxy:Plot Model="{Binding AXPlotModel}" Margin="0,2,0,0" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+			<oxy:Plot Model="{Binding GlobalPlotModel}" Margin="0,2,0,0" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+			<oxy:Plot Model="{Binding AXPlotModel}" Margin="0,2,0,0" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 		
-		<oxy:Plot Model="{Binding PlotModel}" Margin="0,2,0,0" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-		<oxy:Plot Model="{Binding SGPlotModel}" Margin="0,2,0,0" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-	</Grid>
+			<oxy:Plot Model="{Binding PlotModel}" Margin="0,2,0,0" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+			<oxy:Plot Model="{Binding SGPlotModel}" Margin="0,2,0,0" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+		</Grid>
+	</Viewbox>
 </UserControl>

@@ -3,16 +3,13 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Text;
+using BrainLab.Data;
 
 namespace BrainLab.Services
 {
 	public class LocalStorageContext : DbContext
 	{
-		//public DbSet<Study> Studies { get; set; }
-		//public DbSet<Subject> Subjects { get; set; }
-		//public DbSet<Group> Groups { get; set; }
-		//public DbSet<Task> Tasks { get; set; }
-		//public DbSet<Collection> Collections { get; set; }
+		public DbSet<Preference> Preferences { get; set; }
 	}
 
 	public class LocalStorageContextInitializer : DropCreateDatabaseIfModelChanges<LocalStorageContext>

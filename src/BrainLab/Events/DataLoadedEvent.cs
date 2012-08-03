@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BrainLab.Events
 {
-	public class AdjsLoadedEvent
+	public class DataLoadedEvent
 	{
 	}
 }
