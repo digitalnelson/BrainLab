@@ -185,6 +185,7 @@
     <Compile Include="IShell.cs" />
     <Compile Include="LiveTilesViewModel.cs" />
     <Compile Include="MainWindowViewModel.cs" />
+    <Compile Include="Models\DataType.cs" />
     <Compile Include="NinjectBootstrapper.cs" />
     <Compile Include="DataManager.cs" />
     <Compile Include="Sections\Graph\StrengthViewModel.cs" />
@@ -200,7 +201,6 @@
     <Compile Include="Sections\Graph\MainViewModel.cs" />
     <Compile Include="Sections\Regions\MainViewModel.cs" />
     <Compile Include="Sections\Regions\RegionViewModel.cs" />
-    <Compile Include="Services\DataStore.cs" />
     <Compile Include="Sections\NBSm\GraphDisplay.xaml.cs">
       <DependentUpon>GraphDisplay.xaml</DependentUpon>
     </Compile>

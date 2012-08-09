@@ -77,6 +77,8 @@ namespace BrainLab.Sections.Graph
 			public ROI ROI { get; set; }
 			public double PValue { get; set; }
 			public double GroupDifference { get; set; }
+			public bool Significant { get; set; }
+			public double SignificantLevel { get; set; }
 		}
 
 		protected List<double> CalculateStrength(List<Subject> subjects, string dataType, List<List<double>> vertexStrengths)
@@ -119,23 +121,13 @@ namespace BrainLab.Sections.Graph
 			{
 				MarkerType = MarkerType.Circle,
 				MarkerSize = 7,
-				MarkerFill = OxyColor.FromAColor(125, OxyColors.Green),
-				MarkerStroke = OxyColors.Black,
-			};
-
-			var s3 = new BrainScatterSeries
-			{
-				MarkerType = MarkerType.Circle,
-				MarkerSize = 7,
 				MarkerFill = OxyColor.FromAColor(125, OxyColors.Red),
 				MarkerStroke = OxyColors.Black,
 			};
 
 			foreach (var rsvm in rsvms)
 			{
-				if (rsvm.PValue < 0.0005)
-					s3.Points.Add(new BrainDataPoint(horizSelector(rsvm.ROI), vertSelector(rsvm.ROI), rsvm.ROI));
-				else if (rsvm.PValue < 0.05)
+				if (rsvm.Significant)
 					s2.Points.Add(new BrainDataPoint(horizSelector(rsvm.ROI), vertSelector(rsvm.ROI), rsvm.ROI));
 				else
 					s1.Points.Add(new BrainDataPoint(horizSelector(rsvm.ROI), vertSelector(rsvm.ROI), rsvm.ROI));
@@ -143,7 +135,6 @@ namespace BrainLab.Sections.Graph
 
 			model.Series.Add(s1);
 			model.Series.Add(s2);
-			model.Series.Add(s3);
 
 			return model;
 		}
@@ -175,7 +166,7 @@ namespace BrainLab.Sections.Graph
 			// Sig test the verticies
 			_rsvms = new List<RegionalStrengthViewModel>();
 
-			for (int i = 0; i < 90; i++)
+			for (int i = 0; i < regions.Count; i++)
 			{
 				var lst1 = vtxStrs1[i];
 				var lst2 = vtxStrs2[i];
@@ -191,6 +182,28 @@ namespace BrainLab.Sections.Graph
 				};
 
 				_rsvms.Add(rsvm);
+			}
+
+			int idx = 1;
+			bool begin = true;
+			var sortedRsvms = _rsvms.OrderBy(r => r.PValue);
+			foreach (var rsvm in sortedRsvms)
+			{
+				double dIdx = (double)idx;
+				double dReg = (double)regions.Count;
+				double qval = (dIdx / dReg) * 0.05;
+
+				rsvm.SignificantLevel = qval;
+
+				if (rsvm.PValue < qval && begin)
+					rsvm.Significant = true;
+				else
+				{
+					begin = false;
+					rsvm.Significant = false;
+				}
+
+				idx++;
 			}
 
 			AXPlotModel = LoadPlotModel(_rsvms, r => r.X, r => r.Y);
@@ -262,12 +275,12 @@ namespace BrainLab.Sections.Graph
 
 					sw.WriteLine();
 					sw.WriteLine("Regional Strength");
-					sw.WriteLine("pval   \tdiff  \tregion");
+					sw.WriteLine("pval   \tdiff  \tregion \tqval   \tsig");
 
 					if(_rsvms != null)
 					{
-						foreach(var rvm in _rsvms)
-							sw.WriteLine(string.Format("{2}\t{1}\t{0}", rvm.ROI.Name, rvm.GroupDifference.ToString("+0.00000;-0.00000;0"), rvm.PValue.ToString("0.00000")));
+						foreach (var rvm in _rsvms.OrderBy(r => r.PValue))
+							sw.WriteLine(string.Format("{2}\t{1}\t{0}\t{3}\t{4}", rvm.ROI.Name, rvm.GroupDifference.ToString("+0.00000;-0.00000;0"), rvm.PValue.ToString("0.00000"), rvm.SignificantLevel.ToString("0.00000"), rvm.Significant));
 					}
 				}
 			}

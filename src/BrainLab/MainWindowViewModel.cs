@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace BrainLab
 {
-	class MainWindowViewModel : INotifyPropertyChanged
+	class MainWindowViewModel 
 	{
 		public MainWindowViewModel(DataManager dataManager)
 		{
@@ -126,8 +126,6 @@ namespace BrainLab
 		//		sw.Write(htmlSink.ToString());
 		//	}
 		//}
-
-		public event PropertyChangedEventHandler PropertyChanged;
 
 		public ObservableCollection<Group> Groups { get; set; }
 		public ObservableCollection<DataType> DataTypes {get; set;}
