@@ -195,46 +195,7 @@
 					
 				</Grid>
 			</Button>
-
-			<!--<Button Margin="10,0,10,0" Style="{StaticResource FolderButton}" Width="80" Height="80" HorizontalAlignment="Left">
-				<Grid Margin="1">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition />
-					</Grid.RowDefinitions>
-					<Label Content="Groups" FontSize="12" Foreground="{DynamicResource MainWindowText}" Grid.Row="0" Padding="0" VerticalAlignment="Top" HorizontalAlignment="Center"/>
-					<Viewbox Grid.Row="1" ScrollViewer.CanContentScroll="False">
-						<Label Name="Groups" Foreground="{DynamicResource MainWindowText}"  FontWeight="ExtraBold" Padding="0" />
-					</Viewbox>
-				</Grid>
-			</Button>
-
-			<Button Margin="10,0,10,0" Style="{StaticResource FolderButton}" Width="80" Height="80" HorizontalAlignment="Left">
-				<Grid Margin="1">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition />
-					</Grid.RowDefinitions>
-					<Label Content="Data Types" FontSize="12" Foreground="{DynamicResource MainWindowText}" Grid.Row="0" Padding="0" VerticalAlignment="Top" HorizontalAlignment="Center"/>
-					<Viewbox Grid.Row="1" ScrollViewer.CanContentScroll="False">
-						<Label Name="DataTypeCount" Foreground="{DynamicResource MainWindowText}"  FontWeight="ExtraBold" Padding="0" />
-					</Viewbox>
-				</Grid>
-			</Button>
-			
-			<Button Margin="10,0,10,0" Style="{StaticResource FolderButton}" x:Name="FilterSubjects" Width="80" Height="80" HorizontalAlignment="Left">
-				<Grid Margin="1">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition />
-					</Grid.RowDefinitions>
-					<Label Content="Filter" FontSize="12" Foreground="{DynamicResource MainWindowText}" Grid.Row="0" Padding="0" VerticalAlignment="Top" HorizontalAlignment="Center"/>
-					<Viewbox Grid.Row="1" ScrollViewer.CanContentScroll="False">
-						<Path Margin="10" Stretch="Uniform" Fill="#ffffffff" Data="F1 M 19.25,17.25L 35.7499,17.2501C 36.5784,17.2501 37.2499,17.6716 37.2499,18.5001C 37.2499,19.3285 36.5784,19.7501 35.7499,19.7501L 19.25,19.75C 18.4216,19.75 17.75,19.3285 17.75,18.5C 17.75,17.6716 18.4216,17.25 19.25,17.25 Z M 19.25,23.25L 38.4999,23.2501C 39.3283,23.2501 39.9999,23.6716 39.9999,24.5001C 39.9999,25.3285 39.0838,25.6981 38.2554,25.6981L 19.0055,25.698C 18.177,25.698 17.75,25.3284 17.75,24.5C 17.75,23.6716 18.4216,23.25 19.25,23.25 Z M 19.25,29.25L 33.4999,29.2501C 34.3283,29.2501 34.9999,29.6716 34.9999,30.5001C 34.9999,31.3285 34.3283,31.7501 33.4999,31.7501L 19.25,31.75C 18.4216,31.75 17.75,31.3284 17.75,30.5C 17.75,29.6716 18.4216,29.25 19.25,29.25 Z M 10.4919,29.2742L 12.2016,30.7823L 15.25,27L 16.6129,28.5081L 12.8064,33L 11.75,33L 9.33064,30.6231L 9.33064,29.2742L 10.4919,29.2742 Z M 10.629,23.2742L 12.3387,24.7823L 15.3871,21L 16.75,22.5081L 12.9436,27L 11.8871,27L 9.46775,24.6231L 9.46775,23.2742L 10.629,23.2742 Z M 10.629,17.2742L 12.3387,18.7822L 15.3871,15L 16.75,16.5081L 12.9436,21L 11.8871,21L 9.46775,18.6231L 9.46775,17.2742L 10.629,17.2742 Z "/>
-					</Viewbox>
-				</Grid>
-			</Button>-->
-			
+		
 			<Button Margin="10,0,10,0" Style="{StaticResource FolderButton}" Width="80" Height="80" HorizontalAlignment="Left">
 				<Grid Margin="1">
 					<Grid.RowDefinitions>
@@ -248,7 +209,7 @@
 				</Grid>
 			</Button>
 
-			<Button Margin="10,0,10,0" Style="{StaticResource FolderButton}" x:Name="Run"  Width="80" Height="80" HorizontalAlignment="Left" >
+			<Button Margin="10,0,10,0" IsEnabled="False" Style="{StaticResource FolderButton}" x:Name="Run"  Width="80" Height="80" HorizontalAlignment="Left" >
 				<Grid Margin="1">
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto" />
@@ -260,19 +221,7 @@
 					</Viewbox>
 				</Grid>
 			</Button>
-
-			<Button Margin="10,0,10,0" x:Name="_btnSave" Style="{StaticResource FolderButton}" IsEnabled="False" Width="80" Height="80" HorizontalAlignment="Left" >
-				<Grid Margin="1">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition />
-					</Grid.RowDefinitions>
-					<Label Content="Save" FontSize="12" Foreground="{DynamicResource MainWindowText}" Grid.Row="0" Padding="0" VerticalAlignment="Top" HorizontalAlignment="Center"/>
-					<Viewbox Grid.Row="1" ScrollViewer.CanContentScroll="False">
-						<Path Margin="15"  Stretch="Uniform" Fill="#ffffffff" Data="M 617.706,307.72L 617.708,307.72L 617.708,307.721C 618.843,307.721 620.274,307.755 621.354,308.245C 623.502,309.217 623.602,312.745 621.168,313.416C 620.135,313.7 618.823,313.576 617.708,313.576L 617.708,313.573L 617.706,313.573L 617.702,313.573L 617.702,313.576C 614.196,313.577 611.019,314.995 608.72,317.295C 606.419,319.596 604.999,322.772 604.999,326.28L 604.998,326.28L 604.998,326.283L 604.998,326.287L 604.999,326.287C 605,329.792 606.419,332.969 608.719,335.268C 611.019,337.569 614.196,338.988 617.704,338.989L 617.704,338.991L 617.706,338.991L 617.711,338.991L 617.711,338.989C 621.216,338.988 624.394,337.569 626.69,335.269C 628.087,333.873 629.156,332.153 629.784,330.235L 625.988,330.675C 624.932,330.869 623.646,330.751 623.25,329.569C 622.971,328.736 623.183,327.837 623.686,327.047L 629.551,317.869C 630.344,316.627 632.26,316.405 633.315,317.431L 641.122,325.027C 641.646,325.539 642.032,326.129 642.114,326.805C 642.371,328.935 640.843,328.951 639.363,329.121L 635.983,329.515C 635.31,333.345 633.464,336.772 630.83,339.408C 627.472,342.764 622.834,344.841 617.711,344.843L 617.711,344.844L 617.706,344.844L 617.704,344.844L 617.704,344.843C 612.578,344.841 607.938,342.764 604.58,339.407C 601.224,336.049 599.147,331.411 599.146,326.287L 599.143,326.287L 599.143,326.283L 599.143,326.28L 599.146,326.28C 599.147,321.155 601.224,316.515 604.582,313.157C 607.939,309.801 612.578,307.724 617.702,307.721L 617.702,307.72L 617.706,307.72 Z "/>
-					</Viewbox>
-				</Grid>
-			</Button>
+			
 		</StackPanel>
 
 	</Grid>

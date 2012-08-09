@@ -6,24 +6,39 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
 	<Grid  Margin="4">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width=".33*" />
-			<ColumnDefinition Width=".66*" />
-		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
 			<RowDefinition />
 			<RowDefinition />
 		</Grid.RowDefinitions>
 		
-		<DockPanel Grid.Row="0" Grid.Column="0">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width=".33*" />
+			<ColumnDefinition Width=".66*" />
+		</Grid.ColumnDefinitions>
+		
+		<DockPanel Grid.Row="0" Grid.Column="0" Margin="4,4,0,0" Background="#15ffffff">
 			<Label DockPanel.Dock="Top" Content="Groups" Foreground="{DynamicResource MainWindowText}" Padding="5,2"/>
 			<ItemsControl DockPanel.Dock="Top" Name="Groups" Grid.Row="2" Grid.Column="0" />
 		</DockPanel>
 		
-		<DockPanel Grid.Row="1" Grid.Column="0">
+		<DockPanel Grid.Row="1" Grid.Column="0" Margin="4,0,0,4" Background="#15ffffff">
 			<Label DockPanel.Dock="Top" Content="Data Types" Grid.Row="1" Grid.Column="1"  Foreground="{DynamicResource MainWindowText}" Padding="5,2"/>
 			<Button DockPanel.Dock="Bottom" Name="FilterSubjects" Content="Apply Filters" />
 			<ItemsControl DockPanel.Dock="Top" Name="DataTypes" Grid.Row="2" Grid.Column="1" />
 		</DockPanel>
+		
+		<Border Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" BorderBrush="#15ffffff" BorderThickness="2"  Margin="0,4,4,4">
+			<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="2">
+				<Grid.RowDefinitions>
+					<RowDefinition />
+					<RowDefinition />
+				</Grid.RowDefinitions>
+
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition />
+					<ColumnDefinition  />
+				</Grid.ColumnDefinitions>
+			</Grid>
+		</Border>
 	</Grid>
 </UserControl>
