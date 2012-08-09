@@ -18,6 +18,16 @@ namespace BrainLab.Services
 
 		int GetNodeCount();
 		int GetEdgeCount();
+
+		CoordRange X { get; set; }
+		CoordRange Y { get; set; }
+		CoordRange Z { get; set; }
+	}
+
+	public class CoordRange
+	{
+		public double Min { get; set; }
+		public double Max { get; set; }
 	}
 
 	public class RegionService : IRegionService
@@ -30,6 +40,10 @@ namespace BrainLab.Services
 		public RegionService(IEventAggregator eventAggregator)
 		{
 			_eventAggregator = eventAggregator;
+
+			X = new CoordRange();
+			Y = new CoordRange();
+			Z = new CoordRange();
 
 			_regionsOfInterest = new List<ROI>();
 			_regionsOfInterestByIndex = new Dictionary<int, ROI>();
@@ -46,12 +60,12 @@ namespace BrainLab.Services
 				_regionsOfInterestByIndex[roi.Index] = roi;
 			}
 
-			this.XMin = roiLoader.XMin;
-			this.XMax = roiLoader.XMax;
-			this.YMin = roiLoader.YMin;
-			this.YMax = roiLoader.YMax;
-			this.ZMin = roiLoader.ZMin;
-			this.ZMax = roiLoader.ZMax;
+			X.Min = roiLoader.XMin;
+			X.Max = roiLoader.XMax;
+			Y.Min = roiLoader.YMin;
+			Y.Max = roiLoader.YMax;
+			Z.Min = roiLoader.ZMin;
+			Z.Max = roiLoader.ZMax;
 
 			_eventAggregator.Publish(new RegionsLoadedEvent());
 		}
@@ -61,12 +75,9 @@ namespace BrainLab.Services
 			return _regionsOfInterest.OrderBy(r => r.Index).ToList();
 		}
 
-		public double XMin;
-		public double XMax;
-		public double YMin;
-		public double YMax;
-		public double ZMin;
-		public double ZMax;
+		public CoordRange X { get; set; }
+		public CoordRange Y { get; set; }
+		public CoordRange Z { get; set; }
 
 		public int GetNodeCount()
 		{

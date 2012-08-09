@@ -28,7 +28,7 @@ namespace BrainLab
 
 		public int Permutations { get { return _inlPermutations; } set { _inlPermutations = value; NotifyOfPropertyChange(() => Permutations); } } private int _inlPermutations;
 
-		public LiveTilesViewModel(IEventAggregator eventAggregator, IComputeService computeService, IRegionService regionService, ISubjectService subjectService)
+		public LiveTilesViewModel(IEventAggregator eventAggregator, IComputeService computeService, IRegionService regionService, ISubjectService subjectService) 
 		{
 			_eventAggregator = eventAggregator;
 			_computeService = computeService;

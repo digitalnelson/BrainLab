@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using BrainLabLibrary;
 using Caliburn.Micro;
 
-namespace BrainLab.Sections.Inputs
+namespace BrainLab.Sections.Subjects
 {
 	public class SubjectViewModel : Screen
 	{

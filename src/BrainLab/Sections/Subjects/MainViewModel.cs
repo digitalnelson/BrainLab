@@ -9,7 +9,7 @@ using BrainLab.Services;
 using Caliburn.Micro;
 using Ninject;
 
-namespace BrainLab.Sections.Inputs
+namespace BrainLab.Sections.Subjects
 {
 	public class MainViewModel : Screen
 	{
@@ -18,10 +18,6 @@ namespace BrainLab.Sections.Inputs
 		readonly ISubjectService _subjectService;
 		readonly IComputeService _computeService;
 		readonly IEventAggregator _eventAggregator;
-
-		private string _regionPref;
-		private string _subjectPref;
-		private string _dataPref;
 
 		[Inject]
 		public MainViewModel(IAppPreferences appPreferences, IRegionService regionService, ISubjectService subjectService, IComputeService computeService, IEventAggregator eventAggregator)
@@ -32,9 +28,8 @@ namespace BrainLab.Sections.Inputs
 			_computeService = computeService;
 			_eventAggregator = eventAggregator;
 
-			this.DisplayName = "INPUTS";
+			this.DisplayName = "SUBJECTS";
 
-			Regions = new BindableCollection<RegionViewModel>();
 			Subjects = new BindableCollection<SubjectViewModel>();
 			DataFiles = new BindableCollection<DataFileViewModel>();
 
@@ -43,13 +38,10 @@ namespace BrainLab.Sections.Inputs
 
 		protected override async void OnActivate()
 		{
-			if (RegionFile == null)
+			if (SubjectFile == null)
 			{
 				await Task.Run(delegate
 				{
-					if (RegionFile != _appPreferences.RegionPath)
-						RegionFile = _appPreferences.RegionPath;
-
 					if (SubjectFile != _appPreferences.SubjectPath)
 						SubjectFile = _appPreferences.SubjectPath;
 
@@ -59,50 +51,6 @@ namespace BrainLab.Sections.Inputs
 			}
 
 			base.OnActivate();
-		}
-
-		public void OpenRegionFile()
-		{
-			// Configure open file dialog box
-			Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-			dlg.FileName = "AAL"; // Default file name
-			dlg.DefaultExt = ".txt"; // Default file extension
-			dlg.Filter = "Text documents (.txt)|*.txt"; // Filter files by extension
-
-			if (!string.IsNullOrEmpty(RegionFile))
-				dlg.InitialDirectory = System.IO.Path.GetFullPath(RegionFile);
-
-			// Show open file dialog box
-			Nullable<bool> result = dlg.ShowDialog();
-
-			// Process open file dialog box results
-			if (result == true)
-			{
-				// Open document
-				RegionFile = dlg.FileName;
-			}
-		}
-
-		public void LoadRegions()
-		{
-			Regions.Clear();
-
-			try
-			{
-				_regionService.Load(RegionFile);
-
-				var regions = _regionService.GetRegionsByIndex();
-				foreach (var region in regions)
-				{
-					var rgn = IoC.Get<RegionViewModel>();
-					rgn.Region = region;
-
-					Regions.Add(rgn);
-				}
-			}
-			catch (Exception)
-			{
-			}
 		}
 
 		public void OpenSubjectFile()
@@ -177,7 +125,7 @@ namespace BrainLab.Sections.Inputs
             {
 				try
 				{
-					_subjectService.LoadSubjectData(DataFolder, Regions.Count);  // TODO: Get the ROI number from somewhere else?!?
+					_subjectService.LoadSubjectData(DataFolder, _regionService.GetNodeCount());  // TODO: Get the ROI number from somewhere else?!?
 
 					var subjects = _subjectService.GetSubjects();
 					foreach (var subject in subjects)
@@ -201,9 +149,6 @@ namespace BrainLab.Sections.Inputs
 		{
 			base.OnDeactivate(close);
 		}
-
-		public string RegionFile { get { return _regionFile; } set { _regionFile = value; NotifyOfPropertyChange(() => RegionFile); LoadRegions(); _appPreferences.RegionPath = _regionFile; } } private string _regionFile;
-		public BindableCollection<RegionViewModel> Regions { get; private set; }
 
 		public string SubjectFile { get { return _subjectFile; } set { _subjectFile = value; NotifyOfPropertyChange(() => SubjectFile); LoadSubjects(); _appPreferences.SubjectPath = _subjectFile; } } private string _subjectFile;
 		public BindableCollection<SubjectViewModel> Subjects { get; private set; }

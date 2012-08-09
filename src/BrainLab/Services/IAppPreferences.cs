@@ -15,6 +15,7 @@ namespace BrainLab.Services
 		string RegionPath { get; set; }
 		string SubjectPath { get; set; }
 		string DataPath { get; set; }
+		string OutputPath { get; set; }
 
 		void Load();
 		void Save();
@@ -28,6 +29,7 @@ namespace BrainLab.Services
 		public string RegionPath { get; set; }
 		public string SubjectPath { get; set; }
 		public string DataPath { get; set; }
+		public string OutputPath { get; set; }
 
 		public void Load()
 		{
@@ -57,6 +59,9 @@ namespace BrainLab.Services
 							case "DataPath":
 								DataPath = keyValue[1];
 								break;
+							case "OutputPath":
+								OutputPath = keyValue[1];
+								break;
 							default:
 								Application.Current.Properties[keyValue[0]] = keyValue[1];
 								break;
@@ -79,6 +84,7 @@ namespace BrainLab.Services
 				writer.WriteLine("{0},{1}", "RegionPath", RegionPath);
 				writer.WriteLine("{0},{1}", "SubjectPath", SubjectPath);
 				writer.WriteLine("{0},{1}", "DataPath", DataPath);
+				writer.WriteLine("{0},{1}", "OutputPath", OutputPath);
 
 				// Persist each application-scope property individually
 				foreach (string key in Application.Current.Properties.Keys)

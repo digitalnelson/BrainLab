@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Caliburn.Micro;
 using BrainLabStorage;
 
-namespace BrainLab.Sections.Inputs
+namespace BrainLab.Sections.Regions
 {
 	public class RegionViewModel : Screen
 	{

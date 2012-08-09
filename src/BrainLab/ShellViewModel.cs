@@ -17,7 +17,8 @@ namespace BrainLab
 
 			LiveTiles = IoC.Get<LiveTilesViewModel>();
 
-			Items.Add(IoC.Get<BrainLab.Sections.Inputs.MainViewModel>());
+			Items.Add(IoC.Get<BrainLab.Sections.Regions.MainViewModel>());
+			Items.Add(IoC.Get<BrainLab.Sections.Subjects.MainViewModel>());
 			Items.Add(IoC.Get<BrainLab.Sections.Filters.MainViewModel>());
 			Items.Add(IoC.Get<BrainLab.Sections.Graph.MainViewModel>());
 			Items.Add(IoC.Get<BrainLab.Sections.NBSm.MainViewModel>());

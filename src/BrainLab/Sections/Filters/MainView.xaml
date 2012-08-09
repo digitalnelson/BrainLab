@@ -7,23 +7,23 @@
              d:DesignHeight="300" d:DesignWidth="300">
 	<Grid  Margin="4">
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition />
-			<ColumnDefinition />
+			<ColumnDefinition Width=".33*" />
+			<ColumnDefinition Width=".66*" />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
+			<RowDefinition />
 			<RowDefinition />
 		</Grid.RowDefinitions>
-
-		<Button Name="FilterSubjects" Content="Apply Filters" />
 		
-		<Label Content="Groups" Grid.Row="1" Grid.Column="0" Foreground="{DynamicResource MainWindowText}" Padding="5,2"/>
-		<ItemsControl Name="Groups" Grid.Row="2" Grid.Column="0" />
-
-		<Label Content="Data Types" Grid.Row="1" Grid.Column="1"  Foreground="{DynamicResource MainWindowText}" Padding="5,2"/>
-		<ItemsControl Name="DataTypes" Grid.Row="2" Grid.Column="1" />
+		<DockPanel Grid.Row="0" Grid.Column="0">
+			<Label DockPanel.Dock="Top" Content="Groups" Foreground="{DynamicResource MainWindowText}" Padding="5,2"/>
+			<ItemsControl DockPanel.Dock="Top" Name="Groups" Grid.Row="2" Grid.Column="0" />
+		</DockPanel>
+		
+		<DockPanel Grid.Row="1" Grid.Column="0">
+			<Label DockPanel.Dock="Top" Content="Data Types" Grid.Row="1" Grid.Column="1"  Foreground="{DynamicResource MainWindowText}" Padding="5,2"/>
+			<Button DockPanel.Dock="Bottom" Name="FilterSubjects" Content="Apply Filters" />
+			<ItemsControl DockPanel.Dock="Top" Name="DataTypes" Grid.Row="2" Grid.Column="1" />
+		</DockPanel>
 	</Grid>
 </UserControl>

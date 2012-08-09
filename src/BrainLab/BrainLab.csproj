@@ -192,13 +192,14 @@
     <Compile Include="Sections\NBSm\GraphViewModel.cs" />
     <Compile Include="Sections\NBSm\MainViewModel.cs" />
     <Compile Include="Sections\NBSm\OverlapViewModel.cs" />
-    <Compile Include="Sections\Inputs\DataFileViewModel.cs" />
+    <Compile Include="Sections\Subjects\DataFileViewModel.cs" />
     <Compile Include="Sections\Filters\DataTypeViewModel.cs" />
-    <Compile Include="Sections\Inputs\RegionViewModel.cs" />
-    <Compile Include="Sections\Inputs\MainViewModel.cs" />
+    <Compile Include="Sections\Subjects\MainViewModel.cs" />
     <Compile Include="Sections\Filters\GroupViewModel.cs" />
-    <Compile Include="Sections\Inputs\SubjectViewModel.cs" />
+    <Compile Include="Sections\Subjects\SubjectViewModel.cs" />
     <Compile Include="Sections\Graph\MainViewModel.cs" />
+    <Compile Include="Sections\Regions\MainViewModel.cs" />
+    <Compile Include="Sections\Regions\RegionViewModel.cs" />
     <Compile Include="Services\DataStore.cs" />
     <Compile Include="Sections\NBSm\GraphDisplay.xaml.cs">
       <DependentUpon>GraphDisplay.xaml</DependentUpon>
@@ -233,6 +234,7 @@
     <Compile Include="Services\ILocalStorage.cs" />
     <Compile Include="Services\ISubjectService.cs" />
     <Compile Include="Services\LocalStorageContext.cs" />
+    <Compile Include="Viz\BrainScatter.cs" />
     <Page Include="LiveTilesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -293,7 +295,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Sections\Inputs\DataFileView.xaml">
+    <Page Include="Sections\Subjects\DataFileView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -301,11 +303,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Sections\Inputs\RegionView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Sections\Inputs\MainView.xaml">
+    <Page Include="Sections\Subjects\MainView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -313,13 +311,21 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Sections\Inputs\SubjectView.xaml">
+    <Page Include="Sections\Subjects\SubjectView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Sections\Graph\MainView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Sections\Regions\MainView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sections\Regions\RegionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="ShellView.xaml">
       <SubType>Designer</SubType>

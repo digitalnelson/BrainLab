@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using BrainLab.Events;
 using BrainLab.Services.Loaders;
 using BrainLabLibrary;
-using BrainLabStorage;
 using Caliburn.Micro;
 
 namespace BrainLab.Services

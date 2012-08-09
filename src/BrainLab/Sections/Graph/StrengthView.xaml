@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              >
 	<Viewbox Margin="2" Stretch="UniformToFill" StretchDirection="Both" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-		<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="600" Height="600">
+		<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="800" Height="800" Margin="2">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 				<RowDefinition MinHeight="200px" />
@@ -19,18 +19,24 @@
 				<ColumnDefinition  />
 			</Grid.ColumnDefinitions>
 
-			<StackPanel Orientation="Horizontal"  Background="LightGray" Grid.Row="0" Grid.ColumnSpan="2">
-				<Label Content="Global Strength - " FontWeight="Bold" />
-				<Label Name="DataType" />
-				<Label Content=" - " FontWeight="Bold" />
-				<Label Name="PVal" />
-			</StackPanel>
+			<DockPanel Margin="2"  Background="LightGray" Grid.Row="0" Grid.ColumnSpan="2" LastChildFill="False">
+				<StackPanel Orientation="Horizontal" DockPanel.Dock="Left" VerticalAlignment="Stretch">
+					<Label Content="Global Strength - " FontWeight="Bold" VerticalAlignment="Center"/>
+					<Label Name="DataType" VerticalAlignment="Center" />
+					<Label Content=" - " FontWeight="Bold" VerticalAlignment="Center" />
+					<Label Name="PVal" VerticalAlignment="Center" />
+				</StackPanel>
+				<Button Padding="0" BorderThickness="0" Background="#00000000" DockPanel.Dock="Right" Margin="2" x:Name="Save"  Width="22" Height="22" BorderBrush="#00000000">
+					<Viewbox Margin="0">
+						<Path Margin="2" Stroke="Black"  Stretch="Uniform" Fill="black" Data="F1 M 13,13L 31.0001,13L 35,17L 35,35L 13,35L 13,13 Z M 32.9999,18.0001L 30,15L 29,15L 29,23L 18,23L 18,15L 15,15L 15,33L 33,33L 32.9999,18.0001 Z M 25,15L 25,21L 27,21L 27,15L 25,15 Z "/>
+					</Viewbox>
+				</Button>
+			</DockPanel>
 
-			<oxy:Plot Model="{Binding GlobalPlotModel}" Margin="0,2,0,0" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-			<oxy:Plot Model="{Binding AXPlotModel}" Margin="0,2,0,0" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-		
-			<oxy:Plot Model="{Binding PlotModel}" Margin="0,2,0,0" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-			<oxy:Plot Model="{Binding SGPlotModel}" Margin="0,2,0,0" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+			<oxy:Plot SnapsToDevicePixels="True" Model="{Binding GlobalPlotModel}" Margin="2" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+			<oxy:Plot Model="{Binding AXPlotModel}" Margin="2" Grid.Row="1" Grid.Column="1"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+			<oxy:Plot Model="{Binding CRPlotModel}" Margin="2" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+			<oxy:Plot Model="{Binding SGPlotModel}" Margin="2" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 		</Grid>
 	</Viewbox>
 </UserControl>
