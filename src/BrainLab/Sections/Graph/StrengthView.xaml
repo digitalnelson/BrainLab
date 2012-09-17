@@ -3,11 +3,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+			 xmlns:local="clr-namespace:BrainLab.Converters"
              xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
              mc:Ignorable="d" 
-             >
-	<Viewbox Margin="2" Stretch="UniformToFill" StretchDirection="Both" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-		<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="800" Height="800" Margin="2">
+             d:DesignHeight="420">
+	<!--<Viewbox Margin="2" Stretch="UniformToFill" StretchDirection="Both" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">-->
+		<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="2" Name="mainGrid">
+			<Grid.Resources>
+				<local:RelativeWidthConverter x:Key="RelativeWidthConverter"/>
+			</Grid.Resources>
+			<Grid.Width>
+				<MultiBinding Converter="{StaticResource RelativeWidthConverter}">
+					<Binding Path="ActualHeight" ElementName="mainGrid" />
+				</MultiBinding>
+			</Grid.Width>
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 				<RowDefinition MinHeight="200px" />
@@ -38,5 +47,5 @@
 			<oxy:Plot Model="{Binding CRPlotModel}" Margin="2" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 			<oxy:Plot Model="{Binding SGPlotModel}" Margin="2" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 		</Grid>
-	</Viewbox>
+	<!--</Viewbox>-->
 </UserControl>

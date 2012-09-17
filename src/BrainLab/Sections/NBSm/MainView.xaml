@@ -8,21 +8,23 @@
              d:DesignHeight="768" d:DesignWidth="1024">
     <Grid>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="0.25*" />
-			<ColumnDefinition Width="0.75*"/>
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="1*" />
 		</Grid.RowDefinitions>
+		
 		<DockPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-			<Grid Height="17" Background="LightGray" DockPanel.Dock="Bottom"></Grid>
+			<Grid Height="7" DockPanel.Dock="Bottom" Margin="2"></Grid>
 			<ContentControl Name="OverlapComponent" />
 		</DockPanel>
+		
 		<ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Disabled" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 			<ItemsControl Name="ModalityComponents">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
-						<StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" />
+						<StackPanel Orientation="Horizontal" />
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
 			</ItemsControl>

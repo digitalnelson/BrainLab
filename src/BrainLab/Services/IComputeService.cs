@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BrainLab.Events;
 using BrainLabLibrary;
 using Caliburn.Micro;
+using BrainLabStorage;
 
 namespace BrainLab.Services
 {
@@ -33,7 +34,7 @@ namespace BrainLab.Services
 		void LoadSubjects();
 		void CompareGroups();
 		void PermuteGroups(int permutations);
-		void GetResults();
+		Overlap GetResults();
 	}
 
 	public class ComputeService : IComputeService
@@ -148,12 +149,15 @@ namespace BrainLab.Services
 		public void PermuteGroups(int permutations)
 		{
 			if (_compare != null)
+			{
 				_compare.Permute(permutations, _dataTypes);
+				_eventAggregator.Publish(new NBSResultsAvailable());
+			}
 		}
 
-		public void GetResults()
+		public Overlap GetResults()
 		{
-			var overlap = _compare.GetResult();
+			return _compare.GetResult();
 		}
 		#endregion
 	}

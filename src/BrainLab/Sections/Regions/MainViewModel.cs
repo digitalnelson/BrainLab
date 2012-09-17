@@ -121,9 +121,15 @@ namespace BrainLab.Sections.Regions
 			var model = new PlotModel() { IsLegendVisible = false };
 			model.PlotMargins = new OxyThickness(0, 0, 0, 0);
 			model.PlotAreaBorderColor = OxyColors.White;
+			model.PlotType = PlotType.Cartesian;
 
-			var ba = new LinearAxis(AxisPosition.Bottom) { AbsoluteMaximum = 100, AbsoluteMinimum = 0, Maximum = 100, Minimum = 0, AxislineColor = OxyColors.White, TextColor = OxyColors.White, MajorGridlineColor = OxyColors.White, TicklineColor = OxyColors.White };
-			var la = new LinearAxis(AxisPosition.Left) { AbsoluteMaximum = 100, AbsoluteMinimum = 0, Maximum = 100, Minimum = 0, AxislineColor = OxyColors.White, TextColor = OxyColors.White, TicklineColor = OxyColors.White };
+			var ba = new LinearAxis(AxisPosition.Bottom) { AxislineColor = OxyColors.White, TextColor = OxyColors.White, MajorGridlineColor = OxyColors.White, TicklineColor = OxyColors.White };
+			var la = new LinearAxis(AxisPosition.Left) {  AxislineColor = OxyColors.White, TextColor = OxyColors.White, TicklineColor = OxyColors.White };
+
+			ba.MinimumPadding = 0.1;
+			ba.MaximumPadding = 0.1;
+			la.MinimumPadding = 0.1;
+			la.MaximumPadding = 0.1;
 
 			model.Axes.Add(ba);
 			model.Axes.Add(la);

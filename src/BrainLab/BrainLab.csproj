@@ -174,11 +174,14 @@
     <Compile Include="alg\solvers.cs" />
     <Compile Include="alg\specialfunctions.cs" />
     <Compile Include="alg\statistics.cs" />
+    <Compile Include="Common\Viz\InvisibleAxis.cs" />
     <Compile Include="Convert.cs" />
+    <Compile Include="Converters\RelativeWidthConverter.cs" />
     <Compile Include="Data\Preference.cs" />
     <Compile Include="Events\DataLoadedEvent.cs" />
     <Compile Include="Events\DataTypeSelection.cs" />
     <Compile Include="Events\GroupAssignment.cs" />
+    <Compile Include="Events\NBSResultsAvailable.cs" />
     <Compile Include="Events\RegionsLoadedEvent.cs" />
     <Compile Include="Events\SubjectsFilteredEvent.cs" />
     <Compile Include="Events\SubjectsLoadedEvent.cs" />
@@ -201,9 +204,6 @@
     <Compile Include="Sections\Graph\MainViewModel.cs" />
     <Compile Include="Sections\Regions\MainViewModel.cs" />
     <Compile Include="Sections\Regions\RegionViewModel.cs" />
-    <Compile Include="Sections\NBSm\GraphDisplay.xaml.cs">
-      <DependentUpon>GraphDisplay.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Services\IComputeService.cs" />
     <Compile Include="Services\IRegionService.cs" />
     <Compile Include="Services\Loaders\AdjCSVLoader.cs" />
@@ -234,7 +234,7 @@
     <Compile Include="Services\ILocalStorage.cs" />
     <Compile Include="Services\ISubjectService.cs" />
     <Compile Include="Services\LocalStorageContext.cs" />
-    <Compile Include="Viz\BrainScatter.cs" />
+    <Compile Include="Common\Viz\BrainScatter.cs" />
     <Page Include="LiveTilesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -242,9 +242,6 @@
     <Page Include="Sections\NBSm\OverlapView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Sections\NBSm\GraphDisplay.xaml">
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Sections\NBSm\GraphView.xaml">
       <Generator>MSBuild:Compile</Generator>

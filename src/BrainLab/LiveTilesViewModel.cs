@@ -99,10 +99,7 @@ namespace BrainLab
 		private List<string> _group2Members = new List<string>();
 
 		public void FilterSubjects()
-		{
-			_computeService.FilterSubjects();
-
-			var counts = _computeService.GetFilteredSubjectCountsByComputeGroup();
+		{		
 		}
 
 		public void Handle(SubjectsFilteredEvent message)
@@ -114,14 +111,19 @@ namespace BrainLab
 				count += itm.Value;
 
 			FilteredSubjects = count;
+			CanRun = true;
 		}
 
-		public void Run()
+		public async void Run()
 		{
-			_computeService.LoadSubjects();
-			_computeService.CompareGroups();
-			_computeService.PermuteGroups(Permutations);
-			_computeService.GetResults();
+			await Task.Run(delegate
+			{
+				_computeService.LoadSubjects();
+				_computeService.CompareGroups();
+				_computeService.PermuteGroups(Permutations);
+				_computeService.GetResults();
+			});
 		}
+		public bool CanRun { get { return _inlCanRun; } set { _inlCanRun = value; NotifyOfPropertyChange(() => CanRun); } } private bool _inlCanRun;
 	}
 }

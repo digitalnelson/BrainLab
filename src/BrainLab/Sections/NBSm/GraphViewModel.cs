@@ -5,126 +5,174 @@ using System.Text;
 using System.Threading.Tasks;
 using BrainLabStorage;
 using Caliburn.Micro;
+using BrainLab.Events;
+using OxyPlot;
+using BrainLab.Services;
+using BrainLab.Viz;
+using BrainLab.Common.Viz;
 
 namespace BrainLab.Sections.NBSm
 {
-	public class GraphViewModel : Screen
+	public class GraphViewModel : Screen, IHandle<NBSResultsAvailable>
 	{
+		#region Private Service Vars
+		private IEventAggregator _eventAggregator = IoC.Get<IEventAggregator>();
+		private IRegionService _regionService = IoC.Get<IRegionService>();
+		private IComputeService _computeService = IoC.Get<IComputeService>();
+		#endregion
+
 		public GraphViewModel()
 		{
 			// These are to power lists in the displays
 			CmpNodes = new BindableCollection<NodeResult>();
 			CmpEdges = new BindableCollection<EdgeResult>();
+
+			_eventAggregator.Subscribe(this);
 		}
 
-		public void SetDataManager(DataManager dataManager)
+		public string DataType { get { return _inlDataType; } set { _inlDataType = value; NotifyOfPropertyChange(() => DataType); } } private string _inlDataType;
+
+		protected PlotModel LoadGraph(List<RegionalViewModel> rsvms, List<GraphEdge> edges, Func<ROI, double> horizSelector, Func<ROI, double> vertSelector)
 		{
-			//_dataManager = dataManager;
-			//_distro.SetDataManager(_dataManager);
+			var model = new PlotModel() { IsLegendVisible = false };
+			model.PlotAreaBorderColor = OxyColors.White;
+			model.PlotType = PlotType.Cartesian;
+			model.PlotMargins = new OxyThickness(0, 0, 0, 0);
+			model.Padding = new OxyThickness(0, 0, 0, 0);
+
+			var ba = new InvisibleAxis() { IsAxisVisible = false, Position = AxisPosition.Bottom };
+			var la = new InvisibleAxis() { IsAxisVisible = false, Position = AxisPosition.Left };
+
+			ba.MinimumPadding = 0.1;
+			ba.MaximumPadding = 0.1;
+			la.MinimumPadding = 0.1;
+			la.MaximumPadding = 0.1;
+
+			model.Axes.Add(ba);
+			model.Axes.Add(la);
+
+			var nonSigNodes = new BrainScatterSeries
+			{
+				MarkerType = MarkerType.Circle,
+				MarkerSize = 7,
+				MarkerFill = OxyColor.FromAColor(125, OxyColors.Gray),
+			};
+
+			var sigNodes = new BrainScatterSeries
+			{
+				MarkerType = MarkerType.Circle,
+				MarkerSize = 7,
+				MarkerFill = OxyColor.FromAColor(125, OxyColors.Green),
+			};
+
+			var sigEdges = new LineSeries
+			{
+				Color = OxyColor.FromAColor(125, OxyColors.Green),
+			};
+
+			Dictionary<int, int> cmpNodes = new Dictionary<int, int>();
+
+			foreach (var edge in edges)
+			{
+				var v1 = rsvms[edge.V1];
+				var v2 = rsvms[edge.V2];
+
+				cmpNodes[edge.V1] = edge.V1;
+				cmpNodes[edge.V2] = edge.V2;
+
+				sigEdges.Points.Add(new DataPoint(Double.NaN, Double.NaN));
+				sigEdges.Points.Add(new DataPoint(horizSelector(v1.ROI), vertSelector(v1.ROI)));
+				sigEdges.Points.Add(new DataPoint(horizSelector(v2.ROI), vertSelector(v2.ROI)));
+				sigEdges.Points.Add(new DataPoint(Double.NaN, Double.NaN));
+			}
+
+			foreach (var rsvm in rsvms)
+			{
+				if(cmpNodes.ContainsKey(rsvm.ROI.Index))
+					sigNodes.Points.Add(new BrainDataPoint(horizSelector(rsvm.ROI), vertSelector(rsvm.ROI), rsvm.ROI));
+				else
+					nonSigNodes.Points.Add(new BrainDataPoint(horizSelector(rsvm.ROI), vertSelector(rsvm.ROI), rsvm.ROI));
+			}
+
+			model.Series.Add(nonSigNodes);
+			model.Series.Add(sigEdges);
+			model.Series.Add(sigNodes);
+
+			return model;
 		}
-        
-        public void Clear()
-        {
-			//CmpNodes.Clear();
-			//CmpEdges.Clear();
 
-			//_graphAxXL.Clear();
-			//_graphCrXL.Clear();
-			//_graphSgXL.Clear();
-        }
-
-		public void LoadGraphComponents(Overlap overlap, string dataType, System.Windows.Media.Color componentColor)
+		public void Handle(NBSResultsAvailable message)
 		{
-			//DataType = dataType;
+			var overlap = _computeService.GetResults();
+			var regions = _regionService.GetRegionsByIndex();
 
-			//// TODO: Hack fest - fix this!
-			//_distro.Load(dataType, "c", "p");
+			var rvms = new List<RegionalViewModel>();
+			foreach (var region in regions)
+			{
+				RegionalViewModel rvm = new RegionalViewModel
+				{
+					ROI = region,
+				};
 
-			//List<GraphComponent> components = overlap.Components[dataType];
-			//overlap.Colors[dataType] = componentColor;
+				rvms.Add(rvm);
+			}
 
-			//List<ROIVertex> nodes = new List<ROIVertex>();
-			//List<GraphEdge> edges = new List<GraphEdge>();
+			var cmps = overlap.Components[DataType];
+			if (cmps != null)
+			{
+				int cmpSize = 0;
+				GraphComponent cmp = null;
+				for (var i = 0; i < cmps.Count; i++)
+				{
+					if (cmps[i].Edges.Count > cmpSize)
+					{
+						cmp = cmps[i];
+						cmpSize = cmp.Edges.Count;
 
-			//double xRange = _dataManager.XMax - _dataManager.XMin;
-			//double yRange = _dataManager.YMax - _dataManager.YMin;
-			//double zRange = _dataManager.ZMax - _dataManager.ZMin;
+						cmp.DataType = DataType;
+					}
+				}
 
-			//for (var i = 0; i < 90; i++)
-			//{
-			//	ROI roi = _dataManager.GetROI(i);
+				if (cmp != null)
+				{
+					AXPlotModel = LoadGraph(rvms, cmp.Edges, r => r.X, r => r.Y);
+					SGPlotModel = LoadGraph(rvms, cmp.Edges, r => (100 - r.Y), r => r.Z);
+					CRPlotModel = LoadGraph(rvms, cmp.Edges, r => r.X, r => r.Z);
 
-			//	double xFactor = (roi.X - _dataManager.XMin) / xRange;
-			//	double yFactor = (roi.Y - _dataManager.YMin) / yRange;
-			//	double zFactor = (roi.Z - _dataManager.ZMin) / zRange;
+					Dictionary<int, int> cmpVerts = new Dictionary<int, int>();
 
-			//	nodes.Add( new ROIVertex() { Roi = roi, XF = xFactor, YF = yFactor, ZF = zFactor } );
-			//}
+					foreach (var edge in cmp.Edges)
+					{
+						var v1 = rvms[edge.V1];
+						var v2 = rvms[edge.V2];
 
-			//int cmpSize = 0;
-			//GraphComponent cmp = null;
-			//for (var i = 0; i < components.Count; i++)
-			//{
-			//	if (components[i].Edges.Count > cmpSize)
-			//	{
-			//		cmp = components[i];
-			//		cmpSize = cmp.Edges.Count;
+						cmpVerts[edge.V1] = edge.V1;
+						cmpVerts[edge.V2] = edge.V2;
 
-			//		cmp.DataType = dataType;
-			//	}
-			//}
+						double diff = edge.M2 - edge.M1;
+						double pval = ((double)edge.RightTailCount) / ((double)overlap.Permutations);
 
-			//if (cmp != null)
-			//{
-			//	for (var i = 0; i < cmp.Edges.Count; i++)
-			//		cmp.Edges[i].Color = overlap.Colors[cmp.DataType];    
-                    
-			//	//cmp.Edges[i].Color = overlap.Colors[cmp.DataType];
+						CmpEdges.Add(new EdgeResult { V1 = v1.ROI.Name, V2 = v2.ROI.Name, Diff = diff, PVal = pval });
+					}
 
-			//	_graphCrXL.SetData(nodes, cmp.Edges, 
-			//		r => new ROIDim() { Raw = r.Roi.X, Factor = r.XF }, xRange, _dataManager.XMin, _dataManager.XMax,
-			//		r => new ROIDim() { Raw = r.Roi.Z, Factor = r.ZF }, zRange, _dataManager.ZMin, _dataManager.ZMax,
-			//		false, componentColor, overlap);
-                
-			//	_graphSgXL.SetData(nodes, cmp.Edges,
-			//		r => new ROIDim() { Raw = r.Roi.X, Factor = r.XF }, xRange, _dataManager.XMin, _dataManager.XMax,
-			//		r => new ROIDim() { Raw = r.Roi.Y, Factor = r.YF }, yRange, _dataManager.YMin, _dataManager.YMax,
-			//		false, componentColor, overlap);
-                
-			//	_graphAxXL.SetData(nodes, cmp.Edges,
-			//		r => new ROIDim() { Raw = r.Roi.Y, Factor = r.YF }, yRange, _dataManager.YMin, _dataManager.YMax,
-			//		r => new ROIDim() { Raw = r.Roi.Z, Factor = r.ZF }, zRange, _dataManager.ZMin, _dataManager.ZMax,
-			//		true, componentColor, overlap);
+					CmpPValue = "p" + (((double)cmp.RightTailExtentCount) / ((double)overlap.Permutations)).ToString("0.0000");
 
-			//	_graphCrXL.Draw();
-			//	_graphSgXL.Draw();
-			//	_graphAxXL.Draw();
-
-			//	CmpPValue = "p" + (((double)cmp.RightTailExtentCount) / ((double)overlap.Permutations)).ToString("0.0000");
-			//	Dictionary<int, ROIVertex> cmpVerts = new Dictionary<int, ROIVertex>();
-
-			//	foreach (var edge in cmp.Edges)
-			//	{
-			//		ROIVertex v1 = nodes[edge.V1];
-			//		ROIVertex v2 = nodes[edge.V2];
-
-			//		if (!cmpVerts.ContainsKey(edge.V1))
-			//			cmpVerts[edge.V1] = v1;
-			//		if (!cmpVerts.ContainsKey(edge.V2))
-			//			cmpVerts[edge.V2] = v2;
-
-			//		double diff = edge.M2 - edge.M1;
-			//		double pval = ((double)edge.RightTailCount) / ((double)overlap.Permutations);
-
-			//		CmpEdges.Add(new EdgeResult() { V1 = v1.Roi.Name, V2 = v2.Roi.Name, Diff = diff, TStat = edge.TStat, PVal = pval });
-			//	}
-
-			//	var itms = from v in cmpVerts.Values orderby v.Roi.Index select v;
-			//	foreach (var vert in itms)
-			//		CmpNodes.Add(new NodeResult() { Name = vert.Roi.Name, Id = vert.Roi.Index });
-			//}		
+					var itms = from v in cmpVerts.Values orderby v select v;
+					foreach (var vert in itms)
+						CmpNodes.Add(new NodeResult() { Name = rvms[vert].ROI.Name, Id = rvms[vert].ROI.Index });
+				}
+			}
 		}
 
+		protected class RegionalViewModel
+		{
+			public ROI ROI { get; set; }
+		}
+
+		public PlotModel SGPlotModel { get { return _inlSGPlotModel; } set { _inlSGPlotModel = value; NotifyOfPropertyChange(() => SGPlotModel); } } private PlotModel _inlSGPlotModel;
+		public PlotModel AXPlotModel { get { return _inlAXPlotModel; } set { _inlAXPlotModel = value; NotifyOfPropertyChange(() => AXPlotModel); } } private PlotModel _inlAXPlotModel;
+		public PlotModel CRPlotModel { get { return _inlCRPlotModel; } set { _inlCRPlotModel = value; NotifyOfPropertyChange(() => CRPlotModel); } } private PlotModel _inlCRPlotModel;
+				
         public void Save(StringBuilder htmlSink, string folderPath)
         {
 			//htmlSink.AppendFormat("<h1>{0}</h1>", DataType);
@@ -167,12 +215,6 @@ namespace BrainLab.Sections.NBSm
 		//}
 		#endregion
 
-		public string DataType
-		{
-			get { return _dataType; }
-			set { _dataType = value; NotifyOfPropertyChange(() => DataType); }
-		} private string _dataType;
-		
 		public string CmpPValue
 		{
 			get { return _cmpPValue; }
@@ -181,8 +223,6 @@ namespace BrainLab.Sections.NBSm
 
 		public BindableCollection<NodeResult> CmpNodes { get; private set; }
 		public BindableCollection<EdgeResult> CmpEdges { get; private set; }
-
-		private DataManager _dataManager;
 	}
 
 	public class NodeResult
