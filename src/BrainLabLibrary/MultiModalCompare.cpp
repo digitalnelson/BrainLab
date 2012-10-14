@@ -6,12 +6,14 @@
 
 namespace BrainLabLibrary
 {
+	using namespace std;
+
 	MultiModalCompare::MultiModalCompare(int subjectCount, int vertices, int edges, List<String^> ^dataTypes)
 	{
-		std::vector<std::string> dtypes;
+		vector<string> dtypes;
 
 		for each(String^ dstr in dataTypes)
-			dtypes.push_back(msclr::interop::marshal_as<std::string>(dstr));
+			dtypes.push_back(msclr::interop::marshal_as<string>(dstr));
 
 		_cmpMulti = new	GraphComparisonMulti(subjectCount, vertices, edges, dtypes);
 		_permutations = 0;
@@ -54,17 +56,26 @@ namespace BrainLabLibrary
 			Threshold thresh;
 			thresh.DataType = msclr::interop::marshal_as<std::string>(itm->Key);
 			thresh.Value = itm->Value;
-
+			
 			threshes[thresh.DataType] = thresh;
 		}
 
 		_cmpMulti->Compare(strGroup1, strGroup2, threshes);
 	}
 
-	void MultiModalCompare::Permute(int permutations, Dictionary<String^, double>^ thresholds)
+	void MultiModalCompare::Permute(int permutations, List<List<int>^>^ perms, Dictionary<String^, double>^ thresholds)
 	{
-		std::map<std::string, Threshold> threshes;
+		std::vector<std::vector<int>> subjectPermutations;
+		for each(List<int>^ perm in perms)
+		{
+			std::vector<int> subs;
+			for(int i=0; i<perm->Count; i++)
+				subs.push_back(perm[i]);
 
+			subjectPermutations.push_back(subs);
+		}
+
+		std::map<std::string, Threshold> threshes;
 		for each(KeyValuePair<String^, double>^ itm in thresholds)	
 		{
 			Threshold thresh;
@@ -74,22 +85,22 @@ namespace BrainLabLibrary
 			threshes[thresh.DataType] = thresh;
 		}
 
-		_cmpMulti->Permute(permutations, threshes);
+		_cmpMulti->Permute(subjectPermutations, threshes);
 		_permutations += permutations;
 	}
 
 	BrainLabStorage::Overlap^ MultiModalCompare::GetResult()
 	{
 		// Pull the results of the comparison
-		BrainLabLibrary::Overlap overlapResult = _cmpMulti->GetOverlapResult();
+		std::unique_ptr<BrainLabLibrary::Overlap> overlapResult = _cmpMulti->GetOverlapResult();
 		
 		// Convert the NBS computation result back to managed C++
 		BrainLabStorage::Overlap^ blsor = gcnew BrainLabStorage::Overlap();
 		blsor->Components = gcnew Dictionary<String^, List<GraphComponent^>^>();
 		blsor->Permutations = _permutations;
-		blsor->RightTailOverlapCount = overlapResult.RightTailOverlapCount;
+		blsor->RightTailOverlapCount = overlapResult->RightTailOverlapCount;
 		
-		for(auto cit=overlapResult.Components.begin(); cit!=overlapResult.Components.end();++cit)
+		for(auto cit=overlapResult->Components.begin(); cit!=overlapResult->Components.end();++cit)
 		{
 			String^ dataType = msclr::interop::marshal_as<String^>(cit->first);
 			List<GraphComponent^>^ components = gcnew List<GraphComponent^>();
@@ -127,7 +138,7 @@ namespace BrainLabLibrary
 		}
 
 		blsor->Vertices = gcnew List<int>();
-		for(auto vit=overlapResult.Vertices.begin();vit<overlapResult.Vertices.end();++vit)
+		for(auto vit=overlapResult->Vertices.begin();vit<overlapResult->Vertices.end();++vit)
 			blsor->Vertices->Add(*vit);
 
 		return blsor;

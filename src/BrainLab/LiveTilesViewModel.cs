@@ -36,7 +36,7 @@ namespace BrainLab
 			_subjectService = subjectService;
 
 			Groups = "None";
-			Permutations = 500;
+			Permutations = 50000;
 
 			_eventAggregator.Subscribe(this);
 		}
@@ -114,14 +114,26 @@ namespace BrainLab
 			CanRun = true;
 		}
 
+		private void UpdateProgress(PermutationProgress value)
+		{
+			Permutations = value.Complete;
+		}
+
 		public async void Run()
 		{
 			await Task.Run(delegate
 			{
+				var dtStart = DateTime.Now;
+				
 				_computeService.LoadSubjects();
 				_computeService.CompareGroups();
-				_computeService.PermuteGroups(Permutations);
+				_computeService.PermuteGroups(Permutations, new Progress<PermutationProgress>(UpdateProgress));
 				_computeService.GetResults();
+
+				var dtFinish = DateTime.Now;
+				var elap = dtFinish - dtStart;
+
+				double i = elap.TotalSeconds;
 			});
 		}
 		public bool CanRun { get { return _inlCanRun; } set { _inlCanRun = value; NotifyOfPropertyChange(() => CanRun); } } private bool _inlCanRun;

@@ -80,6 +80,7 @@ namespace BrainLabLibrary
 		}
 	}
 
+
 	void Graph::ComputeComponents()
 	{
 		using namespace std;

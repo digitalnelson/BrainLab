@@ -31,8 +31,9 @@ namespace BrainLab.Sections.NBSm
 		}
 
 		public string DataType { get { return _inlDataType; } set { _inlDataType = value; NotifyOfPropertyChange(() => DataType); } } private string _inlDataType;
+		public bool ShowEdges { get { return _inlShowEdges; } set { _inlShowEdges = value; NotifyOfPropertyChange(() => ShowEdges); } } private bool _inlShowEdges;
 
-		protected PlotModel LoadGraph(List<RegionalViewModel> rsvms, List<GraphEdge> edges, Func<ROI, double> horizSelector, Func<ROI, double> vertSelector)
+		protected PlotModel LoadGraph(List<RegionalViewModel> rsvms, Dictionary<int, int> nodes, List<GraphEdge> edges, Func<ROI, double> horizSelector, Func<ROI, double> vertSelector)
 		{
 			var model = new PlotModel() { IsLegendVisible = false };
 			model.PlotAreaBorderColor = OxyColors.White;
@@ -70,32 +71,33 @@ namespace BrainLab.Sections.NBSm
 				Color = OxyColor.FromAColor(125, OxyColors.Green),
 			};
 
-			Dictionary<int, int> cmpNodes = new Dictionary<int, int>();
-
-			foreach (var edge in edges)
+			if (edges != null && edges.Count > 0)
 			{
-				var v1 = rsvms[edge.V1];
-				var v2 = rsvms[edge.V2];
+				foreach (var edge in edges)
+				{
+					var v1 = rsvms[edge.V1];
+					var v2 = rsvms[edge.V2];
 
-				cmpNodes[edge.V1] = edge.V1;
-				cmpNodes[edge.V2] = edge.V2;
-
-				sigEdges.Points.Add(new DataPoint(Double.NaN, Double.NaN));
-				sigEdges.Points.Add(new DataPoint(horizSelector(v1.ROI), vertSelector(v1.ROI)));
-				sigEdges.Points.Add(new DataPoint(horizSelector(v2.ROI), vertSelector(v2.ROI)));
-				sigEdges.Points.Add(new DataPoint(Double.NaN, Double.NaN));
+					sigEdges.Points.Add(new DataPoint(Double.NaN, Double.NaN));
+					sigEdges.Points.Add(new DataPoint(horizSelector(v1.ROI), vertSelector(v1.ROI)));
+					sigEdges.Points.Add(new DataPoint(horizSelector(v2.ROI), vertSelector(v2.ROI)));
+					sigEdges.Points.Add(new DataPoint(Double.NaN, Double.NaN));
+				}
 			}
 
 			foreach (var rsvm in rsvms)
 			{
-				if(cmpNodes.ContainsKey(rsvm.ROI.Index))
+				if(nodes.ContainsKey(rsvm.ROI.Index))
 					sigNodes.Points.Add(new BrainDataPoint(horizSelector(rsvm.ROI), vertSelector(rsvm.ROI), rsvm.ROI));
 				else
 					nonSigNodes.Points.Add(new BrainDataPoint(horizSelector(rsvm.ROI), vertSelector(rsvm.ROI), rsvm.ROI));
 			}
 
 			model.Series.Add(nonSigNodes);
-			model.Series.Add(sigEdges);
+
+			if (edges != null && edges.Count > 0)
+				model.Series.Add(sigEdges);
+			
 			model.Series.Add(sigNodes);
 
 			return model;
@@ -117,50 +119,70 @@ namespace BrainLab.Sections.NBSm
 				rvms.Add(rvm);
 			}
 
-			var cmps = overlap.Components[DataType];
-			if (cmps != null)
+			if (DataType != "overlap")
 			{
-				int cmpSize = 0;
-				GraphComponent cmp = null;
-				for (var i = 0; i < cmps.Count; i++)
+				var cmps = overlap.Components[DataType];
+				if (cmps != null)
 				{
-					if (cmps[i].Edges.Count > cmpSize)
+					int cmpSize = 0;
+					GraphComponent cmp = null;
+					for (var i = 0; i < cmps.Count; i++)
 					{
-						cmp = cmps[i];
-						cmpSize = cmp.Edges.Count;
+						if (cmps[i].Edges.Count > cmpSize)
+						{
+							cmp = cmps[i];
+							cmpSize = cmp.Edges.Count;
 
-						cmp.DataType = DataType;
-					}
-				}
-
-				if (cmp != null)
-				{
-					AXPlotModel = LoadGraph(rvms, cmp.Edges, r => r.X, r => r.Y);
-					SGPlotModel = LoadGraph(rvms, cmp.Edges, r => (100 - r.Y), r => r.Z);
-					CRPlotModel = LoadGraph(rvms, cmp.Edges, r => r.X, r => r.Z);
-
-					Dictionary<int, int> cmpVerts = new Dictionary<int, int>();
-
-					foreach (var edge in cmp.Edges)
-					{
-						var v1 = rvms[edge.V1];
-						var v2 = rvms[edge.V2];
-
-						cmpVerts[edge.V1] = edge.V1;
-						cmpVerts[edge.V2] = edge.V2;
-
-						double diff = edge.M2 - edge.M1;
-						double pval = ((double)edge.RightTailCount) / ((double)overlap.Permutations);
-
-						CmpEdges.Add(new EdgeResult { V1 = v1.ROI.Name, V2 = v2.ROI.Name, Diff = diff, PVal = pval });
+							cmp.DataType = DataType;
+						}
 					}
 
-					CmpPValue = "p" + (((double)cmp.RightTailExtentCount) / ((double)overlap.Permutations)).ToString("0.0000");
+					if (cmp != null)
+					{
+						Dictionary<int, int> cmpVerts = new Dictionary<int, int>();
 
-					var itms = from v in cmpVerts.Values orderby v select v;
-					foreach (var vert in itms)
-						CmpNodes.Add(new NodeResult() { Name = rvms[vert].ROI.Name, Id = rvms[vert].ROI.Index });
+						foreach (var edge in cmp.Edges)
+						{
+							var v1 = rvms[edge.V1];
+							var v2 = rvms[edge.V2];
+
+							cmpVerts[edge.V1] = edge.V1;
+							cmpVerts[edge.V2] = edge.V2;
+
+							double diff = edge.M2 - edge.M1;
+							double pval = ((double)edge.RightTailCount) / ((double)overlap.Permutations);
+
+							CmpEdges.Add(new EdgeResult { V1 = v1.ROI.Name, V2 = v2.ROI.Name, Diff = diff, PVal = pval });
+						}
+
+						AXPlotModel = LoadGraph(rvms, cmpVerts, cmp.Edges, r => r.X, r => r.Y);
+						SGPlotModel = LoadGraph(rvms, cmpVerts, cmp.Edges, r => (100 - r.Y), r => r.Z);
+						CRPlotModel = LoadGraph(rvms, cmpVerts, cmp.Edges, r => r.X, r => r.Z);
+
+						CmpPValue = "p" + (((double)cmp.RightTailExtentCount) / ((double)overlap.Permutations)).ToString("0.0000");
+
+						var itms = from v in cmpVerts.Values orderby v select v;
+						foreach (var vert in itms)
+							CmpNodes.Add(new NodeResult() { Name = rvms[vert].ROI.Name, Id = rvms[vert].ROI.Index });
+					}
 				}
+			}
+			else
+			{
+				Dictionary<int, int> cmpVerts = new Dictionary<int, int>();
+
+				var nodes = from v in overlap.Vertices orderby v select v;
+				foreach (var node in nodes)
+				{
+					cmpVerts[node] = node;
+					CmpNodes.Add(new NodeResult() { Name = rvms[node].ROI.Name, Id = rvms[node].ROI.Index });
+				}
+
+				AXPlotModel = LoadGraph(rvms, cmpVerts, null, r => r.X, r => r.Y);
+				SGPlotModel = LoadGraph(rvms, cmpVerts, null, r => (100 - r.Y), r => r.Z);
+				CRPlotModel = LoadGraph(rvms, cmpVerts, null, r => r.X, r => r.Z);
+
+				CmpPValue = "p" + (((double)overlap.RightTailOverlapCount) / ((double)overlap.Permutations)).ToString("0.0000");				
 			}
 		}
 

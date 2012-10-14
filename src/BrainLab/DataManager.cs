@@ -69,14 +69,14 @@ namespace BrainLab
 
 		public void PermuteComparisons(int permutations, Dictionary<string, double> thresholds)
 		{
-			_compare.Permute(permutations, thresholds);
+			//_compare.Permute(permutations, thresholds);
 
-			_overlap = _compare.GetResult();
-			foreach (var v in _overlap.Vertices)
-			{
-				var r = _regionsOfInterestByIndex[v];
-				r.Special = true;
-			}
+			//_overlap = _compare.GetResult();
+			//foreach (var v in _overlap.Vertices)
+			//{
+			//	var r = _regionsOfInterestByIndex[v];
+			//	r.Special = true;
+			//}
 		}
 
 		public ROI GetROI(int roiIdx)

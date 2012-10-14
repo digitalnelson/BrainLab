@@ -158,7 +158,7 @@ namespace BrainLabLibrary
 
 	int GraphStatsNative::GetLargestComponentSize()
 	{
-		UDGraph graph(90);
+		/*UDGraph graph(90);
 		vector<Edge>::iterator ei;
 
 		for(ei = _edges.begin(); ei < _edges.end(); ei++)
@@ -186,9 +186,9 @@ namespace BrainLabLibrary
 		{
 			if(mit->second > maxCount)
 				maxCount = mit->second;
-		}
+		}*/
 
-		return maxCount;
+		return 0;//maxCount;
 	}
 
 	void GraphStatsNative::GetLargestComponent()

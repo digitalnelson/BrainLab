@@ -12,6 +12,8 @@
 
 namespace BrainLabLibrary
 {	
+	using namespace std;
+
 	class GraphComparison
 	{
 	public:
@@ -20,21 +22,18 @@ namespace BrainLabLibrary
 
 		void AddGraph(Graph* graph);
 		
-		void CalcEdgeTStats(std::vector<int> &idxs, int szGrp1, std::vector<EdgeValue> &edgeStats);
-		void CalcEdgeTStatsAmped(std::vector<int> &idxs, int szGrp1, std::vector<EdgeValue> &edgeStats);
-		void GraphComparison::CalcEdgeTStatsAmpedWorker(int subjectCount, int szGroup1, Concurrency::array_view<EdgeValue, 1> &tstatView, Concurrency::array_view<int, 1> &subjectIdxs, Concurrency::array<float, 2> &subjectEdgesView);
-		void CompareGroups(std::vector<int> &idxs, int szGrp1, double tStatThreshold, std::vector<int> &vertexList);
-		void Permute(std::vector<int> &idxs, int szGrp1, double tStatThreshold, std::vector<int> &vertexList);
-		void GetComponents(std::vector<Component> &components);
+		void CalcEdgeTStats(const vector<int> &idxs, int szGrp1, vector<EdgeValue> &edgeStats);
+		void CompareGroups(vector<int> &idxs, int szGrp1, double tStatThreshold, vector<int> &vertexList);
+		void Permute(const vector<int> &idxs, int szGrp1, double tStatThreshold, vector<int> &vertexList);
+		void GetComponents(vector<Component> &components);
 	
 	private:
 		typedef boost::multi_array<float, 2> EdgesBySubject;
 		typedef boost::multi_array<float, 2>::array_view<1>::type SingleEdgeBySubject;
 		typedef boost::multi_array_types::index_range range;
-
 		typedef boost::adjacency_matrix<boost::undirectedS> UDGraph;
 
-		void ComputeComponents(UDGraph &graph, std::vector<int> &edgeIdxs, std::vector<int> &components, std::vector<int> &vertexList);
+		void ComputeComponents(UDGraph &graph, vector<int> &edgeIdxs, vector<Component> &components);
 
 		int _subjectCount;
 		int _currentSubjectIdx;
@@ -45,17 +44,35 @@ namespace BrainLabLibrary
 		GraphLookup _lu;
 		EdgesBySubject _subjectEdges;  // Mtx of edge vs subject  e.g. 4005x58
 
-		std::vector<float> _allEdges;
-		Concurrency::array<float, 2> _subjectEdgesArr;
+		vector<float> _allEdges;
 
 		UDGraph _graph;
-		Graph _g;
-		std::vector<EdgeValue> _grpStats;
-		std::vector<int> _grpSupraThreshEdgeIdxs;
-		std::vector<int> _grpComponent;
+		//Graph _g;
+		
+		vector<EdgeValue> _grpStats;
+		vector<int> _grpSupraThreshEdgeIdxs;
+		vector<Component> _grpComponent;
 
 		int _largestComponentSize;
 		int _rightTailComponentSizeCount;
+	};
+
+	struct ConnectionStats
+	{
+		int Idx;
+
+		float Value;
+
+		float M1;
+		float M2;
+
+		float V1;
+		float V2;
+	
+		float TStat;
+	
+		float PValue;
+		int RightTailCount;
 	};
 }
 

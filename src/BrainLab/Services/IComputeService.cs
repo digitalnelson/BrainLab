@@ -16,6 +16,11 @@ namespace BrainLab.Services
 		GroupTwo
 	}
 
+	public class PermutationProgress
+	{
+		public int Complete { get; set; }
+	}
+
 	public interface IComputeService
 	{
 		void SetDataTypes(Dictionary<string, double> dataTypes);
@@ -33,7 +38,7 @@ namespace BrainLab.Services
 		// NBS
 		void LoadSubjects();
 		void CompareGroups();
-		void PermuteGroups(int permutations);
+		void PermuteGroups(int permutations, IProgress<PermutationProgress> progress);
 		Overlap GetResults();
 	}
 
@@ -146,11 +151,43 @@ namespace BrainLab.Services
 				_compare.CompareGroups(_group1Idents[0], _group2Idents[0], _dataTypes); // TODO: Make this use the groupings
 		}
 
-		public void PermuteGroups(int permutations)
+		public void PermuteGroups(int permutations, IProgress<PermutationProgress> progress)
 		{
 			if (_compare != null)
 			{
-				_compare.Permute(permutations, _dataTypes);
+				int batchSize = 5000;
+				int numComplete = 0;
+
+				//progress.Report(new PermutationProgress { Complete = 0 });
+
+				while(numComplete < permutations)
+				{
+					int leftOver = permutations - numComplete;
+					int nextBatch = batchSize < leftOver ? batchSize : leftOver;
+
+					// Generate a bunch of random subject idxs
+					List<int> subjects = new List<int>();
+					for (int i = 0; i < _filteredSubjectData.Count; i++)
+						subjects.Add(i);
+
+					Random rnd = new Random();
+					var subjPermutations = new List<List<int>>();
+					for (int p = 0; p < nextBatch; p++)
+					{
+						var randomizedList = from item in subjects
+											 orderby rnd.Next()
+											 select item;
+
+						subjPermutations.Add(randomizedList.ToList());
+					}
+
+					// Run our permutation
+					_compare.Permute(nextBatch, subjPermutations, _dataTypes);
+
+					numComplete += nextBatch;
+					progress.Report(new PermutationProgress { Complete = numComplete });
+				}
+
 				_eventAggregator.Publish(new NBSResultsAvailable());
 			}
 		}

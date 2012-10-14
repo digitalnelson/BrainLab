@@ -3,6 +3,8 @@
 #include "Graph.h"
 #include "EdgeValue.h"
 
+using namespace System;
+
 namespace BrainLabLibrary
 {
 	SubjectGraphItem::SubjectGraphItem(int m, GraphLookup *lu)
@@ -45,7 +47,7 @@ namespace BrainLabLibrary
 		std::vector<float> values; 
 		RawGraph->GetMeanVtxStrength(values);
 
-		array<float>^ managedValues = gcnew array<float>(values.size());
+		cli::array<float>^ managedValues = gcnew cli::array<float>(values.size());
 
 		// cast to managed object type IntPtr representing an object pointer.
 		System::IntPtr ptr = (System::IntPtr)&values[0];

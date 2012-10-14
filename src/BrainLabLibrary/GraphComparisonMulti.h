@@ -2,30 +2,33 @@
 #include <vector>
 #include <map>
 #include "Graph.h"
+//#include "Subject.h"
 
 namespace BrainLabLibrary
 {
+	using namespace std;
+
 	class GraphComparison;
 
 	struct SubjectMarshal
 	{
-		std::string SubjectId;
-		std::string GroupId;
+		string SubjectId;
+		string GroupId;
 
-		std::map<std::string, Graph*> Graphs;
+		map<string, Graph*> Graphs;
 	};
 
 	struct Threshold
 	{
-		std::string DataType;
+		string DataType;
 		double Value;
 	};
 
 	struct Overlap
 	{
-		typedef std::map<std::string, std::vector<Component>> ComponentByTypeCollection;
+		typedef map<string, vector<Component>> ComponentByTypeCollection;
 
-		std::vector<int> Vertices;
+		vector<int> Vertices;
 		int RightTailOverlapCount;
 		ComponentByTypeCollection Components;
 	};
@@ -33,16 +36,16 @@ namespace BrainLabLibrary
 	class GraphComparisonMulti
 	{
 	public:
-		GraphComparisonMulti(int subjectCount, int verts, int edges, std::vector<std::string> dataTypes);
+		GraphComparisonMulti(int subjectCount, int verts, int edges, vector<string> &dataTypes);
 		~GraphComparisonMulti(void);
 
-		typedef std::map<std::string, std::vector<Component>> ComponentByTypeCollection;
+		typedef map<string, vector<Component>> ComponentByTypeCollection;
 		
 		void AddSubject(SubjectMarshal *itm);
-		void Compare(std::string group1, std::string group2, std::map<std::string, Threshold> threshes);
-		void Permute(int permutations, std::map<std::string, Threshold> threshes);
+		void Compare(string group1, string group2, map<string, Threshold> threshes);
+		void Permute(const vector<vector<int>> &permutations, map<string, Threshold> &threshes);
 
-		Overlap GetOverlapResult();
+		unique_ptr<Overlap> GetOverlapResult();
 
 	private:
 		int _subjectCount;
@@ -56,10 +59,10 @@ namespace BrainLabLibrary
 
 		int _group1Count;
 
-		std::vector<std::string> _dataTypes;
-		std::map<std::string, GraphComparison*> _dataByType;
-		std::map<std::string, std::vector<int>> _subIdxsByGroup;
-		std::vector<int> _overlapVertices;
+		vector<string> _dataTypes;
+		map<string, unique_ptr<GraphComparison>> _dataByType;
+		map<string, std::vector<int>> _subIdxsByGroup;
+		vector<int> _overlapVertices;
 	};
 }
 

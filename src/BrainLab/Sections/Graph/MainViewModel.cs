@@ -21,7 +21,7 @@ namespace BrainLab.Sections.Graph
 
 			StrengthByDataType = new BindableCollection<StrengthViewModel>();
 
-			this.DisplayName = "GRAPHS";
+			this.DisplayName = "MEASURES";
 			_eventAggregator.Subscribe(this);
 		}
 

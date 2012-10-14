@@ -21,10 +21,6 @@ namespace BrainLab.Services.Loaders
 		public void Load(Dictionary<string, Subject> subjectsByEventId)
 		{
 			string[] adjFiles = Directory.GetFiles(_fullPath);
-			
-			Dictionary<string, SubjectData> subs = new Dictionary<string, SubjectData>();
-			List<SubjectData> subList = new List<SubjectData>();
-
 			int filesLoadedCount = 0;
 
 			//foreach (var adjFile in adjFiles)

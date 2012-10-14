@@ -10,45 +10,75 @@
 
 namespace BrainLabLibrary
 {
+	using namespace std;
+
+	struct EdgeValue
+	{
+		int Idx;
+
+		float Value;
+
+		float M1;
+		float M2;
+
+		float V1;
+		float V2;
+	
+		float TStat;
+	
+		float PValue;
+		int RightTailCount;
+	};
+
 	typedef std::pair<int, int> Edge;
-	typedef std::vector<Edge> EdgeCollection;
+	//struct Edge
+	//{
+	//	int EdgeIndex;
+	//	pair<int, int> Vertices;
+
+	//	float Value;
+	//};
 
 	struct ComponentEdge
 	{
+		int ComponentIndex;
+
 		Edge Edge;
+		int EdgeIndex;
+
 		EdgeValue EdgeValue;
 	};
 
 	struct Component
 	{
 		int Identifier;
-		std::vector<ComponentEdge> Edges;
-		std::vector<int> Vertices;
+		vector<ComponentEdge> Edges;
+		vector<int> Vertices;
+
 		int RightTailExtent;
 	};
 
 	class Graph
 	{
 	public:
-		Graph(int nVerts, GraphLookup* lu);
-		~Graph(void);
+		typedef vector<Edge> EdgeCollection;
+		typedef vector<EdgeValue> EdgeValueCollection;
 
 		typedef boost::adjacency_matrix<boost::undirectedS> UDGraph;
-		typedef std::pair<int, int> Edge;
-		typedef std::vector<Edge> EdgeCollection;
-		typedef std::vector<EdgeValue> EdgeValueCollection;
+		typedef map<int, vector<int>> ComponentVertexCollection;   // Component id to component edge mapping
+		typedef map<int, vector<ComponentEdge>> ComponentEdgeCollection;
 
-		typedef std::map<int, std::vector<int>> ComponentVertexCollection;   // Component id to component edge mapping
-		typedef std::map<int, std::vector<ComponentEdge>> ComponentEdgeCollection;
+		Graph(int nVerts, GraphLookup* lu);
+		~Graph(void);
 
 		void AddEdge(int m, int n, EdgeValue val);
 		EdgeValue GetEdge(int m, int n);
 
 		float GlobalStrength();
-		void GetMeanVtxStrength(std::vector<float> &meanVtxStr);
+		void GetMeanVtxStrength(vector<float> &meanVtxStr);
 
 		void ComputeComponents();
-		void GetComponents(std::vector<Component> &components);
+		void GetComponents(vector<Component> &components);
 		int GetLargestComponentId();
 		int GetComponentExtent(int id);
 

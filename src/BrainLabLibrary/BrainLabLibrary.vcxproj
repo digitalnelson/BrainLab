@@ -98,6 +98,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ConnData.h" />
+    <ClInclude Include="AutoPtr.h" />
     <ClInclude Include="BrainLabManager.h" />
     <ClInclude Include="EdgeValue.h" />
     <ClInclude Include="Graph.h" />
@@ -114,11 +116,13 @@
     <ClInclude Include="Stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ConnData.cpp" />
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="BrainLabManager.cpp" />
     <ClCompile Include="Graph.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="GraphComparison.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>

@@ -4,7 +4,9 @@
 
 namespace BrainLabLibrary
 {
-	GraphComparisonMulti::GraphComparisonMulti(int subjectCount, int vertices, int edges, std::vector<std::string> dataTypes)
+	using namespace std;
+
+	GraphComparisonMulti::GraphComparisonMulti(int subjectCount, int vertices, int edges, vector<string> &dataTypes)
 	{
 		_subjectCount = subjectCount;
 		_vertices = vertices;
@@ -18,21 +20,18 @@ namespace BrainLabLibrary
 		_realOverlap = 0;
 		_rightTailOverlapCount = 0;
 
-		for(auto it=_dataTypes.begin(); it<_dataTypes.end(); ++it)
-			_dataByType[*it] = new GraphComparison(subjectCount, vertices, edges);
+		for(auto dataType : _dataTypes)
+			_dataByType[dataType] = unique_ptr<GraphComparison>(new GraphComparison(subjectCount, vertices, edges));
 	}
 	
 	GraphComparisonMulti::~GraphComparisonMulti(void)
-	{
-		for(auto it=_dataTypes.begin(); it<_dataTypes.end(); ++it)
-			delete _dataByType[*it];
-	}
+	{}
 
 	void GraphComparisonMulti::AddSubject(SubjectMarshal *itm)
 	{
 		// Loop through the graphs for this subject
-		for(auto it=_dataTypes.begin(); it<_dataTypes.end(); ++it)
-			_dataByType[*it]->AddGraph( itm->Graphs[*it] );
+		for(auto dataType : _dataTypes)
+			_dataByType[dataType]->AddGraph( itm->Graphs[dataType] );
 
 		// Add our subject idx to the proper group vector
 		_subIdxsByGroup[itm->GroupId].push_back(_subCounter);
@@ -44,28 +43,25 @@ namespace BrainLabLibrary
 	void GraphComparisonMulti::Compare(std::string group1, std::string group2, std::map<std::string, Threshold> threshes)
 	{
 		// Put together a list of idxs representing our two groups
-		std::vector<int> idxs;
-		for each(int itm in _subIdxsByGroup[group1])
+		vector<int> idxs;
+		for(auto itm : _subIdxsByGroup[group1])
 			idxs.push_back(itm);
-		for each(int itm in _subIdxsByGroup[group2])
+		for(auto itm : _subIdxsByGroup[group2])
 			idxs.push_back(itm);
 
 		// Keep track of our group 1 size for the permutation step
 		_group1Count = _subIdxsByGroup[group1].size();
 
 		// Temporary map to hold our node counts
-		std::vector<int> nodeCounts(_vertices);
+		vector<int> nodeCounts(_vertices);
 
 		// Loop through our comparisons and call compare group passing our actual subject labels
-		for(auto it=_dataByType.begin(); it!=_dataByType.end(); ++it)
+		for(auto &dataItem : _dataByType)
 		{
-			std::vector<int> vertList;
+			vector<int> vertList;
 
-			// Grab the graph comparison for this data type
-			auto compare = it->second;
-
-			// Run the permutation for this index arrangement
-			compare->CompareGroups(idxs, _group1Count, threshes[it->first].Value, vertList);
+			// Compare the two groups for this data type
+			dataItem.second->CompareGroups(idxs, _group1Count, threshes[dataItem.first].Value, vertList);
 
 			// Pull out the vertices and store then in our counting map
 			for(auto cv=0; cv<vertList.size(); ++cv)
@@ -75,7 +71,7 @@ namespace BrainLabLibrary
 			}
 		}
 
-		// Calculate how many nodes overlap between all of the nodes
+		// Calculate how many nodes overlap between all of the data types
 		int maxOverlap = _dataByType.size();
 		for(auto nc=0; nc<nodeCounts.size();++nc)
 		{
@@ -87,33 +83,21 @@ namespace BrainLabLibrary
 		}
 	}
 
-	void GraphComparisonMulti::Permute(int permutations, std::map<std::string, Threshold> threshes)
+	void GraphComparisonMulti::Permute(const vector<vector<int>> &permutations, map<string, Threshold> &threshes)
 	{
-		// Create a simple index vector
-		std::vector<int> idxs(_subjectCount);
-		
-		// Fill with values 0..subjectCount
-		Stats::FillVectorInc(idxs);
-
-		for(int i=0; i<permutations; i++)
-		//parallel_for(0, permutations, [=, &idxs, &threshes] (int i)
+		//for(int i=0; i<permutations.size(); i++)
+		parallel_for_each(begin(permutations), end(permutations), [=, &threshes] (const vector<int> &subIdxs)
 		{	
-			// Shuffle the indexes
-			random_shuffle(idxs.begin(), idxs.end());
-
 			std::vector<int> nodeCounts(_vertices);
 
-			// Loop through our comparisons and call permute on them passing our new random
-			// subject assortement
-			for(auto it=_dataByType.begin(); it!=_dataByType.end(); ++it)
+			// Loop through our comparisons and call permute on them passing our new random subject assortement
+			//for(auto it=_dataByType.begin(); it!=_dataByType.end(); ++it)
+			parallel_for_each(begin(_dataByType), end(_dataByType), [=, &subIdxs, &threshes, &nodeCounts] (pair<const string, unique_ptr<GraphComparison>> &item)
 			{
 				std::vector<int> vertList;
 
-				// Grab the graph comparison for this data type
-				auto compare = it->second;
-
 				// Run the permutation for this index arrangement
-				compare->Permute(idxs, _group1Count, threshes[it->first].Value, vertList);
+				item.second->Permute(subIdxs, _group1Count, threshes[item.first].Value, vertList);
 
 				// Pull out the vertices and store then in our counting map
 				for(auto cv=0; cv<vertList.size(); ++cv)
@@ -121,7 +105,7 @@ namespace BrainLabLibrary
 					if(vertList[cv] == 1)
 						++nodeCounts[cv];
 				}
-			}
+			});
 
 			// Calculate how many nodes overlap between all of the nodes
 			int permOverlap = 0, maxOverlap = _dataByType.size();
@@ -134,20 +118,20 @@ namespace BrainLabLibrary
 			// NBS multimodal compare
 			if(permOverlap >= _realOverlap)
 				++_rightTailOverlapCount;
-		}//);
+		});
 	}
 
-	Overlap GraphComparisonMulti::GetOverlapResult()
+	std::unique_ptr<Overlap> GraphComparisonMulti::GetOverlapResult()
 	{
-		Overlap overlap;
+		unique_ptr<Overlap> overlap(new Overlap());
 
 		for(auto it=_dataByType.begin(); it!=_dataByType.end(); ++it)
-			it->second->GetComponents(overlap.Components[it->first]); // Ask the graph for the components
+			it->second->GetComponents(overlap->Components[it->first]); // Ask the graph for the components
 
 		for(auto it=_overlapVertices.begin(); it<_overlapVertices.end(); it++)
-			overlap.Vertices.push_back(*it);
+			overlap->Vertices.push_back(*it);
 
-		overlap.RightTailOverlapCount = _rightTailOverlapCount;
+		overlap->RightTailOverlapCount = _rightTailOverlapCount;
 
 		return overlap;
 	}

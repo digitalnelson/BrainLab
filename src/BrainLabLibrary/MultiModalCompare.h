@@ -18,7 +18,7 @@ namespace BrainLabLibrary
 
 		void LoadSubjects(List<Subject^>^ itms);
 		void CompareGroups(String^ group1, String^ group2, Dictionary<String^, double>^ thresholds);
-		void Permute(int permutations, Dictionary<String^, double>^ thresholds);
+		void Permute(int permutations, List<List<int>^>^ perms, Dictionary<String^, double>^ thresholds);
 		
 		BrainLabStorage::Overlap^ GetResult();
 

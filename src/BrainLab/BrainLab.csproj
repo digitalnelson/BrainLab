@@ -81,6 +81,9 @@
   <PropertyGroup>
     <StartupObject>BrainLab.App</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>BrainLab Icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Caliburn.Micro">
       <HintPath>..\packages\Caliburn.Micro.1.3.1\lib\net40\Caliburn.Micro.dll</HintPath>
@@ -407,6 +410,10 @@
     <Resource Include="Resources\icons\Open.png" />
     <Resource Include="Resources\icons\Open.jpg" />
     <Resource Include="Resources\icons\Gray728.png" />
+    <Resource Include="Resources\BrainLab Icon.ico" />
+    <Resource Include="Resources\BrainLab Icon.png" />
+    <Resource Include="BrainLab Icon.ico" />
+    <Content Include="BrainLabManager.h" />
     <Content Include="Resources\icons\Untitled-1.svg" />
   </ItemGroup>
   <ItemGroup />

@@ -5,6 +5,8 @@ using namespace System;
 
 namespace BrainLabLibrary
 {
+	using namespace std;
+
 	class Graph;
 
 	public ref class SubjectGraphItem
