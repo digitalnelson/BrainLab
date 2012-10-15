@@ -149,7 +149,7 @@ namespace BrainLab.Sections.NBSm
 							cmpVerts[edge.V1] = edge.V1;
 							cmpVerts[edge.V2] = edge.V2;
 
-							double diff = edge.M2 - edge.M1;
+							double diff = edge.M1 - edge.M2;
 							double pval = ((double)edge.RightTailCount) / ((double)overlap.Permutations);
 
 							CmpEdges.Add(new EdgeResult { V1 = v1.ROI.Name, V2 = v2.ROI.Name, Diff = diff, PVal = pval });

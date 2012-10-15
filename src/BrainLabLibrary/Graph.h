@@ -14,6 +14,19 @@ namespace BrainLabLibrary
 
 	struct EdgeValue
 	{
+		EdgeValue()
+		{
+			Idx = 0;
+			Value = 0;
+			M1 = 0;
+			M2 = 0;
+			V1 = 0;
+			V2 = 0;
+			TStat = 0;
+			PValue = 0;
+			RightTailCount = 0;
+		}
+
 		int Idx;
 
 		float Value;

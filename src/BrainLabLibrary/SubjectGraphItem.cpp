@@ -25,6 +25,8 @@ namespace BrainLabLibrary
 	void SubjectGraphItem::AddEdge(int i, int j, double val)
 	{
 		EdgeValue edgeVal;
+		memset(&edgeVal, 0, sizeof(EdgeValue));
+
 		edgeVal.Value = val;
 
 		RawGraph->AddEdge(i, j, edgeVal);

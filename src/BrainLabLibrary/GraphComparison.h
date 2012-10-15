@@ -23,8 +23,8 @@ namespace BrainLabLibrary
 		void AddGraph(Graph* graph);
 		
 		void CalcEdgeTStats(const vector<int> &idxs, int szGrp1, vector<EdgeValue> &edgeStats);
-		void CompareGroups(vector<int> &idxs, int szGrp1, double tStatThreshold, vector<int> &vertexList);
-		void Permute(const vector<int> &idxs, int szGrp1, double tStatThreshold, vector<int> &vertexList);
+		Component CompareGroups(vector<int> &idxs, int szGrp1, double tStatThreshold);
+		Component Permute(const vector<int> &idxs, int szGrp1, double tStatThreshold);
 		void GetComponents(vector<Component> &components);
 	
 	private:
@@ -51,10 +51,8 @@ namespace BrainLabLibrary
 		
 		vector<EdgeValue> _grpStats;
 		vector<int> _grpSupraThreshEdgeIdxs;
+		vector<pair<int, int>> _grpSupraThreshEdges;
 		vector<Component> _grpComponent;
-
-		int _largestComponentSize;
-		int _rightTailComponentSizeCount;
 	};
 
 	struct ConnectionStats

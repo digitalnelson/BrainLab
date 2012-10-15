@@ -40,7 +40,7 @@ namespace BrainLabLibrary
 		++_subCounter;
 	}
 	
-	void GraphComparisonMulti::Compare(std::string group1, std::string group2, std::map<std::string, Threshold> threshes)
+	void GraphComparisonMulti::Compare(std::string &group1, std::string &group2, std::map<std::string, Threshold> &threshes)
 	{
 		// Put together a list of idxs representing our two groups
 		vector<int> idxs;
@@ -58,17 +58,12 @@ namespace BrainLabLibrary
 		// Loop through our comparisons and call compare group passing our actual subject labels
 		for(auto &dataItem : _dataByType)
 		{
-			vector<int> vertList;
-
 			// Compare the two groups for this data type
-			dataItem.second->CompareGroups(idxs, _group1Count, threshes[dataItem.first].Value, vertList);
+			Component cmp = dataItem.second->CompareGroups(idxs, _group1Count, threshes[dataItem.first].Value);
 
 			// Pull out the vertices and store then in our counting map
-			for(auto cv=0; cv<vertList.size(); ++cv)
-			{
-				if(vertList[cv] == 1)
-					++nodeCounts[cv];
-			}
+			for(auto vert : cmp.Vertices)
+				++nodeCounts[vert];
 		}
 
 		// Calculate how many nodes overlap between all of the data types
@@ -94,17 +89,12 @@ namespace BrainLabLibrary
 			//for(auto it=_dataByType.begin(); it!=_dataByType.end(); ++it)
 			parallel_for_each(begin(_dataByType), end(_dataByType), [=, &subIdxs, &threshes, &nodeCounts] (pair<const string, unique_ptr<GraphComparison>> &item)
 			{
-				std::vector<int> vertList;
-
 				// Run the permutation for this index arrangement
-				item.second->Permute(subIdxs, _group1Count, threshes[item.first].Value, vertList);
+				Component cmp = item.second->Permute(subIdxs, _group1Count, threshes[item.first].Value);
 
 				// Pull out the vertices and store then in our counting map
-				for(auto cv=0; cv<vertList.size(); ++cv)
-				{
-					if(vertList[cv] == 1)
-						++nodeCounts[cv];
-				}
+				for(auto vert : cmp.Vertices)
+					++nodeCounts[vert];
 			});
 
 			// Calculate how many nodes overlap between all of the nodes
@@ -125,11 +115,11 @@ namespace BrainLabLibrary
 	{
 		unique_ptr<Overlap> overlap(new Overlap());
 
-		for(auto it=_dataByType.begin(); it!=_dataByType.end(); ++it)
-			it->second->GetComponents(overlap->Components[it->first]); // Ask the graph for the components
+		for(auto &dataItem : _dataByType)
+			dataItem.second->GetComponents(overlap->Components[dataItem.first]); // Ask the graph for the components
 
-		for(auto it=_overlapVertices.begin(); it<_overlapVertices.end(); it++)
-			overlap->Vertices.push_back(*it);
+		for(auto vtx : _overlapVertices)
+			overlap->Vertices.push_back(vtx);
 
 		overlap->RightTailOverlapCount = _rightTailOverlapCount;
 

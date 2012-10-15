@@ -42,7 +42,7 @@ namespace BrainLabLibrary
 		typedef map<string, vector<Component>> ComponentByTypeCollection;
 		
 		void AddSubject(SubjectMarshal *itm);
-		void Compare(string group1, string group2, map<string, Threshold> threshes);
+		void Compare(string &group1, string &group2, map<string, Threshold> &threshes);
 		void Permute(const vector<vector<int>> &permutations, map<string, Threshold> &threshes);
 
 		unique_ptr<Overlap> GetOverlapResult();
