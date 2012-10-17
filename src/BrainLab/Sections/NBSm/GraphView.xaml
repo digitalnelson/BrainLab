@@ -81,6 +81,7 @@
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="Id"  Binding="{Binding Id}" />
 				<DataGridTextColumn Width="*" Header="Name" Binding="{Binding Name}" />
+				<DataGridTextColumn Width="*" Header="Count" Binding="{Binding Count}" />
 			</DataGrid.Columns>
 		</DataGrid>
 	</Grid>

@@ -139,6 +139,10 @@ namespace BrainLab.Sections.NBSm
 
 					if (cmp != null)
 					{
+						Dictionary<int, Vertex> interModalVerts = new Dictionary<int, Vertex>();
+						foreach (var vtx in overlap.Vertices)
+							interModalVerts[vtx.Id] = vtx;
+
 						Dictionary<int, int> cmpVerts = new Dictionary<int, int>();
 
 						foreach (var edge in cmp.Edges)
@@ -163,7 +167,10 @@ namespace BrainLab.Sections.NBSm
 
 						var itms = from v in cmpVerts.Values orderby v select v;
 						foreach (var vert in itms)
-							CmpNodes.Add(new NodeResult() { Name = rvms[vert].ROI.Name, Id = rvms[vert].ROI.Index });
+						{
+							if(!interModalVerts.ContainsKey(vert))
+								CmpNodes.Add(new NodeResult() { Name = rvms[vert].ROI.Name, Id = rvms[vert].ROI.Index });
+						}
 					}
 				}
 			}
@@ -171,11 +178,11 @@ namespace BrainLab.Sections.NBSm
 			{
 				Dictionary<int, int> cmpVerts = new Dictionary<int, int>();
 
-				var nodes = from v in overlap.Vertices orderby v select v;
+				var nodes = from v in overlap.Vertices orderby v.Id select v;
 				foreach (var node in nodes)
 				{
-					cmpVerts[node] = node;
-					CmpNodes.Add(new NodeResult() { Name = rvms[node].ROI.Name, Id = rvms[node].ROI.Index });
+					cmpVerts[node.Id] = node.Id;
+					CmpNodes.Add(new NodeResult() { Name = rvms[node.Id].ROI.Name, Id = rvms[node.Id].ROI.Index, Count = node.RandomOverlapCount.ToString() });
 				}
 
 				AXPlotModel = LoadGraph(rvms, cmpVerts, null, r => r.X, r => r.Y);
@@ -251,6 +258,7 @@ namespace BrainLab.Sections.NBSm
 	{
 		public int Id { get; set; }
 		public string Name { get; set; }
+		public string Count { get; set; }
 	}
 
 	public class EdgeResult

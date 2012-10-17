@@ -7,11 +7,20 @@ using System.Windows.Media;
 
 namespace BrainLabStorage
 {
+	public class Vertex
+	{
+		public int Id;
+		public bool IsFullOverlap;
+		public int RandomOverlapCount;
+	}
+
 	public class Overlap
 	{
-		public List<int> Vertices;
-		public Dictionary<string, List<GraphComponent>> Components;
+		public List<Vertex> Vertices = new List<Vertex>();
+		public Dictionary<string, List<GraphComponent>> Components = new Dictionary<string,List<GraphComponent>>();
         public Dictionary<string, Color> Colors = new Dictionary<string,Color>();
+
+		public Dictionary<int, int> Distribution = new Dictionary<int, int>();
 
 		public int Permutations;
 		public int RightTailOverlapCount;

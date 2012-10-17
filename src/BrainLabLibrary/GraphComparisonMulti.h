@@ -24,13 +24,29 @@ namespace BrainLabLibrary
 		double Value;
 	};
 
+	struct Vertex
+	{
+		int Id;
+
+		bool IsFullOverlap;
+		int RandomOverlapCount;
+
+		Vertex()
+		{
+			Id = 0;
+			IsFullOverlap = false;
+			RandomOverlapCount = 0;
+		}
+	};
+
 	struct Overlap
 	{
 		typedef map<string, vector<Component>> ComponentByTypeCollection;
 
-		vector<int> Vertices;
+		vector<shared_ptr<Vertex>> Vertices;
 		int RightTailOverlapCount;
 		ComponentByTypeCollection Components;
+		map<int, int> Distribution;
 	};
 
 	class GraphComparisonMulti
@@ -62,7 +78,8 @@ namespace BrainLabLibrary
 		vector<string> _dataTypes;
 		map<string, unique_ptr<GraphComparison>> _dataByType;
 		map<string, std::vector<int>> _subIdxsByGroup;
-		vector<int> _overlapVertices;
+		map<int, shared_ptr<Vertex>> _verticesById;
+		map<int, int> _overlapDistribution;
 	};
 }
 

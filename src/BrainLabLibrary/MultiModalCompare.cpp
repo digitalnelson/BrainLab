@@ -99,6 +99,9 @@ namespace BrainLabLibrary
 		blsor->Components = gcnew Dictionary<String^, List<GraphComponent^>^>();
 		blsor->Permutations = _permutations;
 		blsor->RightTailOverlapCount = overlapResult->RightTailOverlapCount;
+
+		for(auto bin : overlapResult->Distribution)
+			blsor->Distribution[bin.first] = bin.second;
 		
 		for(auto cit=overlapResult->Components.begin(); cit!=overlapResult->Components.end();++cit)
 		{
@@ -137,9 +140,15 @@ namespace BrainLabLibrary
 			blsor->Components[dataType] = components;
 		}
 
-		blsor->Vertices = gcnew List<int>();
-		for(auto vit=overlapResult->Vertices.begin();vit<overlapResult->Vertices.end();++vit)
-			blsor->Vertices->Add(*vit);
+		for(auto vtx : overlapResult->Vertices)
+		{
+			auto mvtx = gcnew BrainLabStorage::Vertex();
+			mvtx->Id = vtx->Id;
+			mvtx->IsFullOverlap = vtx->IsFullOverlap;
+			mvtx->RandomOverlapCount = vtx->RandomOverlapCount;
+
+			blsor->Vertices->Add(mvtx);
+		}
 
 		return blsor;
 	}

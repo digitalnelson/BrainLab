@@ -47,10 +47,10 @@ namespace BrainLab.Sections.NBSm
 
 			foreach (var node in overlap.Vertices)
 			{
-				var nd = nodes[node];
+				var nd = nodes[node.Id];
 				nd.Highlight = true;
 
-				InterModalNodes.Add(new NodeResult(){ Id = nd.Roi.Index, Name = nd.Roi.Name});
+				InterModalNodes.Add(new NodeResult(){ Id = nd.Roi.Index, Name = nd.Roi.Name, Count = node.RandomOverlapCount.ToString("0")});
 			}
 
 			foreach (var cmpList in overlap.Components.Values)

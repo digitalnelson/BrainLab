@@ -70,10 +70,13 @@ namespace BrainLabLibrary
 		int maxOverlap = _dataByType.size();
 		for(auto nc=0; nc<nodeCounts.size();++nc)
 		{
+			_verticesById[nc] = shared_ptr<Vertex>(new Vertex());
+			_verticesById[nc]->Id = nc;
+
 			if(nodeCounts[nc] == maxOverlap)
 			{
+				_verticesById[nc]->IsFullOverlap = true;
 				++_realOverlap;
-				_overlapVertices.push_back(nc);
 			}
 		}
 	}
@@ -102,9 +105,17 @@ namespace BrainLabLibrary
 			for(auto nc=0; nc<nodeCounts.size();++nc)
 			{
 				if(nodeCounts[nc] == maxOverlap)
+				{
+					_verticesById[nc]->RandomOverlapCount++;
 					++permOverlap;
+				}
 			}
+
+			if(_overlapDistribution.count(permOverlap) == 0)
+				_overlapDistribution[permOverlap] = 0;
 			
+			_overlapDistribution[permOverlap]++;
+
 			// NBS multimodal compare
 			if(permOverlap >= _realOverlap)
 				++_rightTailOverlapCount;
@@ -118,10 +129,14 @@ namespace BrainLabLibrary
 		for(auto &dataItem : _dataByType)
 			dataItem.second->GetComponents(overlap->Components[dataItem.first]); // Ask the graph for the components
 
-		for(auto vtx : _overlapVertices)
-			overlap->Vertices.push_back(vtx);
+		for(auto vtx : _verticesById)
+		{
+			if(vtx.second->IsFullOverlap)
+				overlap->Vertices.push_back(vtx.second);
+		}
 
 		overlap->RightTailOverlapCount = _rightTailOverlapCount;
+		overlap->Distribution = _overlapDistribution;
 
 		return overlap;
 	}

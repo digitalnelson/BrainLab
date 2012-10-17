@@ -36,7 +36,7 @@ namespace BrainLab
 			_subjectService = subjectService;
 
 			Groups = "None";
-			Permutations = 50000;
+			Permutations = 5000;
 
 			_eventAggregator.Subscribe(this);
 		}
