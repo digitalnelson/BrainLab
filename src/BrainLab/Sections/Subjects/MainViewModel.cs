@@ -11,7 +11,7 @@ using Ninject;
 
 namespace BrainLab.Sections.Subjects
 {
-	public class MainViewModel : Screen
+	public class MainViewModel : Screen, IHandle<RegionsLoadedEvent>
 	{
 		readonly IAppPreferences _appPreferences;
 		readonly IRegionService _regionService;
@@ -36,7 +36,7 @@ namespace BrainLab.Sections.Subjects
 			_eventAggregator.Subscribe(this);
 		}
 
-		protected override async void OnActivate()
+		public async Task LoadConfig()
 		{
 			if (SubjectFile == null)
 			{
@@ -49,7 +49,16 @@ namespace BrainLab.Sections.Subjects
 						DataFolder = _appPreferences.DataPath;
 				});
 			}
+		}
 
+		public async void Handle(RegionsLoadedEvent message)
+		{
+			await LoadConfig();
+		}
+
+		protected override async void OnActivate()
+		{
+			await LoadConfig();
 			base.OnActivate();
 		}
 

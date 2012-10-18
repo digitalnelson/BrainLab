@@ -16,6 +16,7 @@ namespace BrainLab.Services
 		string SubjectPath { get; set; }
 		string DataPath { get; set; }
 		string OutputPath { get; set; }
+		int Permutations { get; set; }
 
 		void Load();
 		void Save();
@@ -30,6 +31,7 @@ namespace BrainLab.Services
 		public string SubjectPath { get; set; }
 		public string DataPath { get; set; }
 		public string OutputPath { get; set; }
+		public int Permutations { get; set; }
 
 		public void Load()
 		{
@@ -62,6 +64,9 @@ namespace BrainLab.Services
 							case "OutputPath":
 								OutputPath = keyValue[1];
 								break;
+							case "Permutations":
+								Permutations = Int32.Parse(keyValue[1]);
+								break;
 							default:
 								Application.Current.Properties[keyValue[0]] = keyValue[1];
 								break;
@@ -85,6 +90,7 @@ namespace BrainLab.Services
 				writer.WriteLine("{0},{1}", "SubjectPath", SubjectPath);
 				writer.WriteLine("{0},{1}", "DataPath", DataPath);
 				writer.WriteLine("{0},{1}", "OutputPath", OutputPath);
+				writer.WriteLine("{0},{1}", "Permutations", Permutations);
 
 				// Persist each application-scope property individually
 				foreach (string key in Application.Current.Properties.Keys)

@@ -16,6 +16,7 @@ namespace BrainLab
 		private readonly IComputeService _computeService;
 		private readonly IRegionService _regionService;
 		private readonly ISubjectService _subjectService;
+		private readonly IAppPreferences _appPreferences = IoC.Get<IAppPreferences>();
 
 		public int DataTypeCount { get { return _inlDataTypeCount; } set { _inlDataTypeCount = value; NotifyOfPropertyChange(() => DataTypeCount); } } private int _inlDataTypeCount;
 		public string Groups { get { return _inlGroups; } set { _inlGroups = value; NotifyOfPropertyChange(() => Groups); } } private string _inlGroups;
@@ -26,7 +27,8 @@ namespace BrainLab
 
 		public int FilteredSubjects { get { return _inlFilteredSubjects; } set { _inlFilteredSubjects = value; NotifyOfPropertyChange(() => FilteredSubjects); } } private int _inlFilteredSubjects;
 
-		public int Permutations { get { return _inlPermutations; } set { _inlPermutations = value; NotifyOfPropertyChange(() => Permutations); } } private int _inlPermutations;
+		public int Permutations { get { return _inlPermutations; } set { _inlPermutations = value; NotifyOfPropertyChange(() => Permutations); _appPreferences.Permutations = _inlPermutations; } } private int _inlPermutations;
+		public int PermutationsComplete { get { return _inlPermutationsComplete; } set { _inlPermutationsComplete = value; NotifyOfPropertyChange(() => PermutationsComplete); } } private int _inlPermutationsComplete;
 
 		public LiveTilesViewModel(IEventAggregator eventAggregator, IComputeService computeService, IRegionService regionService, ISubjectService subjectService) 
 		{
@@ -35,8 +37,10 @@ namespace BrainLab
 			_regionService = regionService;
 			_subjectService = subjectService;
 
+			Permutations = _appPreferences.Permutations;
+
 			Groups = "None";
-			Permutations = 5000;
+			PermutationsComplete = 0;
 
 			_eventAggregator.Subscribe(this);
 		}
@@ -116,7 +120,7 @@ namespace BrainLab
 
 		private void UpdateProgress(PermutationProgress value)
 		{
-			Permutations = value.Complete;
+			PermutationsComplete = value.Complete;
 		}
 
 		public async void Run()
