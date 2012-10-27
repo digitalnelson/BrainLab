@@ -2724,6 +2724,8 @@
 		<col def="I2">Order</col>
 		<col def="I2">ISSetupLocation</col>
 		<col def="S255">ISReleaseFlags</col>
+		<row><td>_53E4B47E_A915_476C_AB12_10FD0E4AB221_</td><td>Microsoft .NET Framework 4.5 Web.prq</td><td/><td/><td/></row>
+		<row><td>_726EEE6A_669F_4306_ABF2_B893100D8D50_</td><td>Microsoft Visual C++ 2012 Redistributable Package (x86).prq</td><td/><td/><td/></row>
 	</table>
 
 	<table name="ISSetupType">
@@ -3569,7 +3571,7 @@
 		<row><td>IDS_PROGMSG_XML_ROLLBACK_FILES</td><td>1033</td><td>Rolling back XML file changes...</td><td>0</td><td/><td>-585044569</td></row>
 		<row><td>IDS_PROGMSG_XML_UPDATE_FILE</td><td>1033</td><td>Updating XML file %s...</td><td>0</td><td/><td>-585044569</td></row>
 		<row><td>IDS_SETUPEXE_EXPIRE_MSG</td><td>1033</td><td>This setup works until %s. The setup will now exit.</td><td>0</td><td/><td>-585044569</td></row>
-		<row><td>IDS_SHORTCUT_DISPLAY_NAME1</td><td>1033</td><td>Launch |Built</td><td>0</td><td/><td>-585075193</td></row>
+		<row><td>IDS_SHORTCUT_DISPLAY_NAME1</td><td>1033</td><td>BrainLab</td><td>0</td><td/><td>-585098808</td></row>
 		<row><td>IDS_SQLBROWSE_INTRO</td><td>1033</td><td>From the list of servers below, select the database server you would like to target.</td><td>0</td><td/><td>-585044569</td></row>
 		<row><td>IDS_SQLBROWSE_INTRO_DB</td><td>1033</td><td>From the list of catalog names below, select the database catalog you would like to target.</td><td>0</td><td/><td>-585044569</td></row>
 		<row><td>IDS_SQLBROWSE_INTRO_TEMPLATE</td><td>1033</td><td>[IS_SQLBROWSE_INTRO]</td><td>0</td><td/><td>-585044569</td></row>
@@ -4101,7 +4103,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>ISTheme</td><td>InstallShield Blue.theme</td></row>
 		<row><td>ISUSLock</td><td>{FE8E748C-CF2A-42DF-AFB2-4B5C09AABFF0}</td></row>
 		<row><td>ISUSSignature</td><td>{47127479-C85F-4731-86C6-5D822AD0547A}</td></row>
-		<row><td>ISVisitedViews</td><td>viewAssistant</td></row>
+		<row><td>ISVisitedViews</td><td>viewAssistant,viewTextMessages,viewShortcuts,viewObjects</td></row>
 		<row><td>Limited</td><td>1</td></row>
 		<row><td>LockPermissionMode</td><td>1</td></row>
 		<row><td>MsiExecCmdLineOptions</td><td/></row>
