@@ -1,4 +1,5 @@
 #pragma once
+#include "Stdafx.h"
 #include "EdgeValue.h"
 #include "GraphLookup.h"
 #include <vector>

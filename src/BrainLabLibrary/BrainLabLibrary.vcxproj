@@ -157,6 +157,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\BrainLab\BrainLab.csproj" />
     <None Include="app.ico" />
   </ItemGroup>
   <ItemGroup>

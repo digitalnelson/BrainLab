@@ -39,9 +39,6 @@
     <ClInclude Include="EdgeValue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Graph.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GraphComparison.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -64,6 +61,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="clr_scoped_ptr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graph.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -115,6 +115,7 @@
     <None Include="app.ico">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\BrainLab\BrainLab.csproj" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc">
